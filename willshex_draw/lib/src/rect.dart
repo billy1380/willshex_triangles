@@ -61,8 +61,6 @@ class Rect {
       case PointType.bottomRight:
         point = Point.xyPoint(x + width, y);
         break;
-      default:
-        break;
     }
 
     return point;
