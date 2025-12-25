@@ -1,0 +1,485 @@
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:blend_composites/blend_composites.dart';
+import 'package:image/image.dart' as img;
+import 'package:image_blend_composites/blend_composite.dart';
+import 'package:logging/logging.dart';
+import 'package:willshex_draw/willshex_draw.dart';
+import 'package:willshex_triangles/server/image_renderer.dart';
+import 'package:willshex_triangles/server/string_drawer.dart';
+
+import '../triangles/triangles.dart';
+
+/// Image generator for creating triangle-based images
+class ImageGenerator {
+  static final Logger _log = Logger('ImageGenerator');
+
+  static final Map<BlendingMode, BlendComposite> compositeCache = {};
+
+  static final StringDrawer _small = StringDrawer('monaco', 20);
+  static final StringDrawer _medium = StringDrawer('monaco', 50);
+  static final StringDrawer _large = StringDrawer('monaco', 100);
+
+  static final Random _rand = Random();
+
+  /// Generate an image based on properties
+  static Future<String?> generate(
+    Map<String, String> properties,
+    Future<Palette> Function() paletteSupplier,
+    IOSink output,
+    Store? store,
+  ) async {
+    StoreImage? loaded;
+
+    final String? name = _stringNullable(properties, ImageGeneratorConfig.nameKey, ImageGeneratorConfig.defaultName);
+    final int index = _integer(properties, ImageGeneratorConfig.indexKey, ImageGeneratorConfig.defaultIndex, 0, 100);
+    final bool force = _integer(properties, ImageGeneratorConfig.forceKey, ImageGeneratorConfig.defaultForce, 0, 1) == 1;
+
+    if (store != null && name != null && !force) {
+      loaded = store.load(name, index);
+    }
+
+    StoreImage? generated;
+    if (loaded == null) {
+      generated = StoreImage();
+      
+      final String format = _imageFormat(properties);
+      final String? texture = _stringNullable(properties, ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
+      final String type = _string(properties, ImageGeneratorConfig.typeKey, ImageGeneratorConfig.defaultType);
+      final String palette = _string(properties, ImageGeneratorConfig.paletteKey, ImageGeneratorConfig.defaultPalette);
+      final String blendMode = _string(properties, ImageGeneratorConfig.compositeKey, ImageGeneratorConfig.defaultComposite);
+      final List<String>? colors = _strings(properties, ImageGeneratorConfig.paletteColoursKey, ImageGeneratorConfig.defaultPaletteColours);
+
+      final int width = _integer(properties, ImageGeneratorConfig.widthKey, ImageGeneratorConfig.defaultWidth, 5, 2560);
+      final int height = _integer(properties, ImageGeneratorConfig.heightKey, ImageGeneratorConfig.defaultHeight, 5, 2560);
+      int numerator = _integer(properties, ImageGeneratorConfig.ratioNKey, ImageGeneratorConfig.defaultRatioN, 1, 10000);
+      int denominator = _integer(properties, ImageGeneratorConfig.ratioDKey, ImageGeneratorConfig.defaultRatioD, 1, 10000);
+      final bool annotate = _integer(properties, ImageGeneratorConfig.annotateKey, ImageGeneratorConfig.defaultAnnotate, 0, 1) == 1;
+
+      if (numerator > denominator) {
+        final int temp = numerator;
+        numerator = denominator;
+        denominator = temp;
+      }
+
+      final double ratio = numerator / denominator;
+
+      // Create palette
+      final Palette paletteObj = await _createPalette(
+        PaletteType.fromString(palette),
+        _toColors(colors),
+        paletteSupplier,
+      );
+
+      // Generate image content
+      generated.content = await _drawType(
+        TrianglesType.fromString(type),
+        paletteObj,
+        texture,
+        composite,
+        BlendingMode.values.byName(blendMode),
+        width,
+        height,
+        ratio,
+        annotate,
+        img.ImageFormat.values.byName(format),
+      );
+      generated.format = format;
+
+      if (generated.content == null) {
+        _log.warning('Looks like image was not generated');
+      } else {
+        _write(generated, output);
+
+        if (store != null && name != null) {
+          store.save(generated, name, index);
+        }
+      }
+    } else {
+      _write(loaded, output);
+    }
+
+    return loaded?.format ?? generated?.format;
+  }
+
+  /// Convert color strings to Color objects
+  static List<Color>? _toColors(List<String>? colors) {
+    if (colors == null || colors.isEmpty) return null;
+    return colors.map(_toColor).toList();
+  }
+
+  /// Convert a color string to a Color object
+  static Color _toColor(String colorString) {
+    if (colorString.startsWith('#')) {
+      colorString = colorString.substring(1);
+    }
+    if (colorString.endsWith(';')) {
+      colorString = colorString.substring(0, colorString.length - 1);
+    }
+
+    double red, green, blue, alpha = 1.0;
+
+    switch (colorString.length) {
+      case 8:
+        red = int.parse(colorString.substring(0, 2), radix: 16) / 255.0;
+        green = int.parse(colorString.substring(2, 4), radix: 16) / 255.0;
+        blue = int.parse(colorString.substring(4, 6), radix: 16) / 255.0;
+        alpha = int.parse(colorString.substring(6, 8), radix: 16) / 255.0;
+        break;
+      case 6:
+        red = int.parse(colorString.substring(0, 2), radix: 16) / 255.0;
+        green = int.parse(colorString.substring(2, 4), radix: 16) / 255.0;
+        blue = int.parse(colorString.substring(4, 6), radix: 16) / 255.0;
+        break;
+      case 3:
+        red = int.parse(colorString.substring(0, 1), radix: 16) / 15.0;
+        green = int.parse(colorString.substring(1, 2), radix: 16) / 15.0;
+        blue = int.parse(colorString.substring(2, 3), radix: 16) / 15.0;
+        break;
+      case 1:
+        red = green = blue = int.parse(colorString.substring(0, 1), radix: 16) / 15.0;
+        break;
+      default:
+        red = green = blue = 0.0;
+        break;
+    }
+
+    return Color.rgbaColor(red, green, blue, alpha);
+  }
+
+  /// Write image to output stream
+  static void _write(StoreImage image, IOSink output) {
+    if (image.content != null) {
+      output.add(image.content!);
+    }
+  }
+
+  /// Draw triangle pattern based on type
+  static Future<Uint8List?> _drawType(
+    TrianglesType type,
+    Palette palette,
+    String? texture,
+    img.Image composite, 
+    BlendingMode mode,
+    int width,
+    int height,
+    double r,
+    bool annotate,
+    img.ImageFormat format,
+  ) async {
+    try {
+			switch (type) {
+			case TrianglesType.diamondTiles:
+				break;
+			case TrianglesType.hTiles:
+				return _drawHTiles(palette, composite, mode, width, height, r,
+						annotate, format);
+			case TrianglesType.overImage:
+				break;
+			case TrianglesType.randomJiggle:
+				return _drawRandomJiggleTiles(palette, composite, mode, width,
+						height, r, annotate, format);
+			case TrianglesType.ribbons:
+				return _drawRibbon(palette, composite, mode, width, height, r,
+						annotate, format);
+			case TrianglesType.squareTiles:
+				return _drawSquareTiles(palette, composite, mode, width, height,
+						r, annotate, format);
+			case TrianglesType.tiles:
+				return _drawTiles(palette, composite, mode, width, height, r,
+						annotate, format);
+			}
+		} catch (e) {
+			_log.warning("Error creating image", e);
+			
+		}
+		return null;
+  }
+
+  static Uint8List _drawRibbon (Palette palette, img.Image composite,
+			BlendingMode mode, int width, int height, double r, bool annotate,
+			img.ImageFormat format) {
+		img.Image image = img.Image(width: width, height: height, numChannels: 4, );
+		ImageRenderer renderer =  ImageRenderer(image);
+		TriangleRibbons ribbons = TriangleRibbons.withRatio(renderer, palette,
+				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), 70, r);
+		ribbons.defaultLayout();
+
+		image.getGraphics().dispose();
+
+		if (annotate) {
+			image = _drawDims(width, height, image);
+		}
+
+		if (composite != null) {
+			image = composite(image, composite, _cached(mode));
+		}
+
+		return Imaging.writeImageToBytes(image, format);
+	}
+
+	static Uint8List _drawRandomJiggleTiles (Palette palette,
+			img.Image? composite, BlendingMode mode, int width, int height,
+			double r, bool annotate, img.ImageFormat format)
+			{
+		BufferedImage image = BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+		BufferedImageRenderer renderer = BufferedImageRenderer(image);
+		TriangleRandomJiggleTiles randomJiggles = TriangleRandomJiggleTiles.withRatio(
+				renderer, palette,
+				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+		randomJiggles.defaultLayout();
+
+		image.getGraphics().dispose();
+
+		if (annotate) {
+			image = _drawDims(width, height, image);
+		}
+
+		if (composite != null) {
+			image = composite(image, composite, _cached(mode));
+		}
+
+		return Imaging.writeImageToBytes(image, format);
+	}
+
+	static Uint8List _drawTiles (Palette palette, BufferedImage composite,
+			BlendingMode mode, int width, int height, double r, bool annotate,
+			img.ImageFormat format) {
+		BufferedImage image =  BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+
+		BufferedImageRenderer renderer =  BufferedImageRenderer(image);
+
+		TriangleTiles tiles = TriangleTiles.withRatio(renderer, palette,
+				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+		tiles.defaultLayout();
+
+		if (annotate) {
+			_drawDims(width, height, image);
+		}
+
+		image.getGraphics().dispose();
+
+		if (composite != null) {
+			image = composite(image, composite, _cached(mode));
+		}
+
+		return Imaging.writeImageToBytes(image, format);
+	}
+
+  static Uint8List _drawHTiles (Palette palette, BufferedImage composite,
+			BlendingMode mode, int width, int height, double r, bool annotate,
+			ImageFormat format)  {
+		BufferedImage image = BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+
+		BufferedImageRenderer renderer = BufferedImageRenderer(image);
+
+		TriangleHTiles hTiles = TriangleHTiles.withRatio(renderer, palette,
+				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+		hTiles.defaultLayout();
+
+		image.getGraphics().dispose();
+
+		if (annotate) {
+			image = _drawDims(width, height, image);
+		}
+
+		if (composite != null) {
+			image = composite(image, composite, _cached(mode));
+		}
+
+		return Imaging.writeImageToBytes(image, format);
+	}
+
+  static Uint8List _drawSquareTiles (Palette palette,
+			BufferedImage composite, BlendingMode mode, int width, int height,
+			double r, bool annotate, img.ImageFormat format)
+			{
+		BufferedImage image =  BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+
+		BufferedImageRenderer renderer =  BufferedImageRenderer(image);
+
+		TriangleSquareTiles squareTiles =  TriangleSquareTiles.withRatio(renderer,
+				palette, Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+		squareTiles.defaultLayout();
+
+		image.getGraphics().dispose();
+
+		if (annotate) {
+			image = _drawDims(width, height, image);
+		}
+
+		if (composite != null) {
+			image = composite(image, composite, _cached(mode));
+		}
+
+		return Imaging  .writeImageToBytes(image, format);
+	}
+
+	static BufferedImage _drawDims (int width, int height,
+			BufferedImage image) {
+
+		BufferedImage newer = BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = _pretty((Graphics2D) newer.createGraphics());
+
+		int dim = min(width, height);
+		int th = dim ~/ 10;
+		int fth =  _fontSize(th);
+		StringDrawer sd = _font(fth);
+		String s = "${width}x$height";
+		int tw = sd.getWidth(s);
+		sd.draw(g2, s, ((width - tw).toDouble() * 0.5).toInt(),
+				((height - fth).toDouble() * 0.5).toInt());
+		g2.dispose();
+
+		return _composite(image, newer, _cached(BlendingMode.add).derive(.8));
+	}
+
+  static BufferedImage _composite (BufferedImage imageA,
+			BufferedImage imageB, BlendComposite composite) {
+		Graphics2D g2 = _pretty(imageA.getGraphics());
+
+		g2.setComposite(composite);
+		g2.drawImage(imageB, 0, 0, null);
+
+		return imageA;
+	}
+
+  static Graphics2D _pretty (Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_RENDERING,
+				RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+				RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+		return g;
+	}
+
+  /// Create palette based on type
+  static Future<Palette> _createPalette(
+    PaletteType type,
+    List<Color>? colors,
+    Future<Palette> Function() paletteSupplier,
+  ) async {
+    switch (type) {
+      case PaletteType.randomNamed:
+        // Create palette with random named colors
+        final palette = Palette('Random Named');
+        // Add some default colors
+        palette.addColors([
+          Color.rgbaColor(1.0, 0.0, 0.0),
+          Color.rgbaColor(0.0, 1.0, 0.0),
+          Color.rgbaColor(0.0, 0.0, 1.0),
+          Color.rgbaColor(1.0, 1.0, 0.0),
+          Color.rgbaColor(1.0, 0.0, 1.0),
+        ]);
+        return palette;
+      case PaletteType.randomColourLovers:
+        return await paletteSupplier();
+      case PaletteType.randomGrayScale:
+        final palette = Palette('Random Grayscale');
+        for (int i = 0; i < 6; i++) {
+          final double gray = _rand.nextDouble();
+          palette.addColors([Color.grayscaleColor(gray)]);
+        }
+        return palette;
+      case PaletteType.commaSeparatedList:
+        final palette = Palette('Comma Separated');
+        if (colors != null) {
+          palette.addColors(colors);
+        }
+        return palette;
+    }
+  }
+
+  static BlendComposite _cached (BlendingMode mode) {
+		BlendComposite? composite = compositeCache[mode];
+
+		if (composite == null) {
+			compositeCache[mode] = (composite =  BlendComposite.getInstance(mode));
+		}
+
+		return composite;
+	}
+
+
+  /// Get image format from properties
+  static String _imageFormat(Map<String, String> properties) {
+    return _string(properties, ImageGeneratorConfig.formatKey, ImageGeneratorConfig.defaultFormat);
+  }
+
+  /// Get string value from properties with validation (for non-nullable defaults)
+  static String _string(Map<String, String> map, String key, String defaultValue, [List<String>? options]) {
+    final String? value = map[key];
+    if (value == null || value.isEmpty) return defaultValue;
+    
+    if (options != null && !options.contains(value)) {
+      return defaultValue;
+    }
+    
+    return value;
+  }
+
+  /// Get string value from properties with validation (for nullable defaults)
+  static String? _stringNullable(Map<String, String> map, String key, String? defaultValue, [List<String>? options]) {
+    final String? value = map[key];
+    if (value == null || value.isEmpty) return defaultValue;
+    
+    if (options != null && !options.contains(value)) {
+      return defaultValue;
+    }
+    
+    return value;
+  }
+
+  /// Get string array from properties
+  static List<String>? _strings(Map<String, String> map, String key, String? defaultValue) {
+    final String? value = map[key];
+    if (value == null || value.isEmpty) return null;
+    return value.split(',');
+  }
+
+  /// Get integer value from properties with range validation
+  static int _integer(Map<String, String> map, String key, int defaultValue, int min, int max) {
+    final String? value = map[key];
+    if (value == null || value.isEmpty) return defaultValue;
+    
+    try {
+      final int intValue = int.parse(value);
+      if (intValue >= min && intValue <= max) {
+        return intValue;
+      }
+    } catch (e) {
+      _log.warning('Invalid integer value for key $key: $value');
+    }
+    
+    return defaultValue;
+  }
+
+  static int _fontSize (int th) {
+		return th <= 20 ? 20 : (th <= 50 ? 50 : 100);
+	}
+
+  static StringDrawer _font (int size) {
+		switch (size) {
+		case 20:
+			return _small;
+		case 50:
+			return _medium;
+		case 100:
+		default:
+			return _large;
+		}
+	}
+} 

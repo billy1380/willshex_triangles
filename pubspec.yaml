@@ -16,6 +16,13 @@ dependencies:
   willshex:
     path: ../willshex-dart
   logging: ^1.2.0
+  http: ^1.1.0
+  blend_composites:
+    path: ../blend_composites
+  image: ^4.1.3
+  image_blend_composites:
+    path: ../image_blend_composites
+  
 
 dev_dependencies:
   flutter_test:
