@@ -1,4 +1,3 @@
-import "dart:io" as io;
 import "dart:typed_data";
 
 import "package:fs_shim/fs_shim.dart";
@@ -49,17 +48,6 @@ class StringDrawer {
         if (await fntFile.exists() && await pngFile.exists()) {
           fntContent = await fntFile.readAsString();
           pngBytes = await pngFile.readAsBytes();
-        }
-      }
-
-      // Fallback to dart:io File (only for legacy/CLI support if fs not provided)
-      if (fntContent == null || pngBytes == null) {
-        final ioFntFile = io.File("$basePath.fnt");
-        final ioPngFile = io.File("$basePath.png");
-
-        if (ioFntFile.existsSync() && ioPngFile.existsSync()) {
-          fntContent = ioFntFile.readAsStringSync();
-          pngBytes = ioPngFile.readAsBytesSync();
         }
       }
 
