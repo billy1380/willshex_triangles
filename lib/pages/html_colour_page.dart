@@ -73,7 +73,7 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
         ImageGeneratorConfig.typeKey: _selectedType.name,
         ImageGeneratorConfig.widthKey: "800",
         ImageGeneratorConfig.heightKey: "600",
-        ImageGeneratorConfig.paletteKey: "commaSeparatedList",
+        ImageGeneratorConfig.paletteKey: PaletteType.commaSeparatedList.name,
         ImageGeneratorConfig.paletteColoursKey: hexColors.join(","),
       };
 

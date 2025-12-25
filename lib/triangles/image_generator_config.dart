@@ -6,34 +6,21 @@ enum PaletteType {
   commaSeparatedList;
 
   /// Convert enum to string for serialization
-  String get name {
-    switch (this) {
-      case PaletteType.randomNamed:
-        return "RandomNamed";
-      case PaletteType.randomColourLovers:
-        return "RandomColourLovers";
-      case PaletteType.randomGrayScale:
-        return "RandomGrayScale";
-      case PaletteType.commaSeparatedList:
-        return "CommaSeparatedList";
-    }
-  }
+  String get name => switch (this) {
+        randomNamed => "RandomNamed",
+        randomColourLovers => "RandomColourLovers",
+        randomGrayScale => "RandomGrayScale",
+        commaSeparatedList => "CommaSeparatedList",
+      };
 
   /// Parse string to enum
-  static PaletteType fromString(String name) {
-    switch (name) {
-      case "RandomNamed":
-        return PaletteType.randomNamed;
-      case "RandomColourLovers":
-        return PaletteType.randomColourLovers;
-      case "RandomGrayScale":
-        return PaletteType.randomGrayScale;
-      case "CommaSeparatedList":
-        return PaletteType.commaSeparatedList;
-      default:
-        return PaletteType.randomNamed; // Default fallback
-    }
-  }
+  static PaletteType fromString(String name) => switch (name) {
+        "RandomNamed" => PaletteType.randomNamed,
+        "RandomColourLovers" => PaletteType.randomColourLovers,
+        "RandomGrayScale" => PaletteType.randomGrayScale,
+        "CommaSeparatedList" => PaletteType.commaSeparatedList,
+        _ => PaletteType.randomNamed, // Default fallback
+      };
 }
 
 /// Configuration interface for image generation
@@ -67,7 +54,7 @@ abstract class ImageGeneratorConfig {
   static const String? defaultPaletteColours = null;
 
   static const String compositeKey = "c";
-  static const String defaultComposite = "ColorBurn";
+  static const String defaultComposite = "colorBurn";
 
   static const String annotateKey = "a";
   static const int defaultAnnotate = 0;
