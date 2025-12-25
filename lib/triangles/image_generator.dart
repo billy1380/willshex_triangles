@@ -17,9 +17,7 @@ class ImageGenerator {
 
   static final Map<BlendingMode, BlendComposite> compositeCache = {};
 
-  static final StringDrawer _small = StringDrawer("monaco", 20);
-  static final StringDrawer _medium = StringDrawer("monaco", 50);
-  static final StringDrawer _large = StringDrawer("monaco", 100);
+  static final Map<int, StringDrawer> _fontCache = {};
 
   static final Random _rand = Random();
 
@@ -154,6 +152,8 @@ class ImageGenerator {
         annotate,
         img.ImageFormat.values.byName(format),
         addGradients,
+        assetLoader: assetLoader,
+        fs: fs,
       );
       generated.format = format;
 
@@ -238,29 +238,36 @@ class ImageGenerator {
     double r,
     bool annotate,
     img.ImageFormat format,
-    bool addGradients,
-  ) async {
+    bool addGradients, {
+    Future<Uint8List?> Function(String path)? assetLoader,
+    FileSystem? fs,
+  }) async {
     try {
       switch (type) {
         case TrianglesType.diamondTiles:
           break;
         case TrianglesType.hTiles:
           return _drawHTiles(palette, composite, mode, width, height, r,
-              annotate, format, addGradients);
+              annotate, format, addGradients,
+              assetLoader: assetLoader, fs: fs);
         case TrianglesType.overImage:
           break;
         case TrianglesType.randomJiggle:
           return _drawRandomJiggleTiles(palette, composite, mode, width, height,
-              r, annotate, format, addGradients);
+              r, annotate, format, addGradients,
+              assetLoader: assetLoader, fs: fs);
         case TrianglesType.ribbons:
           return _drawRibbon(palette, composite, mode, width, height, r,
-              annotate, format, addGradients);
+              annotate, format, addGradients,
+              assetLoader: assetLoader, fs: fs);
         case TrianglesType.squareTiles:
           return _drawSquareTiles(palette, composite, mode, width, height, r,
-              annotate, format, addGradients);
+              annotate, format, addGradients,
+              assetLoader: assetLoader, fs: fs);
         case TrianglesType.tiles:
           return _drawTiles(palette, composite, mode, width, height, r,
-              annotate, format, addGradients);
+              annotate, format, addGradients,
+              assetLoader: assetLoader, fs: fs);
       }
     } catch (e) {
       _log.warning("Error creating image", e);
@@ -268,7 +275,7 @@ class ImageGenerator {
     return null;
   }
 
-  static Uint8List _drawRibbon(
+  static Future<Uint8List> _drawRibbon(
       Palette palette,
       img.Image? composite,
       BlendingMode mode,
@@ -277,7 +284,9 @@ class ImageGenerator {
       double r,
       bool annotate,
       img.ImageFormat format,
-      bool addGradients) {
+      bool addGradients,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
     ImageRenderer renderer = ImageRenderer(image);
     TriangleRibbons ribbons = TriangleRibbons.withRatio(
@@ -290,7 +299,8 @@ class ImageGenerator {
     ribbons.defaultLayout();
 
     if (annotate) {
-      _drawDims(width, height, image);
+      image = await _drawDims(width, height, image,
+          assetLoader: assetLoader, fs: fs);
     }
 
     if (composite != null) {
@@ -300,7 +310,7 @@ class ImageGenerator {
     return _encodeImage(image, format);
   }
 
-  static Uint8List _drawRandomJiggleTiles(
+  static Future<Uint8List> _drawRandomJiggleTiles(
       Palette palette,
       img.Image? composite,
       BlendingMode mode,
@@ -309,7 +319,9 @@ class ImageGenerator {
       double r,
       bool annotate,
       img.ImageFormat format,
-      bool addGradients) {
+      bool addGradients,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
     ImageRenderer renderer = ImageRenderer(image);
     TriangleRandomJiggleTiles randomJiggles =
@@ -322,7 +334,8 @@ class ImageGenerator {
     randomJiggles.defaultLayout();
 
     if (annotate) {
-      _drawDims(width, height, image);
+      image = await _drawDims(width, height, image,
+          assetLoader: assetLoader, fs: fs);
     }
 
     if (composite != null) {
@@ -332,7 +345,7 @@ class ImageGenerator {
     return _encodeImage(image, format);
   }
 
-  static Uint8List _drawTiles(
+  static Future<Uint8List> _drawTiles(
       Palette palette,
       img.Image? composite,
       BlendingMode mode,
@@ -341,7 +354,9 @@ class ImageGenerator {
       double r,
       bool annotate,
       img.ImageFormat format,
-      bool addGradients) {
+      bool addGradients,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
     ImageRenderer renderer = ImageRenderer(image);
@@ -355,7 +370,8 @@ class ImageGenerator {
     tiles.defaultLayout();
 
     if (annotate) {
-      _drawDims(width, height, image);
+      image = await _drawDims(width, height, image,
+          assetLoader: assetLoader, fs: fs);
     }
 
     if (composite != null) {
@@ -365,7 +381,7 @@ class ImageGenerator {
     return _encodeImage(image, format);
   }
 
-  static Uint8List _drawHTiles(
+  static Future<Uint8List> _drawHTiles(
       Palette palette,
       img.Image? composite,
       BlendingMode mode,
@@ -374,7 +390,9 @@ class ImageGenerator {
       double r,
       bool annotate,
       img.ImageFormat format,
-      bool addGradients) {
+      bool addGradients,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
     ImageRenderer renderer = ImageRenderer(image);
@@ -388,7 +406,8 @@ class ImageGenerator {
     hTiles.defaultLayout();
 
     if (annotate) {
-      _drawDims(width, height, image);
+      image = await _drawDims(width, height, image,
+          assetLoader: assetLoader, fs: fs);
     }
 
     if (composite != null) {
@@ -398,7 +417,7 @@ class ImageGenerator {
     return _encodeImage(image, format);
   }
 
-  static Uint8List _drawSquareTiles(
+  static Future<Uint8List> _drawSquareTiles(
       Palette palette,
       img.Image? composite,
       BlendingMode mode,
@@ -407,7 +426,9 @@ class ImageGenerator {
       double r,
       bool annotate,
       img.ImageFormat format,
-      bool addGradients) {
+      bool addGradients,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
     ImageRenderer renderer = ImageRenderer(image);
@@ -421,7 +442,8 @@ class ImageGenerator {
     squareTiles.defaultLayout();
 
     if (annotate) {
-      _drawDims(width, height, image);
+      image = await _drawDims(width, height, image,
+          assetLoader: assetLoader, fs: fs);
     }
 
     if (composite != null) {
@@ -431,13 +453,15 @@ class ImageGenerator {
     return _encodeImage(image, format);
   }
 
-  static img.Image _drawDims(int width, int height, img.Image image) {
+  static Future<img.Image> _drawDims(int width, int height, img.Image image,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
     img.Image newer = img.Image(width: width, height: height, numChannels: 4);
 
     int dim = min(width, height);
     int th = dim ~/ 10;
     int fth = _fontSize(th);
-    StringDrawer sd = _font(fth);
+    StringDrawer sd = await _font(fth, assetLoader: assetLoader, fs: fs);
     String s = "${width}x$height";
     int tw = sd.getWidth(s);
 
@@ -588,15 +612,26 @@ class ImageGenerator {
     return th <= 20 ? 20 : (th <= 50 ? 50 : 100);
   }
 
-  static StringDrawer _font(int size) {
-    switch (size) {
-      case 20:
-        return _small;
-      case 50:
-        return _medium;
-      case 100:
-      default:
-        return _large;
+  static Future<StringDrawer> _font(
+    int size, {
+    Future<Uint8List?> Function(String path)? assetLoader,
+    FileSystem? fs,
+  }) async {
+    int targetSize;
+    if (size <= 20) {
+      targetSize = 20;
+    } else if (size <= 50) {
+      targetSize = 50;
+    } else {
+      targetSize = 100;
     }
+
+    if (!_fontCache.containsKey(targetSize)) {
+      final drawer = StringDrawer("monaco", targetSize);
+      await drawer.load(assetLoader: assetLoader, fs: fs);
+      _fontCache[targetSize] = drawer;
+    }
+
+    return _fontCache[targetSize]!;
   }
 }

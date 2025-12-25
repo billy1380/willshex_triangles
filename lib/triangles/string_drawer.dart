@@ -1,6 +1,7 @@
-import "dart:io";
+import "dart:io" as io;
 import "dart:typed_data";
 
+import "package:fs_shim/fs_shim.dart";
 import "package:image/image.dart" as img;
 import "package:logging/logging.dart";
 
@@ -19,29 +20,51 @@ class StringDrawer {
   img.Image? _texture;
 
   /// Constructor with font name and size
-  /// Font is loaded immediately upon construction
-  StringDrawer(this._fontName, this._fontSize) {
-    loadFont();
-  }
+  StringDrawer(this._fontName, this._fontSize);
 
-  /// Get the font name
-  String get fontName => _fontName;
-
-  /// Get the font size
-  int get fontSize => _fontSize;
-
-  /// Load font data (called automatically in constructor)
-  void loadFont() {
+  /// Load font data
+  Future<void> load({
+    Future<Uint8List?> Function(String path)? assetLoader,
+    FileSystem? fs,
+  }) async {
     try {
       final String basePath = "assets/fonts/$_fontName/$_fontSize";
-      final File fntFile = File("$basePath.fnt");
-      final File pngFile = File("$basePath.png");
+      String? fntContent;
+      Uint8List? pngBytes;
 
-      if (fntFile.existsSync() && pngFile.existsSync()) {
-        final String fntContent = fntFile.readAsStringSync();
-        final Uint8List pngBytes = pngFile.readAsBytesSync();
+      // Try loading from assets first
+      if (assetLoader != null) {
+        final Uint8List? fntBytes = await assetLoader("$basePath.fnt");
+        if (fntBytes != null) {
+          fntContent = String.fromCharCodes(fntBytes);
+        }
+        pngBytes = await assetLoader("$basePath.png");
+      }
+
+      // Fallback to filesystem if filesystem provided and assets failed
+      if ((fntContent == null || pngBytes == null) && fs != null) {
+        final File fntFile = fs.file("$basePath.fnt");
+        final File pngFile = fs.file("$basePath.png");
+
+        if (await fntFile.exists() && await pngFile.exists()) {
+          fntContent = await fntFile.readAsString();
+          pngBytes = await pngFile.readAsBytes();
+        }
+      }
+
+      // Fallback to dart:io File (only for legacy/CLI support if fs not provided)
+      if (fntContent == null || pngBytes == null) {
+        final ioFntFile = io.File("$basePath.fnt");
+        final ioPngFile = io.File("$basePath.png");
+
+        if (ioFntFile.existsSync() && ioPngFile.existsSync()) {
+          fntContent = ioFntFile.readAsStringSync();
+          pngBytes = ioPngFile.readAsBytesSync();
+        }
+      }
+
+      if (fntContent != null && pngBytes != null) {
         _texture = img.decodePng(pngBytes);
-
         _parseBMFont(fntContent);
         _log.info("Font loaded: $_fontName size $_fontSize");
       } else {
