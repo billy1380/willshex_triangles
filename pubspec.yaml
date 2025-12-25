@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   willshex_draw:
-    path: ./willshex_draw
+    path: ./packages/willshex_draw
   go_router: ^11.1.4
   shared_preferences: ^2.2.2
   willshex:
@@ -23,6 +23,7 @@ dependencies:
   image_blend_composites:
     path: ../image_blend_composites
   url_launcher: ^6.3.2
+  google_fonts: ^6.3.3
   
 
 dev_dependencies:

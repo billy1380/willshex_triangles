@@ -37,7 +37,8 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 16),
             _buildTextField("Count Ratio", _countRatioController),
             const SizedBox(height: 16),
-            CheckboxListTile(
+            SwitchListTile(
+              contentPadding: const EdgeInsets.all(0),
               title: const Text("Add triangle gradients"),
               value: _addTriangleGradients,
               onChanged: (bool? value) {
@@ -52,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: TextButton(
                     onPressed: () {
                       // Reset logic
                     },
@@ -61,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: FilledButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       // Save logic
                     },
@@ -80,12 +81,11 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            label: Text(label),
           ),
         ),
       ],

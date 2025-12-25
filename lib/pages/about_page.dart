@@ -43,7 +43,12 @@ class AboutPage extends StatelessWidget {
             Text("Images", style: Theme.of(context).textTheme.titleLarge),
             const Text(
                 "We have used some images on the site and here is where they came from."),
-            _buildLink(context, "PlaceIMG", "http://placeimg.com/"),
+            _buildLink(
+              context,
+              "PlaceIMG",
+              "http://placeimg.com/",
+              isDead: true,
+            ),
             _buildLink(
                 context, "Subtle background", "http://subtlepatterns.com/"),
             const SizedBox(height: 16),
@@ -70,9 +75,17 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLink(BuildContext context, String text, String url) {
+  ///
+  /// isDead is true if the link is dead
+  ///
+  Widget _buildLink(
+    BuildContext context,
+    String text,
+    String url, {
+    bool isDead = false,
+  }) {
     return InkWell(
-      onTap: () => launchUrlString(url),
+      onTap: () => isDead ? null : launchUrlString(url),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Text(
