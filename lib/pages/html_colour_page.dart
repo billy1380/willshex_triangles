@@ -73,11 +73,15 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
       final prefs = await SharedPreferences.getInstance();
       final width = prefs.getInt("image_width") ?? 800;
       final height = prefs.getInt("image_height") ?? 600;
+      final addGradients = prefs.getBool("add_triangle_gradients") ?? true;
+      final annotate = prefs.getBool("annotate_with_dimensions") ?? false;
 
       final properties = <String, String>{
         ImageGeneratorConfig.typeKey: _selectedType.name,
         ImageGeneratorConfig.widthKey: width.toString(),
         ImageGeneratorConfig.heightKey: height.toString(),
+        ImageGeneratorConfig.addGameGradientsKey: addGradients ? "1" : "0",
+        ImageGeneratorConfig.annotateKey: annotate ? "1" : "0",
         ImageGeneratorConfig.paletteKey: PaletteType.commaSeparatedList.name,
         ImageGeneratorConfig.paletteColoursKey: hexColors.join(","),
       };
@@ -206,7 +210,6 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
                     initialValue: _selectedType,
                     decoration: const InputDecoration(
                       labelText: "Type",
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     ),
@@ -232,7 +235,6 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
                     initialValue: _selectedImage,
                     decoration: const InputDecoration(
                       labelText: "Texture",
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     ),
@@ -280,7 +282,6 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
                     initialValue: _selectedBlendMode,
                     decoration: const InputDecoration(
                       labelText: "Blend Mode",
-                      border: OutlineInputBorder(),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     ),

@@ -1,3 +1,4 @@
+import "dart:math";
 import "package:image/image.dart" as img;
 import "package:willshex_draw/willshex_draw.dart";
 
@@ -66,7 +67,13 @@ class ImageRenderer extends Renderer {
   }
 
   @override
-  void renderTriangle(Color color, Point p1, Point p2, Point p3) {
+  void renderTriangle(Color color, Point p1, Point p2, Point p3,
+      [bool useGradient = false]) {
+    if (useGradient) {
+      _renderGradientTriangle(color, p1, p2, p3);
+      return;
+    }
+
     var vertices = [
       img.Point(p1.x.toInt(), p1.y.toInt()),
       img.Point(p2.x.toInt(), p2.y.toInt()),
@@ -77,6 +84,68 @@ class ImageRenderer extends Renderer {
       vertices: vertices,
       color: _toImgColor(color),
     );
+    img.drawPolygon(
+      image,
+      vertices: vertices,
+      color: _toImgColor(color),
+      antialias: true,
+    );
+  }
+
+  void _renderGradientTriangle(Color color, Point p1, Point p2, Point p3) {
+    // Darken functionality: reduce RGB by 20%
+    Color darker = Color.rgbaColor(
+        color.red * 0.8, color.green * 0.8, color.blue * 0.8, color.alpha);
+
+    // Assign colors to vertices: p1=color, p2=darker, p3=darker
+    // This creates a gradient from p1 to the opposite edge (p2-p3)
+    _drawBarycentricTriangle(p1, color, p2, darker, p3, darker);
+  }
+
+  void _drawBarycentricTriangle(
+      Point p1, Color c1, Point p2, Color c2, Point p3, Color c3) {
+    // Bounding box
+    int minX = [p1.x, p2.x, p3.x].reduce(min).floor().clamp(0, image.width - 1);
+    int maxX = [p1.x, p2.x, p3.x].reduce(max).ceil().clamp(0, image.width - 1);
+    int minY =
+        [p1.y, p2.y, p3.y].reduce(min).floor().clamp(0, image.height - 1);
+    int maxY = [p1.y, p2.y, p3.y].reduce(max).ceil().clamp(0, image.height - 1);
+
+    for (int y = minY; y <= maxY; y++) {
+      for (int x = minX; x <= maxX; x++) {
+        Point p = Point.xyPoint(x.toDouble(), y.toDouble());
+        var weights = _barycentric(p1, p2, p3, p);
+        double w1 = weights[0];
+        double w2 = weights[1];
+        double w3 = weights[2];
+
+        if (w1 >= 0 && w2 >= 0 && w3 >= 0) {
+          double r = c1.red * w1 + c2.red * w2 + c3.red * w3;
+          double g = c1.green * w1 + c2.green * w2 + c3.green * w3;
+          double b = c1.blue * w1 + c2.blue * w2 + c3.blue * w3;
+          double a = c1.alpha * w1 + c2.alpha * w2 + c3.alpha * w3;
+
+          image.setPixelRgba(
+            x,
+            y,
+            (r * 255).toInt(),
+            (g * 255).toInt(),
+            (b * 255).toInt(),
+            (a * 255).toInt(),
+          );
+        }
+      }
+    }
+  }
+
+  List<double> _barycentric(Point a, Point b, Point c, Point p) {
+    // Standard formula:
+    double div = (b.y - c.y) * (a.x - c.x) + (c.x - b.x) * (a.y - c.y);
+    double w1 = ((b.y - c.y) * (p.x - c.x) + (c.x - b.x) * (p.y - c.y)) / div;
+    double w2 = ((c.y - a.y) * (p.x - c.x) + (a.x - c.x) * (p.y - c.y)) / div;
+    double w3 = 1.0 - w1 - w2;
+
+    return [w1, w2, w3];
   }
 
   img.Color _toImgColor(Color c) {

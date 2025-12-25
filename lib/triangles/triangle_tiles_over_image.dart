@@ -56,7 +56,7 @@ class TriangleTilesOverImage {
         }
 
         index = middle.x.floor() + (_bounds.width.floor() * middle.y.floor());
-        _renderer.renderTriangle(_palette[index % _palette.count], p1, p2, p3);
+        _renderer.renderTriangle(_palette[index], p1, p2, p3);
 
         p1 = p2;
         p2 = p3;

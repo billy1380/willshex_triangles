@@ -26,7 +26,7 @@ class Palette {
     }
   }
 
-  Color operator [](int index) => _colors[index];
+  Color operator [](int index) => _colors[index % _colors.length];
 
   int get count => _colors.length;
 

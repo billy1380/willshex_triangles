@@ -1,4 +1,5 @@
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/image_renderer.dart";
 
 /// Base class for triangle tile generation
 class TriangleTiles {
@@ -6,18 +7,21 @@ class TriangleTiles {
   final Palette _palette;
   final Rect _bounds;
   final double _lineLength;
+  final bool _useGradient;
 
   static const double _cos60 = 0.8660254038;
 
   /// Constructor with default ratio
-  TriangleTiles(this._renderer, this._palette, this._bounds)
+  TriangleTiles(this._renderer, this._palette, this._bounds,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 0.08333;
 
   /// Constructor with custom ratio
   TriangleTiles.withRatio(
-      this._renderer, this._palette, this._bounds, double ratio)
+      this._renderer, this._palette, this._bounds, double ratio,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 ratio;
@@ -45,7 +49,12 @@ class TriangleTiles {
 
       do {
         p3 = nextPoint(p1);
-        _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+        if (_useGradient && _renderer is ImageRenderer) {
+          (_renderer as ImageRenderer)
+              .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+        } else {
+          _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+        }
 
         p1 = p2;
         p2 = p3;
@@ -62,7 +71,7 @@ class TriangleTiles {
 
   /// Draw the default layout with gradient background
   void defaultLayout() {
-    if (_palette.count < 4) return;
+    if (_palette.count < 1) return;
 
     _renderer.renderGradientRect(
       _bounds,
@@ -79,4 +88,5 @@ class TriangleTiles {
   Rect get bounds => _bounds;
   Renderer get renderer => _renderer;
   Palette get palette => _palette;
+  bool get useGradient => _useGradient;
 }

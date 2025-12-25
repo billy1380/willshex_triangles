@@ -1,4 +1,5 @@
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/image_renderer.dart";
 
 import "triangle_tiles.dart";
 
@@ -7,13 +8,15 @@ class TriangleHTiles extends TriangleTiles {
   static const double _cos60 = 0.8660254038;
 
   /// Constructor with default ratio
-  TriangleHTiles(Renderer renderer, Palette palette, Rect bounds)
-      : super.withRatio(renderer, palette, bounds, 0.08333);
+  TriangleHTiles(Renderer renderer, Palette palette, Rect bounds,
+      [bool useGradient = false])
+      : super.withRatio(renderer, palette, bounds, 0.08333, useGradient);
 
   /// Constructor with custom ratio
   TriangleHTiles.withRatio(
-      Renderer renderer, Palette palette, Rect bounds, double ratio)
-      : super.withRatio(renderer, palette, bounds, ratio);
+      Renderer renderer, Palette palette, Rect bounds, double ratio,
+      [bool useGradient = false])
+      : super.withRatio(renderer, palette, bounds, ratio, useGradient);
 
   @override
   Point nextPoint(Point p) {
@@ -38,7 +41,12 @@ class TriangleHTiles extends TriangleTiles {
 
       do {
         p3 = nextPoint(p1);
-        renderer.renderTriangle(palette.randomColor, p1, p2, p3);
+        if (useGradient && renderer is ImageRenderer) {
+          (renderer as ImageRenderer)
+              .renderTriangle(palette.randomColor, p1, p2, p3, true);
+        } else {
+          renderer.renderTriangle(palette.randomColor, p1, p2, p3);
+        }
 
         p1 = p2;
         p2 = p3;

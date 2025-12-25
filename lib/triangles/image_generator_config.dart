@@ -67,4 +67,7 @@ abstract class ImageGeneratorConfig {
 
   static const String forceKey = "m";
   static const int defaultForce = 0;
+
+  static const String addGameGradientsKey = "g";
+  static const int defaultAddGameGradients = 0;
 }

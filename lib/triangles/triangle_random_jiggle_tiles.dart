@@ -1,5 +1,7 @@
 import "dart:math";
+
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/image_renderer.dart";
 
 /// Triangle tiles with random jiggle effect
 /// Ported from Java TriangleRandomJiggleTiles.java
@@ -8,6 +10,7 @@ class TriangleRandomJiggleTiles {
   final Palette _palette;
   final Rect _bounds;
   final double _lineLength;
+  final bool _useGradient;
 
   static const double _cos60 = 0.8660254038;
 
@@ -17,14 +20,16 @@ class TriangleRandomJiggleTiles {
   final Random _random = Random();
 
   /// Constructor with default ratio
-  TriangleRandomJiggleTiles(this._renderer, this._palette, this._bounds)
+  TriangleRandomJiggleTiles(this._renderer, this._palette, this._bounds,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 0.08333;
 
   /// Constructor with custom ratio
   TriangleRandomJiggleTiles.withRatio(
-      this._renderer, this._palette, this._bounds, double ratio)
+      this._renderer, this._palette, this._bounds, double ratio,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 ratio;
@@ -106,7 +111,12 @@ class TriangleRandomJiggleTiles {
         }
 
         if (p2 != null && p3 != null) {
-          _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+          if (_useGradient && _renderer is ImageRenderer) {
+            (_renderer as ImageRenderer)
+                .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+          } else {
+            _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+          }
         }
 
         if (i % 2 == 0) {
@@ -131,7 +141,12 @@ class TriangleRandomJiggleTiles {
         }
 
         if (p2 != null && p3 != null) {
-          _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+          if (_useGradient && _renderer is ImageRenderer) {
+            (_renderer as ImageRenderer)
+                .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+          } else {
+            _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+          }
         }
       }
 
@@ -185,9 +200,8 @@ class TriangleRandomJiggleTiles {
 
   /// Draw the default layout with gradient background
   void defaultLayout() {
-    if (_palette.count < 4) return;
+    if (_palette.count < 1) return;
 
-    // _renderer.renderGradientRect(_bounds, NamedColorHelper.lookup("White"), NamedColorHelper.lookup("White"), NamedColorHelper.lookup("White"), NamedColorHelper.lookup("White"));
     _renderer.renderGradientRect(
       _bounds,
       _palette[0],

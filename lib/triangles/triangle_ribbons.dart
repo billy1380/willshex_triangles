@@ -1,5 +1,7 @@
 import "dart:math";
+
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/image_renderer.dart";
 
 /// Triangle ribbons pattern generator
 class TriangleRibbons {
@@ -10,18 +12,21 @@ class TriangleRibbons {
   final List<Point> _triangles = <Point>[];
   final int _count;
   final double _lineLength;
+  final bool _useGradient;
 
   static const double _pi2 = 2.0 * pi;
 
   /// Constructor with default ratio
-  TriangleRibbons(this._renderer, this._palette, this._bounds, this._count)
+  TriangleRibbons(this._renderer, this._palette, this._bounds, this._count,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 0.08333;
 
   /// Constructor with custom ratio
   TriangleRibbons.withRatio(
-      this._renderer, this._palette, this._bounds, this._count, double ratio)
+      this._renderer, this._palette, this._bounds, this._count, double ratio,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 ratio;
@@ -82,21 +87,26 @@ class TriangleRibbons {
       final Point p3 = _nextPoint(p2);
       _triangles.add(p3);
 
-      _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+      if (_useGradient && _renderer is ImageRenderer) {
+        (_renderer as ImageRenderer)
+            .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+      } else {
+        _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+      }
     }
   }
 
   /// Draw the default layout with gradient background
   void defaultLayout() {
-    if (_palette.count < 4) return;
-
-    _renderer.renderGradientRect(
-      _bounds,
-      _palette[0],
-      _palette[1],
-      _palette[2],
-      _palette[3],
-    );
+    if (_palette.count > 0) {
+      _renderer.renderGradientRect(
+        _bounds,
+        _palette[0],
+        _palette[1],
+        _palette[2],
+        _palette[3],
+      );
+    }
 
     // Draw ribbons from multiple starting points
     draw(Point.xyPoint(

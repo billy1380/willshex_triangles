@@ -22,6 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _sizeRatioController = TextEditingController();
   final TextEditingController _countRatioController = TextEditingController();
   bool _addTriangleGradients = true;
+  bool _annotateWithDimensions = false;
 
   @override
   void initState() {
@@ -39,6 +40,8 @@ class _SettingsPageState extends State<SettingsPage> {
       _countRatioController.text =
           (prefs.getDouble("count_ratio") ?? 1.0).toString();
       _addTriangleGradients = prefs.getBool("add_triangle_gradients") ?? true;
+      _annotateWithDimensions =
+          prefs.getBool("annotate_with_dimensions") ?? false;
     });
   }
 
@@ -48,7 +51,12 @@ class _SettingsPageState extends State<SettingsPage> {
         "image_width", int.tryParse(_widthController.text) ?? 800);
     await prefs.setInt(
         "image_height", int.tryParse(_heightController.text) ?? 600);
-    // ... (other fields if needed)
+    await prefs.setDouble(
+        "size_ratio", double.tryParse(_sizeRatioController.text) ?? 1.0);
+    await prefs.setDouble(
+        "count_ratio", double.tryParse(_countRatioController.text) ?? 1.0);
+    await prefs.setBool("add_triangle_gradients", _addTriangleGradients);
+    await prefs.setBool("annotate_with_dimensions", _annotateWithDimensions);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Settings saved")),
@@ -92,6 +100,17 @@ class _SettingsPageState extends State<SettingsPage> {
               onChanged: (bool? value) {
                 setState(() {
                   _addTriangleGradients = value ?? false;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              contentPadding: const EdgeInsets.all(0),
+              title: const Text("Annotate with dimensions"),
+              value: _annotateWithDimensions,
+              onChanged: (bool? value) {
+                setState(() {
+                  _annotateWithDimensions = value ?? false;
                 });
               },
             ),

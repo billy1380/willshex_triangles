@@ -51,6 +51,7 @@ class PaletteHistoryWidget extends StatelessWidget {
               ? colorScheme.secondaryContainer
               : colorScheme.surfaceContainerLow,
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          clipBehavior: Clip.hardEdge,
           child: ListTile(
             selected: isSelected,
             selectedColor: colorScheme.onSecondaryContainer,

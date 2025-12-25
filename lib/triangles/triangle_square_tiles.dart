@@ -1,5 +1,7 @@
 import "dart:math";
+
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/image_renderer.dart";
 
 /// Square-based triangle tiles pattern generator
 class TriangleSquareTiles {
@@ -7,17 +9,20 @@ class TriangleSquareTiles {
   final Palette _palette;
   final Rect _bounds;
   final double _lineLength;
+  final bool _useGradient;
   final Random _random = Random();
 
   /// Constructor with default ratio
-  TriangleSquareTiles(this._renderer, this._palette, this._bounds)
+  TriangleSquareTiles(this._renderer, this._palette, this._bounds,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 0.08333;
 
   /// Constructor with custom ratio
   TriangleSquareTiles.withRatio(
-      this._renderer, this._palette, this._bounds, double ratio)
+      this._renderer, this._palette, this._bounds, double ratio,
+      [this._useGradient = false])
       : _lineLength =
             (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
                 ratio;
@@ -43,11 +48,25 @@ class TriangleSquareTiles {
       do {
         topPointLeft = _random.nextBool();
         if (topPointLeft) {
-          _renderer.renderTriangle(_palette.randomColor, p1, p4, p2);
-          _renderer.renderTriangle(_palette.randomColor, p2, p3, p4);
+          if (_useGradient && _renderer is ImageRenderer) {
+            (_renderer as ImageRenderer)
+                .renderTriangle(_palette.randomColor, p1, p4, p2, true);
+            (_renderer as ImageRenderer)
+                .renderTriangle(_palette.randomColor, p2, p3, p4, true);
+          } else {
+            _renderer.renderTriangle(_palette.randomColor, p1, p4, p2);
+            _renderer.renderTriangle(_palette.randomColor, p2, p3, p4);
+          }
         } else {
-          _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
-          _renderer.renderTriangle(_palette.randomColor, p1, p4, p3);
+          if (_useGradient && _renderer is ImageRenderer) {
+            (_renderer as ImageRenderer)
+                .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+            (_renderer as ImageRenderer)
+                .renderTriangle(_palette.randomColor, p1, p4, p3, true);
+          } else {
+            _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+            _renderer.renderTriangle(_palette.randomColor, p1, p4, p3);
+          }
         }
 
         p1 = p4;
@@ -64,7 +83,7 @@ class TriangleSquareTiles {
 
   /// Draw the default layout with gradient background
   void defaultLayout() {
-    if (_palette.count < 4) return;
+    if (_palette.count < 1) return;
 
     _renderer.renderGradientRect(
       _bounds,

@@ -120,6 +120,13 @@ class ImageGenerator {
       bool annotate = _integer(properties, ImageGeneratorConfig.annotateKey,
               ImageGeneratorConfig.defaultAnnotate, 0, 1) ==
           1;
+      bool addGradients = _integer(
+              properties,
+              ImageGeneratorConfig.addGameGradientsKey,
+              ImageGeneratorConfig.defaultAddGameGradients,
+              0,
+              1) ==
+          1;
 
       if (numerator > denominator) {
         final int temp = numerator;
@@ -146,6 +153,7 @@ class ImageGenerator {
         ratio,
         annotate,
         img.ImageFormat.values.byName(format),
+        addGradients,
       );
       generated.format = format;
 
@@ -230,28 +238,29 @@ class ImageGenerator {
     double r,
     bool annotate,
     img.ImageFormat format,
+    bool addGradients,
   ) async {
     try {
       switch (type) {
         case TrianglesType.diamondTiles:
           break;
         case TrianglesType.hTiles:
-          return _drawHTiles(
-              palette, composite, mode, width, height, r, annotate, format);
+          return _drawHTiles(palette, composite, mode, width, height, r,
+              annotate, format, addGradients);
         case TrianglesType.overImage:
           break;
         case TrianglesType.randomJiggle:
-          return _drawRandomJiggleTiles(
-              palette, composite, mode, width, height, r, annotate, format);
+          return _drawRandomJiggleTiles(palette, composite, mode, width, height,
+              r, annotate, format, addGradients);
         case TrianglesType.ribbons:
-          return _drawRibbon(
-              palette, composite, mode, width, height, r, annotate, format);
+          return _drawRibbon(palette, composite, mode, width, height, r,
+              annotate, format, addGradients);
         case TrianglesType.squareTiles:
-          return _drawSquareTiles(
-              palette, composite, mode, width, height, r, annotate, format);
+          return _drawSquareTiles(palette, composite, mode, width, height, r,
+              annotate, format, addGradients);
         case TrianglesType.tiles:
-          return _drawTiles(
-              palette, composite, mode, width, height, r, annotate, format);
+          return _drawTiles(palette, composite, mode, width, height, r,
+              annotate, format, addGradients);
       }
     } catch (e) {
       _log.warning("Error creating image", e);
@@ -267,7 +276,8 @@ class ImageGenerator {
       int height,
       double r,
       bool annotate,
-      img.ImageFormat format) {
+      img.ImageFormat format,
+      bool addGradients) {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
     ImageRenderer renderer = ImageRenderer(image);
     TriangleRibbons ribbons = TriangleRibbons.withRatio(
@@ -275,7 +285,8 @@ class ImageGenerator {
         palette,
         Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
         70,
-        r);
+        r,
+        addGradients);
     ribbons.defaultLayout();
 
     if (annotate) {
@@ -297,7 +308,8 @@ class ImageGenerator {
       int height,
       double r,
       bool annotate,
-      img.ImageFormat format) {
+      img.ImageFormat format,
+      bool addGradients) {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
     ImageRenderer renderer = ImageRenderer(image);
     TriangleRandomJiggleTiles randomJiggles =
@@ -305,7 +317,8 @@ class ImageGenerator {
             renderer,
             palette,
             Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
-            r);
+            r,
+            addGradients);
     randomJiggles.defaultLayout();
 
     if (annotate) {
@@ -327,13 +340,18 @@ class ImageGenerator {
       int height,
       double r,
       bool annotate,
-      img.ImageFormat format) {
+      img.ImageFormat format,
+      bool addGradients) {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
     ImageRenderer renderer = ImageRenderer(image);
 
-    TriangleTiles tiles = TriangleTiles.withRatio(renderer, palette,
-        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+    TriangleTiles tiles = TriangleTiles.withRatio(
+        renderer,
+        palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+        r,
+        addGradients);
     tiles.defaultLayout();
 
     if (annotate) {
@@ -355,13 +373,18 @@ class ImageGenerator {
       int height,
       double r,
       bool annotate,
-      img.ImageFormat format) {
+      img.ImageFormat format,
+      bool addGradients) {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
     ImageRenderer renderer = ImageRenderer(image);
 
-    TriangleHTiles hTiles = TriangleHTiles.withRatio(renderer, palette,
-        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+    TriangleHTiles hTiles = TriangleHTiles.withRatio(
+        renderer,
+        palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+        r,
+        addGradients);
     hTiles.defaultLayout();
 
     if (annotate) {
@@ -383,7 +406,8 @@ class ImageGenerator {
       int height,
       double r,
       bool annotate,
-      img.ImageFormat format) {
+      img.ImageFormat format,
+      bool addGradients) {
     img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
     ImageRenderer renderer = ImageRenderer(image);
@@ -392,7 +416,8 @@ class ImageGenerator {
         renderer,
         palette,
         Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
-        r);
+        r,
+        addGradients);
     squareTiles.defaultLayout();
 
     if (annotate) {
@@ -419,7 +444,7 @@ class ImageGenerator {
     sd.draw(
         newer, s, ((width - tw) * 0.5).toInt(), ((height - fth) * 0.5).toInt());
 
-    return _composite(image, newer, _cached(BlendingMode.add));
+    return _composite(newer, image, _cached(BlendingMode.normal));
   }
 
   static img.Image _composite(
