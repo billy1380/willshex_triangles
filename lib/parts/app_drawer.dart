@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:willshex_triangles/pages/colour_lovers_page.dart';
-import 'package:willshex_triangles/pages/html_colour_page.dart';
-import 'package:willshex_triangles/pages/image_palette_page.dart';
-import 'package:willshex_triangles/pages/image_sampler_palette_page.dart';
-import 'package:willshex_triangles/pages/settings_page.dart';
+import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
+import "package:willshex_triangles/pages/colour_lovers_page.dart";
+import "package:willshex_triangles/pages/welcome_page.dart";
+import "package:willshex_triangles/pages/html_colour_page.dart";
+import "package:willshex_triangles/pages/image_palette_page.dart";
+import "package:willshex_triangles/pages/image_sampler_palette_page.dart";
+import "package:willshex_triangles/pages/settings_page.dart";
+import "package:willshex_triangles/pages/about_page.dart";
 
 extension GoRouterLocation on GoRouter {
   String get location => (routerDelegate.currentConfiguration.last
@@ -23,12 +25,17 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle? headingStyle = Theme.of(context).textTheme.headlineSmall;
     return Drawer(
       child: ListView(
         children: [
           ListTile(
             title: Text("Types", style: Theme.of(context).textTheme.titleLarge),
+          ),
+          _anchor(
+            context,
+            title: "Welcome",
+            icon: Icons.home,
+            location: WelcomePage.routePath,
           ),
           _anchor(
             context,
@@ -62,50 +69,11 @@ class AppDrawer extends StatelessWidget {
             location: SettingsPage.routePath,
           ),
           const Divider(),
-          ListTile(
-            title: const Text("About"),
-            leading: const Icon(Icons.info_rounded),
-            onTap: () {
-              GoRouter.of(context).pop();
-              showAboutDialog(
-                context: context,
-                children: [
-                  const Text(
-                    "Triangles is written and maintained by WillShex Ltd for fun and because we like triangles (in case you have not noticed).",
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  Text(
-                    "Software",
-                    style: headingStyle,
-                  ),
-                  const Text(
-                    "Triangles is possible because of tons of software we did not actually write.",
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  Text(
-                    "Roadmap",
-                    style: headingStyle,
-                  ),
-                  const Text(
-                    "Add settings e.g. triangle size... Make generated cavases downloadable via app-engine service Support less than 5 colours Properly link to all the projects we used Integrate more colour services - Update: for some reason random queries on Kuler started to return the same colour palette, so I switched to using COLOURLovers, not sure if there are any others out there.",
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  Text(
-                    "Legal",
-                    style: headingStyle,
-                  ),
-                  const Text(
-                      """You can use any of the images you generate/download for free for all commercial and non-commercial projects. We would also love to hear from you about how you are using the images and for what projects. Finally if you feel like giving us a mention we would really appreciate that too.
-"""),
-                ],
-              );
-            },
+          _anchor(
+            context,
+            title: "About",
+            icon: Icons.info_rounded,
+            location: AboutPage.routePath,
           ),
         ],
       ),

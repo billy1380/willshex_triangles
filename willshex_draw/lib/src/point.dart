@@ -13,14 +13,14 @@ class Point {
   double mX = 0;
   double mY = 0;
 
-  Point operator+(Point pt) {
+  Point operator +(Point pt) {
     Point added = Point._();
     added.x = (pt.x + x);
     added.y = (pt.y + y);
     return added;
   }
 
-  Point operator-(Point pt) {
+  Point operator -(Point pt) {
     Point subtracted = Point._();
     subtracted.x = (pt.x - x);
     subtracted.y = (pt.y - y);

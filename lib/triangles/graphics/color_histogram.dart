@@ -5,18 +5,17 @@ class ColorHistogram {
   final int _numberColors;
 
   /// Create a new ColorHistogram instance from an array of image pixels
-  ColorHistogram(List<int> pixels) : 
-    _colors = <int>[],
-    _colorCounts = <int>[],
-    _numberColors = _countDistinctColorsStatic(pixels) {
-    
+  ColorHistogram(List<int> pixels)
+      : _colors = <int>[],
+        _colorCounts = <int>[],
+        _numberColors = _countDistinctColorsStatic(pixels) {
     // Sort the pixels to enable counting below
     final List<int> sortedPixels = List<int>.from(pixels)..sort();
-    
+
     // Create arrays with proper size
     _colors.length = _numberColors;
     _colorCounts.length = _numberColors;
-    
+
     // Finally count the frequency of each color
     _countFrequencies(sortedPixels);
   }
@@ -85,4 +84,4 @@ class ColorHistogram {
       }
     }
   }
-} 
+}

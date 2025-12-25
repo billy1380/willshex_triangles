@@ -1,13 +1,20 @@
-import 'package:go_router/go_router.dart';
-import 'package:willshex_triangles/pages/html_colour_page.dart';
-import 'package:willshex_triangles/pages/colour_lovers_page.dart';
-import 'package:willshex_triangles/pages/image_palette_page.dart';
-import 'package:willshex_triangles/pages/image_sampler_palette_page.dart';
-import 'package:willshex_triangles/pages/settings_page.dart';
+import "package:go_router/go_router.dart";
+import "package:willshex_triangles/pages/welcome_page.dart";
+import "package:willshex_triangles/pages/html_colour_page.dart";
+import "package:willshex_triangles/pages/colour_lovers_page.dart";
+import "package:willshex_triangles/pages/image_palette_page.dart";
+import "package:willshex_triangles/pages/image_sampler_palette_page.dart";
+import "package:willshex_triangles/pages/settings_page.dart";
+import "package:willshex_triangles/pages/about_page.dart";
 
 final GoRouter router = GoRouter(
-  initialLocation: HtmlColourPage.routePath,
+  initialLocation: WelcomePage.routePath,
   routes: [
+    GoRoute(
+      name: "WelcomePage",
+      path: WelcomePage.routePath,
+      builder: WelcomePage.builder,
+    ),
     GoRoute(
       name: "HtmlColourPage",
       path: HtmlColourPage.routePath,
@@ -32,6 +39,11 @@ final GoRouter router = GoRouter(
       name: "SettingsPage",
       path: SettingsPage.routePath,
       builder: SettingsPage.builder,
+    ),
+    GoRoute(
+      name: "AboutPage",
+      path: AboutPage.routePath,
+      builder: AboutPage.builder,
     ),
   ],
 );

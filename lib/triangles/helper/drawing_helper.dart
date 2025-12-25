@@ -1,5 +1,5 @@
-import 'dart:math';
-import 'package:willshex_draw/willshex_draw.dart';
+import "dart:math";
+import "package:willshex_draw/willshex_draw.dart";
 
 /// Helper class for drawing operations
 class DrawingHelper {
@@ -27,4 +27,4 @@ class DrawingHelper {
       p2 = p3;
     }
   }
-} 
+}

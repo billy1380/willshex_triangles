@@ -1,11 +1,11 @@
-import 'package:willshex_draw/willshex_draw.dart';
-import 'triangles_type.dart';
-import 'triangle_tiles.dart';
-import 'triangle_random_jiggle_tiles.dart';
-import 'triangle_ribbons.dart';
-import 'triangle_h_tiles.dart';
-import 'triangle_square_tiles.dart';
-import 'triangle_tiles_over_image.dart';
+import "package:willshex_draw/willshex_draw.dart";
+import "triangles_type.dart";
+import "triangle_tiles.dart";
+import "triangle_random_jiggle_tiles.dart";
+import "triangle_ribbons.dart";
+import "triangle_h_tiles.dart";
+import "triangle_square_tiles.dart";
+import "triangle_tiles_over_image.dart";
 
 /// Factory for creating triangle generator instances
 class TriangleFactory {
@@ -24,11 +24,12 @@ class TriangleFactory {
             : TriangleHTiles(renderer, palette, bounds);
       case TrianglesType.randomJiggle:
         return ratio != null
-            ? TriangleRandomJiggleTiles.withRatio(renderer, palette, bounds, ratio)
+            ? TriangleRandomJiggleTiles.withRatio(
+                renderer, palette, bounds, ratio)
             : TriangleRandomJiggleTiles(renderer, palette, bounds);
       case TrianglesType.ribbons:
         if (count == null) {
-          throw ArgumentError('TriangleRibbons requires a count parameter');
+          throw ArgumentError("TriangleRibbons requires a count parameter");
         }
         return ratio != null
             ? TriangleRibbons.withRatio(renderer, palette, bounds, count, ratio)
@@ -47,7 +48,7 @@ class TriangleFactory {
             : TriangleTilesOverImage(renderer, palette, bounds);
       // Add more cases as needed for other types
       default:
-        throw ArgumentError('Unsupported TrianglesType: $type');
+        throw ArgumentError("Unsupported TrianglesType: $type");
     }
   }
-} 
+}

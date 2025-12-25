@@ -2,30 +2,31 @@
 library willshex_triangles_shared;
 
 // Core types and configuration
-export 'triangles_type.dart';
-export 'image_generator_config.dart';
-export 'store.dart';
+export "triangles_type.dart";
+export "image_generator_config.dart";
+export "store.dart";
 
 // Triangle generation classes
-export 'triangle_tiles.dart';
-export 'triangle_random_jiggle_tiles.dart';
-export 'triangle_ribbons.dart';
-export 'triangle_h_tiles.dart';
-export 'triangle_square_tiles.dart';
-export 'triangle_tiles_over_image.dart';
+export "triangle_tiles.dart";
+export "triangle_random_jiggle_tiles.dart";
+export "triangle_ribbons.dart";
+export "triangle_h_tiles.dart";
+export "triangle_square_tiles.dart";
+export "triangle_tiles_over_image.dart";
 
 // Helper classes
-export 'helper/drawing_helper.dart';
+export "helper/drawing_helper.dart";
 
 // Graphics utilities for color analysis and palette extraction
-export 'graphics/graphics.dart';
+export "graphics/graphics.dart";
 
-// Server components
-export '../server/image_generator.dart';
-export '../server/string_drawer.dart';
+// Server components (moved to triangles)
+export "image_generator.dart";
+export "string_drawer.dart";
+export "image_renderer.dart";
 
 // Desktop components
-export '../desktop/triangles.dart';
-export '../desktop/store/file_store.dart';
-export 'colourlovers/colour_lovers_client_palette.dart';
-export 'triangle_factory.dart'; 
+export "../desktop/triangles.dart";
+export "../desktop/store/file_store.dart";
+export "colourlovers/colour_lovers_client_palette.dart";
+export "triangle_factory.dart";

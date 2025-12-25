@@ -1,5 +1,5 @@
-import 'dart:math';
-import 'package:willshex_draw/willshex_draw.dart';
+import "dart:math";
+import "package:willshex_draw/willshex_draw.dart";
 
 /// Triangle tiles with random jiggle effect
 /// Ported from Java TriangleRandomJiggleTiles.java

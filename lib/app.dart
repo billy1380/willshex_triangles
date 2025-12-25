@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:willshex_triangles/routes.dart';
+import "package:flutter/material.dart";
+import "package:willshex_triangles/routes.dart";
 
 class App extends StatelessWidget {
   const App({super.key});

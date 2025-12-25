@@ -1,5 +1,5 @@
-import 'dart:math';
-import 'package:willshex_draw/willshex_draw.dart';
+import "dart:math";
+import "package:willshex_draw/willshex_draw.dart";
 
 /// Triangle ribbons pattern generator
 class TriangleRibbons {
@@ -15,11 +15,16 @@ class TriangleRibbons {
 
   /// Constructor with default ratio
   TriangleRibbons(this._renderer, this._palette, this._bounds, this._count)
-      : _lineLength = (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) * 0.08333;
+      : _lineLength =
+            (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
+                0.08333;
 
   /// Constructor with custom ratio
-  TriangleRibbons.withRatio(this._renderer, this._palette, this._bounds, this._count, double ratio)
-      : _lineLength = (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) * ratio;
+  TriangleRibbons.withRatio(
+      this._renderer, this._palette, this._bounds, this._count, double ratio)
+      : _lineLength =
+            (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
+                ratio;
 
   /// Check if a point is inside the bounds
   bool _inside(Point p) {
@@ -42,7 +47,8 @@ class TriangleRibbons {
   bool _pointInTriangles(Point p) {
     final int count = _triangles.length;
     for (int i = 0; i < count - 2; i++) {
-      if (_pointInTriangle(p, _triangles[i], _triangles[i + 1], _triangles[i + 2])) {
+      if (_pointInTriangle(
+          p, _triangles[i], _triangles[i + 1], _triangles[i + 2])) {
         return true;
       }
     }
@@ -93,10 +99,11 @@ class TriangleRibbons {
     );
 
     // Draw ribbons from multiple starting points
-    draw(Point.xyPoint(_bounds.x + _bounds.width / 2.0, _bounds.y + _bounds.height / 2.0));
+    draw(Point.xyPoint(
+        _bounds.x + _bounds.width / 2.0, _bounds.y + _bounds.height / 2.0));
     draw(Point.xyPoint(_bounds.x, _bounds.y));
     draw(Point.xyPoint(_bounds.x + _bounds.width, _bounds.y));
     draw(Point.xyPoint(_bounds.x + _bounds.width, _bounds.y + _bounds.height));
     draw(Point.xyPoint(_bounds.x, _bounds.y + _bounds.height));
   }
-} 
+}

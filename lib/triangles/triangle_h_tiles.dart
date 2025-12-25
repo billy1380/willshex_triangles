@@ -1,6 +1,6 @@
-import 'package:willshex_draw/willshex_draw.dart';
+import "package:willshex_draw/willshex_draw.dart";
 
-import 'triangle_tiles.dart';
+import "triangle_tiles.dart";
 
 /// H-shaped triangle tiles pattern generator
 class TriangleHTiles extends TriangleTiles {
@@ -11,7 +11,8 @@ class TriangleHTiles extends TriangleTiles {
       : super.withRatio(renderer, palette, bounds, 0.08333);
 
   /// Constructor with custom ratio
-  TriangleHTiles.withRatio(Renderer renderer, Palette palette, Rect bounds, double ratio)
+  TriangleHTiles.withRatio(
+      Renderer renderer, Palette palette, Rect bounds, double ratio)
       : super.withRatio(renderer, palette, bounds, ratio);
 
   @override
@@ -51,4 +52,4 @@ class TriangleHTiles extends TriangleTiles {
       i++;
     } while (i <= height);
   }
-} 
+}

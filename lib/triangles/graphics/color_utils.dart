@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import "dart:math" as math;
 
 /// Utility class for color operations and conversions
 class ColorUtils {
@@ -6,7 +6,10 @@ class ColorUtils {
 
   /// Calculate luma value according to XYZ color space in the range 0.0 - 1.0
   static double calculateXyzLuma(int color) {
-    return (0.2126 * red(color) + 0.7152 * green(color) + 0.0722 * blue(color)) / 255.0;
+    return (0.2126 * red(color) +
+            0.7152 * green(color) +
+            0.0722 * blue(color)) /
+        255.0;
   }
 
   /// Calculate contrast between two colors
@@ -182,7 +185,8 @@ class ColorUtils {
     }
 
     final double l = (v + temp) / 2.0;
-    final double s = (v - temp) / (l <= 127.5 ? (v + temp) : (510.0 - v - temp));
+    final double s =
+        (v - temp) / (l <= 127.5 ? (v + temp) : (510.0 - v - temp));
     return s;
   }
 
@@ -195,4 +199,4 @@ class ColorUtils {
     int v = math.max(b, math.max(r, g));
     return v / 255.0;
   }
-} 
+}

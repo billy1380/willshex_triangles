@@ -1,5 +1,5 @@
-import 'dart:math';
-import 'package:willshex_draw/willshex_draw.dart';
+import "dart:math";
+import "package:willshex_draw/willshex_draw.dart";
 
 /// Square-based triangle tiles pattern generator
 class TriangleSquareTiles {
@@ -11,11 +11,16 @@ class TriangleSquareTiles {
 
   /// Constructor with default ratio
   TriangleSquareTiles(this._renderer, this._palette, this._bounds)
-      : _lineLength = (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) * 0.08333;
+      : _lineLength =
+            (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
+                0.08333;
 
   /// Constructor with custom ratio
-  TriangleSquareTiles.withRatio(this._renderer, this._palette, this._bounds, double ratio)
-      : _lineLength = (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) * ratio;
+  TriangleSquareTiles.withRatio(
+      this._renderer, this._palette, this._bounds, double ratio)
+      : _lineLength =
+            (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
+                ratio;
 
   /// Draw triangles from the given origin point
   void draw(Point origin) {
@@ -70,4 +75,4 @@ class TriangleSquareTiles {
     );
     draw(Point.xyPoint(_bounds.x, _bounds.y));
   }
-} 
+}

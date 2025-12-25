@@ -1,26 +1,24 @@
-import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
+import "dart:io";
+import "dart:math";
+import "dart:typed_data";
 
-import 'package:blend_composites/blend_composites.dart';
-import 'package:image/image.dart' as img;
-import 'package:image_blend_composites/blend_composite.dart';
-import 'package:logging/logging.dart';
-import 'package:willshex_draw/willshex_draw.dart';
-import 'package:willshex_triangles/server/image_renderer.dart';
-import 'package:willshex_triangles/server/string_drawer.dart';
+import "package:blend_composites/blend_composites.dart";
+import "package:image/image.dart" as img;
+import "package:image_blend_composites/blend_composite.dart";
+import "package:logging/logging.dart";
+import "package:willshex_draw/willshex_draw.dart";
 
-import '../triangles/triangles.dart';
+import "package:willshex_triangles/triangles/triangles.dart";
 
 /// Image generator for creating triangle-based images
 class ImageGenerator {
-  static final Logger _log = Logger('ImageGenerator');
+  static final Logger _log = Logger("ImageGenerator");
 
   static final Map<BlendingMode, BlendComposite> compositeCache = {};
 
-  static final StringDrawer _small = StringDrawer('monaco', 20);
-  static final StringDrawer _medium = StringDrawer('monaco', 50);
-  static final StringDrawer _large = StringDrawer('monaco', 100);
+  static final StringDrawer _small = StringDrawer("monaco", 20);
+  static final StringDrawer _medium = StringDrawer("monaco", 50);
+  static final StringDrawer _large = StringDrawer("monaco", 100);
 
   static final Random _rand = Random();
 
@@ -40,28 +38,14 @@ class ImageGenerator {
     final bool force = _integer(properties, ImageGeneratorConfig.forceKey,
             ImageGeneratorConfig.defaultForce, 0, 1) ==
         1;
-    final bool annotate = _integer(properties, ImageGeneratorConfig.annotateKey,
+    _integer(properties, ImageGeneratorConfig.annotateKey,
             ImageGeneratorConfig.defaultAnnotate, 0, 1) ==
         1;
 
     img.Image? composite;
-    // If a texture is specified, load it? Or is 'composite' meant to be another layer?
-    // Looking at original Java code or context, 'composite' seems to be an image loaded from 'texture' property?
-    // "final String? texture = _stringNullable(properties, ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);"
-    // The variable 'texture' is passed to _drawType.
-    // Wait, line 104 in file calls it 'composite'.
-    // "composite,"
-    // But 'composite' is not defined in scope.
-    // Let's assume 'composite' is meant to be the loaded image of 'texture' if it exists?
-    // Or simply remove it if it's not used/loaded?
-    // Looking at usage: "if (composite != null) { image = _composite(image, composite, ...); }"
-    // So it is an image layer.
-    // Let's try to load it if 'texture' is present.
     final String? texture = _stringNullable(properties,
         ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
     if (texture != null && texture.isNotEmpty) {
-      // Implementation dependnet: where do we load textures from?
-      // For now, let's set it to null or try to load if file exists
       final File textureFile = File(texture);
       if (textureFile.existsSync()) {
         composite = img.decodeImage(textureFile.readAsBytesSync());
@@ -116,14 +100,12 @@ class ImageGenerator {
 
       final double ratio = numerator / denominator;
 
-      // Create palette
       final Palette paletteObj = await _createPalette(
         PaletteType.fromString(palette),
         _toColors(colors),
         paletteSupplier,
       );
 
-      // Generate image content
       generated.content = await _drawType(
         TrianglesType.fromString(type),
         paletteObj,
@@ -139,7 +121,7 @@ class ImageGenerator {
       generated.format = format;
 
       if (generated.content == null) {
-        _log.warning('Looks like image was not generated');
+        _log.warning("Looks like image was not generated");
       } else {
         _write(generated, output);
 
@@ -162,10 +144,10 @@ class ImageGenerator {
 
   /// Convert a color string to a Color object
   static Color _toColor(String colorString) {
-    if (colorString.startsWith('#')) {
+    if (colorString.startsWith("#")) {
       colorString = colorString.substring(1);
     }
-    if (colorString.endsWith(';')) {
+    if (colorString.endsWith(";")) {
       colorString = colorString.substring(0, colorString.length - 1);
     }
 
@@ -408,11 +390,6 @@ class ImageGenerator {
     sd.draw(
         newer, s, ((width - tw) * 0.5).toInt(), ((height - fth) * 0.5).toInt());
 
-    // BlendComposite.getInstance(BlendingMode.add) returns a singleton/cached instance usually.
-    // If we need alpha 0.8, we might need a new instance or helper.
-    // Assuming we can't easily derive, let's just use the mode directly for now or fix BlendComposite later.
-    // Or better, creating a new BlendComposite with alpha if possible.
-    // For now, removing .derive(.8) to fix compilation, defaulting to alpha 1.0 or whatever the cache returns.
     return _composite(image, newer, _cached(BlendingMode.add));
   }
 
@@ -437,9 +414,7 @@ class ImageGenerator {
   ) async {
     switch (type) {
       case PaletteType.randomNamed:
-        // Create palette with random named colors
-        final palette = Palette('Random Named');
-        // Add some default colors
+        final palette = Palette("Random Named");
         palette.addColors([
           Color.rgbaColor(1.0, 0.0, 0.0),
           Color.rgbaColor(0.0, 1.0, 0.0),
@@ -451,14 +426,14 @@ class ImageGenerator {
       case PaletteType.randomColourLovers:
         return await paletteSupplier();
       case PaletteType.randomGrayScale:
-        final palette = Palette('Random Grayscale');
+        final palette = Palette("Random Grayscale");
         for (int i = 0; i < 6; i++) {
           final double gray = _rand.nextDouble();
           palette.addColors([Color.grayscaleColor(gray)]);
         }
         return palette;
       case PaletteType.commaSeparatedList:
-        final palette = Palette('Comma Separated');
+        final palette = Palette("Comma Separated");
         if (colors != null) {
           palette.addColors(colors);
         }
@@ -515,7 +490,7 @@ class ImageGenerator {
       Map<String, String> map, String key, String? defaultValue) {
     final String? value = map[key];
     if (value == null || value.isEmpty) return null;
-    return value.split(',');
+    return value.split(",");
   }
 
   /// Get integer value from properties with range validation
@@ -530,7 +505,7 @@ class ImageGenerator {
         return intValue;
       }
     } catch (e) {
-      _log.warning('Invalid integer value for key $key: $value');
+      _log.warning("Invalid integer value for key $key: $value");
     }
 
     return defaultValue;

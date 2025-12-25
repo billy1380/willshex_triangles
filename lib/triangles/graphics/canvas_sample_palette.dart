@@ -1,7 +1,7 @@
-import 'package:willshex_draw/willshex_draw.dart';
+import "package:willshex_draw/willshex_draw.dart";
 
-import 'color_cut_quantizer.dart';
-import 'color_utils.dart';
+import "color_cut_quantizer.dart";
+import "color_utils.dart";
 
 /// A helper class to extract prominent colors from an image
 class CanvasSamplePalette extends Palette {
@@ -38,13 +38,15 @@ class CanvasSamplePalette extends Palette {
   }
 
   /// Generate a CanvasSamplePalette from pixel data using the specified number of colors
-  static CanvasSamplePalette generateWithColors(List<int> pixels, int numColors) {
+  static CanvasSamplePalette generateWithColors(
+      List<int> pixels, int numColors) {
     if (numColors < 1) {
-      throw ArgumentError('numColors must be 1 or greater');
+      throw ArgumentError("numColors must be 1 or greater");
     }
 
     // Now generate a quantizer from the pixel data
-    final ColorCutQuantizer quantizer = ColorCutQuantizer.fromPixels(pixels, numColors);
+    final ColorCutQuantizer quantizer =
+        ColorCutQuantizer.fromPixels(pixels, numColors);
 
     // Now return a CanvasSamplePalette instance
     return CanvasSamplePalette._(
@@ -54,47 +56,70 @@ class CanvasSamplePalette extends Palette {
   }
 
   /// Private constructor
-  CanvasSamplePalette._(List<Color> colors, Map<int, int> populations) : 
-    _populations = populations {
-    
+  CanvasSamplePalette._(List<Color> colors, Map<int, int> populations)
+      : _populations = populations {
     // Add colors to the parent palette
     addColors(colors);
 
     final int highestPopulation = _findMaxPopulation();
 
     _vibrantColor = _findColor(
-      _targetNormalLuma, _minNormalLuma, _maxNormalLuma,
-      _targetVibrantSaturation, _minVibrantSaturation, 1.0,
+      _targetNormalLuma,
+      _minNormalLuma,
+      _maxNormalLuma,
+      _targetVibrantSaturation,
+      _minVibrantSaturation,
+      1.0,
       highestPopulation,
     );
 
     _lightVibrantColor = _findColor(
-      _targetLightLuma, _minLightLuma, 1.0,
-      _targetVibrantSaturation, _minVibrantSaturation, 1.0,
+      _targetLightLuma,
+      _minLightLuma,
+      1.0,
+      _targetVibrantSaturation,
+      _minVibrantSaturation,
+      1.0,
       highestPopulation,
     );
 
     _darkVibrantColor = _findColor(
-      _targetDarkLuma, 0.0, _maxDarkLuma,
-      _targetVibrantSaturation, _minVibrantSaturation, 1.0,
+      _targetDarkLuma,
+      0.0,
+      _maxDarkLuma,
+      _targetVibrantSaturation,
+      _minVibrantSaturation,
+      1.0,
       highestPopulation,
     );
 
     _mutedColor = _findColor(
-      _targetNormalLuma, _minNormalLuma, _maxNormalLuma,
-      _targetMutedSaturation, 0.0, _maxMutedSaturation,
+      _targetNormalLuma,
+      _minNormalLuma,
+      _maxNormalLuma,
+      _targetMutedSaturation,
+      0.0,
+      _maxMutedSaturation,
       highestPopulation,
     );
 
     _lightMutedColor = _findColor(
-      _targetLightLuma, _minLightLuma, 1.0,
-      _targetMutedSaturation, 0.0, _maxMutedSaturation,
+      _targetLightLuma,
+      _minLightLuma,
+      1.0,
+      _targetMutedSaturation,
+      0.0,
+      _maxMutedSaturation,
       highestPopulation,
     );
 
     _darkMutedColor = _findColor(
-      _targetDarkLuma, 0.0, _maxDarkLuma,
-      _targetMutedSaturation, 0.0, _maxMutedSaturation,
+      _targetDarkLuma,
+      0.0,
+      _maxDarkLuma,
+      _targetMutedSaturation,
+      0.0,
+      _maxMutedSaturation,
       highestPopulation,
     );
 
@@ -153,11 +178,11 @@ class CanvasSamplePalette extends Palette {
   /// Check if a color is already selected
   bool _isAlreadySelected(Color color) {
     return _vibrantColor == color ||
-           _darkVibrantColor == color ||
-           _lightVibrantColor == color ||
-           _mutedColor == color ||
-           _darkMutedColor == color ||
-           _lightMutedColor == color;
+        _darkVibrantColor == color ||
+        _lightVibrantColor == color ||
+        _mutedColor == color ||
+        _darkMutedColor == color ||
+        _lightMutedColor == color;
   }
 
   /// Find a color that matches the specified criteria
@@ -183,8 +208,12 @@ class CanvasSamplePalette extends Palette {
           luma <= maxLuma &&
           !_isAlreadySelected(color)) {
         final double score = _createComparisonValue(
-          saturation, targetSaturation, luma, targetLuma,
-          _getPopulation(color), highestPopulation,
+          saturation,
+          targetSaturation,
+          luma,
+          targetLuma,
+          _getPopulation(color),
+          highestPopulation,
         );
         if (score > bestScore) {
           bestScore = score;
@@ -199,40 +228,64 @@ class CanvasSamplePalette extends Palette {
   /// Generate empty colors by finding the best available colors
   void _generateEmptyColors(int highestPopulation) {
     _vibrantColor ??= _findColor(
-        _targetNormalLuma, _minNormalLuma, _maxNormalLuma,
-        _targetVibrantSaturation, _minVibrantSaturation, 1.0,
-        highestPopulation,
-      );
+      _targetNormalLuma,
+      _minNormalLuma,
+      _maxNormalLuma,
+      _targetVibrantSaturation,
+      _minVibrantSaturation,
+      1.0,
+      highestPopulation,
+    );
 
     _lightVibrantColor ??= _findColor(
-        _targetLightLuma, _minLightLuma, 1.0,
-        _targetVibrantSaturation, _minVibrantSaturation, 1.0,
-        highestPopulation,
-      );
+      _targetLightLuma,
+      _minLightLuma,
+      1.0,
+      _targetVibrantSaturation,
+      _minVibrantSaturation,
+      1.0,
+      highestPopulation,
+    );
 
     _darkVibrantColor ??= _findColor(
-        _targetDarkLuma, 0.0, _maxDarkLuma,
-        _targetVibrantSaturation, _minVibrantSaturation, 1.0,
-        highestPopulation,
-      );
+      _targetDarkLuma,
+      0.0,
+      _maxDarkLuma,
+      _targetVibrantSaturation,
+      _minVibrantSaturation,
+      1.0,
+      highestPopulation,
+    );
 
     _mutedColor ??= _findColor(
-        _targetNormalLuma, _minNormalLuma, _maxNormalLuma,
-        _targetMutedSaturation, 0.0, _maxMutedSaturation,
-        highestPopulation,
-      );
+      _targetNormalLuma,
+      _minNormalLuma,
+      _maxNormalLuma,
+      _targetMutedSaturation,
+      0.0,
+      _maxMutedSaturation,
+      highestPopulation,
+    );
 
     _lightMutedColor ??= _findColor(
-        _targetLightLuma, _minLightLuma, 1.0,
-        _targetMutedSaturation, 0.0, _maxMutedSaturation,
-        highestPopulation,
-      );
+      _targetLightLuma,
+      _minLightLuma,
+      1.0,
+      _targetMutedSaturation,
+      0.0,
+      _maxMutedSaturation,
+      highestPopulation,
+    );
 
     _darkMutedColor ??= _findColor(
-        _targetDarkLuma, 0.0, _maxDarkLuma,
-        _targetMutedSaturation, 0.0, _maxMutedSaturation,
-        highestPopulation,
-      );
+      _targetDarkLuma,
+      0.0,
+      _maxDarkLuma,
+      _targetMutedSaturation,
+      0.0,
+      _maxMutedSaturation,
+      highestPopulation,
+    );
   }
 
   /// Find the maximum population among all colors
@@ -301,4 +354,4 @@ class CanvasSamplePalette extends Palette {
 
     return sum / sumWeight;
   }
-} 
+}

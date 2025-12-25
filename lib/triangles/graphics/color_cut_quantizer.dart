@@ -1,7 +1,7 @@
-import 'dart:math' as math;
-import 'package:willshex_draw/willshex_draw.dart';
-import 'color_utils.dart';
-import 'color_histogram.dart';
+import "dart:math" as math;
+import "package:willshex_draw/willshex_draw.dart";
+import "color_utils.dart";
+import "color_histogram.dart";
 
 /// Vbox class for representing a color box in the quantizer
 class Vbox {
@@ -10,7 +10,7 @@ class Vbox {
   late int minRed, maxRed;
   late int minGreen, maxGreen;
   late int minBlue, maxBlue;
-  
+
   final List<int> _colors;
   final Map<int, int> _colorPopulations;
 
@@ -19,7 +19,10 @@ class Vbox {
   }
 
   /// Get the volume of this box
-  int get volume => (maxRed - minRed + 1) * (maxGreen - minGreen + 1) * (maxBlue - minBlue + 1);
+  int get volume =>
+      (maxRed - minRed + 1) *
+      (maxGreen - minGreen + 1) *
+      (maxBlue - minBlue + 1);
 
   /// Check if this box can be split
   bool get canSplit => colorCount > 1;
@@ -46,7 +49,7 @@ class Vbox {
   /// Split this box into two boxes
   Vbox splitBox() {
     if (!canSplit) {
-      throw StateError('Can not split a box with only 1 color');
+      throw StateError("Can not split a box with only 1 color");
     }
 
     // Find the longest dimension
@@ -54,7 +57,8 @@ class Vbox {
 
     // Modify the box to have the upper half of the longest dimension
     final int median = _findSplitPoint(longestDimension);
-    final Vbox newBox = Vbox(median + 1, upperIndex, _colors, _colorPopulations);
+    final Vbox newBox =
+        Vbox(median + 1, upperIndex, _colors, _colorPopulations);
 
     // Now modify this current box's upper index and recompute the color boundaries
     upperIndex = median;
@@ -142,13 +146,12 @@ class ColorCutQuantizer {
   }
 
   /// Private constructor
-  ColorCutQuantizer._(ColorHistogram colorHistogram, int maxColors) : 
-    _colors = <int>[],
-    _colorPopulations = <int, int>{},
-    _quantizedColors = <Color>[] {
-    
+  ColorCutQuantizer._(ColorHistogram colorHistogram, int maxColors)
+      : _colors = <int>[],
+        _colorPopulations = <int, int>{},
+        _quantizedColors = <Color>[] {
     if (maxColors < 1) {
-      throw ArgumentError('maxColors must be 1 or greater');
+      throw ArgumentError("maxColors must be 1 or greater");
     }
 
     final int rawColorCount = colorHistogram.numberOfColors;
@@ -189,7 +192,8 @@ class ColorCutQuantizer {
   List<Color> get quantizedColors => List<Color>.unmodifiable(_quantizedColors);
 
   /// Get the map of color populations
-  Map<int, int> get quantizedColorPopulations => Map<int, int>.unmodifiable(_quantizedColorPopulations);
+  Map<int, int> get quantizedColorPopulations =>
+      Map<int, int>.unmodifiable(_quantizedColorPopulations);
 
   /// Quantize pixels to reduce the number of colors
   List<Color> _quantizePixels(int maxColorIndex, int maxColors) {
@@ -202,18 +206,18 @@ class ColorCutQuantizer {
       // Find the box with the largest volume
       Vbox? largestBox;
       int largestVolume = -1;
-      
+
       for (final Vbox box in boxes) {
         if (box.canSplit && box.volume > largestVolume) {
           largestVolume = box.volume;
           largestBox = box;
         }
       }
-      
+
       if (largestBox == null) {
         break; // Can't split any more boxes
       }
-      
+
       // Split the largest box
       final Vbox newBox = largestBox.splitBox();
       boxes.add(newBox);
@@ -263,7 +267,9 @@ class ColorCutQuantizer {
 
   /// Check if HSL values should be ignored
   static bool _shouldIgnoreColorHsl(List<double> hslColor) {
-    return _isBlack(hslColor) || _isWhite(hslColor) || _isNearRedILine(hslColor);
+    return _isBlack(hslColor) ||
+        _isWhite(hslColor) ||
+        _isNearRedILine(hslColor);
   }
 
   /// Check if color is black
@@ -280,4 +286,4 @@ class ColorCutQuantizer {
   static bool _isNearRedILine(List<double> hslColor) {
     return hslColor[0] >= 10.0 && hslColor[0] <= 37.0 && hslColor[1] <= 0.82;
   }
-} 
+}

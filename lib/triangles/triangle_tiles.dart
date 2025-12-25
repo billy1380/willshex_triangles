@@ -1,4 +1,4 @@
-import 'package:willshex_draw/willshex_draw.dart';
+import "package:willshex_draw/willshex_draw.dart";
 
 /// Base class for triangle tile generation
 class TriangleTiles {

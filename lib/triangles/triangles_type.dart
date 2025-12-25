@@ -12,41 +12,41 @@ enum TrianglesType {
   String get name {
     switch (this) {
       case TrianglesType.hTiles:
-        return 'HTiles';
+        return "HTiles";
       case TrianglesType.randomJiggle:
-        return 'RandomJiggle';
+        return "RandomJiggle";
       case TrianglesType.ribbons:
-        return 'Ribbons';
+        return "Ribbons";
       case TrianglesType.squareTiles:
-        return 'SquareTiles';
+        return "SquareTiles";
       case TrianglesType.diamondTiles:
-        return 'DiamondTiles';
+        return "DiamondTiles";
       case TrianglesType.tiles:
-        return 'Tiles';
+        return "Tiles";
       case TrianglesType.overImage:
-        return 'OverImage';
+        return "OverImage";
     }
   }
 
   /// Parse string to enum
   static TrianglesType fromString(String name) {
     switch (name) {
-      case 'HTiles':
+      case "HTiles":
         return TrianglesType.hTiles;
-      case 'RandomJiggle':
+      case "RandomJiggle":
         return TrianglesType.randomJiggle;
-      case 'Ribbons':
+      case "Ribbons":
         return TrianglesType.ribbons;
-      case 'SquareTiles':
+      case "SquareTiles":
         return TrianglesType.squareTiles;
-      case 'DiamondTiles':
+      case "DiamondTiles":
         return TrianglesType.diamondTiles;
-      case 'Tiles':
+      case "Tiles":
         return TrianglesType.tiles;
-      case 'OverImage':
+      case "OverImage":
         return TrianglesType.overImage;
       default:
         return TrianglesType.randomJiggle; // Default fallback
     }
   }
-} 
+}

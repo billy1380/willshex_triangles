@@ -1,10 +1,10 @@
-import 'dart:io';
-import 'package:logging/logging.dart';
-import '../../triangles/store.dart';
+import "dart:io";
+import "package:logging/logging.dart";
+import "../../triangles/store.dart";
 
 /// File-based implementation of the Store interface
 class FileStore implements Store {
-  static final Logger _log = Logger('FileStore');
+  static final Logger _log = Logger("FileStore");
 
   @override
   StoreImage? load(String name, int index) {
@@ -21,7 +21,7 @@ class FileStore implements Store {
 
       if (files.isNotEmpty) {
         if (files.length > 1) {
-          _log.warning('More than one file found!?');
+          _log.warning("More than one file found!?");
         }
 
         final File file = files.first as File;
@@ -29,9 +29,9 @@ class FileStore implements Store {
 
         try {
           image.content = file.readAsBytesSync();
-          image.format = file.path.split('.').last;
+          image.format = file.path.split(".").last;
         } catch (e) {
-          _log.severe('Could not read file: $e');
+          _log.severe("Could not read file: $e");
         }
       }
     }
@@ -42,21 +42,21 @@ class FileStore implements Store {
   @override
   void save(StoreImage image, String name, int index) {
     final Directory folder = _createFolder(name);
-    final String fileName = '${_nameFromIndex(index)}${image.format}';
-    final File file = File('${folder.path}/$fileName');
+    final String fileName = "${_nameFromIndex(index)}${image.format}";
+    final File file = File("${folder.path}/$fileName");
 
     try {
       if (image.content != null) {
         file.writeAsBytesSync(image.content!);
       }
     } catch (e) {
-      _log.severe('Could not write to file: $e');
+      _log.severe("Could not write to file: $e");
     }
   }
 
   /// Generate filename from index
   String _nameFromIndex(int index) {
-    return 'image_$index.';
+    return "image_$index.";
   }
 
   /// Create folder for storing images
@@ -72,6 +72,6 @@ class FileStore implements Store {
 
   /// Get folder path for a given name
   Directory _folder(String name) {
-    return Directory('output/named/$name');
+    return Directory("output/named/$name");
   }
-} 
+}

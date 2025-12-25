@@ -1,23 +1,21 @@
-import 'dart:io';
-import 'dart:typed_data';
+import "dart:io";
+import "dart:typed_data";
 
-import 'package:image/image.dart' as img;
-import 'package:logging/logging.dart';
+import "package:image/image.dart" as img;
+import "package:logging/logging.dart";
 
 /// Drawer for rendering text using bitmap fonts
 /// This is a basic implementation following typical Java patterns
 class StringDrawer {
-  static final Logger _log = Logger('StringDrawer');
+  static final Logger _log = Logger("StringDrawer");
 
   final String _fontName;
   final int _fontSize;
 
-  // Character data storage
   final Map<String, Map<String, dynamic>> _chars =
       <String, Map<String, dynamic>>{};
   final Map<String, dynamic> _details = <String, dynamic>{};
 
-  // Font texture data
   img.Image? _texture;
 
   /// Constructor with font name and size
@@ -35,9 +33,9 @@ class StringDrawer {
   /// Load font data (called automatically in constructor)
   void loadFont() {
     try {
-      final String basePath = 'assets/fonts/$_fontName/$_fontSize';
-      final File fntFile = File('$basePath.fnt');
-      final File pngFile = File('$basePath.png');
+      final String basePath = "assets/fonts/$_fontName/$_fontSize";
+      final File fntFile = File("$basePath.fnt");
+      final File pngFile = File("$basePath.png");
 
       if (fntFile.existsSync() && pngFile.existsSync()) {
         final String fntContent = fntFile.readAsStringSync();
@@ -45,47 +43,54 @@ class StringDrawer {
         _texture = img.decodePng(pngBytes);
 
         _parseBMFont(fntContent);
-        _log.info('Font loaded: $_fontName size $_fontSize');
+        _log.info("Font loaded: $_fontName size $_fontSize");
       } else {
         _log.warning(
-            'Font files not found: $basePath. Using fallback basic data.');
+            "Font files not found: $basePath. Using fallback basic data.");
         _createBasicCharacterData();
       }
     } catch (e) {
-      _log.warning('Error loading font: $e');
+      _log.warning("Error loading font: $e");
       _createBasicCharacterData();
     }
   }
 
   void _parseBMFont(String content) {
     _chars.clear();
-    final lines = content.split('\n');
+    final lines = content.split("\n");
     for (var line in lines) {
       line = line.trim();
-      if (line.startsWith('common')) {
+      if (line.startsWith("common")) {
         final Map<String, String> params = _parseParams(line);
-        if (params.containsKey('lineHeight'))
-          _details['lineHeight'] = int.parse(params['lineHeight']!);
-        if (params.containsKey('base'))
-          _details['base'] = int.parse(params['base']!);
-        if (params.containsKey('scaleW'))
-          _details['scaleW'] = int.parse(params['scaleW']!);
-        if (params.containsKey('scaleH'))
-          _details['scaleH'] = int.parse(params['scaleH']!);
-      } else if (line.startsWith('char') && !line.startsWith('chars')) {
+        if (params.containsKey("lineHeight")) {
+          _details["lineHeight"] = int.parse(params["lineHeight"]!);
+        }
+
+        if (params.containsKey("base")) {
+          _details["base"] = int.parse(params["base"]!);
+        }
+
+        if (params.containsKey("scaleW")) {
+          _details["scaleW"] = int.parse(params["scaleW"]!);
+        }
+
+        if (params.containsKey("scaleH")) {
+          _details["scaleH"] = int.parse(params["scaleH"]!);
+        }
+      } else if (line.startsWith("char") && !line.startsWith("chars")) {
         final Map<String, String> params = _parseParams(line);
-        final int id = int.parse(params['id'] ?? '0');
+        final int id = int.parse(params["id"] ?? "0");
 
         _chars[id.toString()] = <String, dynamic>{
-          'x': int.parse(params['x'] ?? '0'),
-          'y': int.parse(params['y'] ?? '0'),
-          'width': int.parse(params['width'] ?? '0'),
-          'height': int.parse(params['height'] ?? '0'),
-          'xoffset': int.parse(params['xoffset'] ?? '0'),
-          'yoffset': int.parse(params['yoffset'] ?? '0'),
-          'xadvance': int.parse(params['xadvance'] ?? '0'),
-          'page': int.parse(params['page'] ?? '0'),
-          'chnl': int.parse(params['chnl'] ?? '15'),
+          "x": int.parse(params["x"] ?? "0"),
+          "y": int.parse(params["y"] ?? "0"),
+          "width": int.parse(params["width"] ?? "0"),
+          "height": int.parse(params["height"] ?? "0"),
+          "xoffset": int.parse(params["xoffset"] ?? "0"),
+          "yoffset": int.parse(params["yoffset"] ?? "0"),
+          "xadvance": int.parse(params["xadvance"] ?? "0"),
+          "page": int.parse(params["page"] ?? "0"),
+          "chnl": int.parse(params["chnl"] ?? "15"),
         };
       }
     }
@@ -111,30 +116,27 @@ class StringDrawer {
       final String charCode = i.toString();
 
       _chars[charCode] = <String, dynamic>{
-        'x': (i - 32) * 8, // Simple 8x8 grid layout
-        'y': 0,
-        'width': 8,
-        'height': 8,
-        'xoffset': 0,
-        'yoffset': 0,
-        'xadvance': 8,
-        'page': 0,
-        'chnl': 15,
+        "x": (i - 32) * 8,
+        "y": 0,
+        "width": 8,
+        "height": 8,
+        "xoffset": 0,
+        "yoffset": 0,
+        "xadvance": 8,
+        "page": 0,
+        "chnl": 15,
       };
     }
 
-    // Set basic font details
-    _details['lineHeight'] = 8;
-    _details['base'] = 8;
-    _details['scaleW'] = 256;
-    _details['scaleH'] = 256;
-    _details['pages'] = 1;
+    _details["lineHeight"] = 8;
+    _details["base"] = 8;
+    _details["scaleW"] = 256;
+    _details["scaleH"] = 256;
+    _details["pages"] = 1;
   }
 
   /// Get character data for a specific character
   Map<String, dynamic> getCharacter(String character) {
-    // Handle special characters or multi-code unit chars if necessary
-    // For now simple single-code unit lookup
     if (character.isEmpty) return <String, dynamic>{};
     final String charCode = character.codeUnitAt(0).toString();
     return _chars[charCode] ?? <String, dynamic>{};
@@ -148,31 +150,31 @@ class StringDrawer {
   /// Get Y offset for a character
   int getYOffset(String character) {
     final charData = getCharacter(character);
-    return charData['yoffset'] ?? 0;
+    return charData["yoffset"] ?? 0;
   }
 
   /// Get X offset for a character
   int getXOffset(String character) {
     final charData = getCharacter(character);
-    return charData['xoffset'] ?? 0;
+    return charData["xoffset"] ?? 0;
   }
 
   /// Get width of a character (the texture width, not advance)
   int getCharacterWidth(String character) {
     final charData = getCharacter(character);
-    return charData['width'] ?? 0;
+    return charData["width"] ?? 0;
   }
 
   /// Get height of a character
   int getHeight(String character) {
     final charData = getCharacter(character);
-    return charData['height'] ?? 0;
+    return charData["height"] ?? 0;
   }
 
   /// Get character advance width
   int getCharacterAdvance(String character) {
     final charData = getCharacter(character);
-    return charData['xadvance'] ?? 0;
+    return charData["xadvance"] ?? 0;
   }
 
   /// Get width of a string
@@ -187,8 +189,6 @@ class StringDrawer {
 
   /// Get kerning between two characters
   int getKerning(String first, String second) {
-    // Basic kerning implementation - in a real font this would be loaded from the font file
-    // For now, return 0 (no kerning)
     return 0;
   }
 
@@ -202,15 +202,12 @@ class StringDrawer {
       final character = s[c];
       final charData = getCharacter(character);
 
-      final int yOffset = charData['yoffset'] ?? 0;
-      final int xOffset = charData['xoffset'] ?? 0;
-      final int width = charData['width'] ?? 0;
-      final int height = charData['height'] ?? 0;
-      final int x = charData['x'] ?? 0;
-      final int y = charData['y'] ?? 0;
-
-      // Extract the character region from the texture using x, y, width, height
-      // Draw it to the graphics context at (ox + offset + xOffset, oy + yOffset)
+      final int yOffset = charData["yoffset"] ?? 0;
+      final int xOffset = charData["xoffset"] ?? 0;
+      final int width = charData["width"] ?? 0;
+      final int height = charData["height"] ?? 0;
+      final int x = charData["x"] ?? 0;
+      final int y = charData["y"] ?? 0;
 
       img.compositeImage(dst, _texture!,
           srcX: x,
@@ -226,20 +223,20 @@ class StringDrawer {
 
   /// Get the font file name
   String? get fontFile {
-    return _details['file']?.toString().replaceAll('"', '');
+    return _details["file"]?.toString().replaceAll('"', "");
   }
 
   /// Get the line height
-  int get lineHeight => _details['lineHeight'] ?? 0;
+  int get lineHeight => _details["lineHeight"] ?? 0;
 
   /// Get the base line
-  int get baseLine => _details['base'] ?? 0;
+  int get baseLine => _details["base"] ?? 0;
 
   /// Get the texture width
-  int get textureWidth => _details['scaleW'] ?? 0;
+  int get textureWidth => _details["scaleW"] ?? 0;
 
   /// Get the texture height
-  int get textureHeight => _details['scaleH'] ?? 0;
+  int get textureHeight => _details["scaleH"] ?? 0;
 
   /// Get the texture image data (raw bytes not strictly needed with package:image object, but adhering to API)
   Uint8List? get imageData => _texture?.getBytes();
@@ -252,6 +249,6 @@ class StringDrawer {
 
   @override
   String toString() {
-    return 'StringDrawer(fontName: $_fontName, fontSize: $_fontSize)';
+    return "StringDrawer(fontName: $_fontName, fontSize: $_fontSize)";
   }
 }

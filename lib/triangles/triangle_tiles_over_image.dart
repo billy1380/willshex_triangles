@@ -1,4 +1,4 @@
-import 'package:willshex_draw/willshex_draw.dart';
+import "package:willshex_draw/willshex_draw.dart";
 
 /// Triangle tiles overlaid on an image pattern generator
 class TriangleTilesOverImage {
