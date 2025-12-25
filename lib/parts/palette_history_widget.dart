@@ -13,11 +13,15 @@ class PaletteHistoryWidget extends StatelessWidget {
   /// Callback when a palette is deleted (optional)
   final ValueChanged<ws.Palette>? onDelete;
 
+  /// The currently selected palette (for highlighting)
+  final ws.Palette? selectedPalette;
+
   const PaletteHistoryWidget({
     super.key,
     required this.palettes,
     this.onSelected,
     this.onDelete,
+    this.selectedPalette,
   });
 
   @override
@@ -38,14 +42,24 @@ class PaletteHistoryWidget extends StatelessWidget {
       itemCount: palettes.length,
       itemBuilder: (context, index) {
         final palette = palettes[index];
+        final isSelected = palette == selectedPalette;
+        final colorScheme = Theme.of(context).colorScheme;
+
         return Card(
-          elevation: 0,
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          elevation: isSelected ? 2 : 0,
+          color: isSelected
+              ? colorScheme.secondaryContainer
+              : colorScheme.surfaceContainerLow,
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: ListTile(
+            selected: isSelected,
+            selectedColor: colorScheme.onSecondaryContainer,
             title: Text(
               palette.name ?? "Untitled Palette",
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: isSelected ? FontWeight.bold : null,
+                    color: isSelected ? colorScheme.onSecondaryContainer : null,
+                  ),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -61,6 +75,7 @@ class PaletteHistoryWidget extends StatelessWidget {
                 ? IconButton(
                     icon: const Icon(Icons.delete_outline, size: 20),
                     onPressed: () => onDelete!(palette),
+                    color: isSelected ? colorScheme.onSecondaryContainer : null,
                   )
                 : null,
             onTap: onSelected != null ? () => onSelected!(palette) : null,

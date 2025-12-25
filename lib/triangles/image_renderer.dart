@@ -41,10 +41,13 @@ class ImageRenderer extends Renderer {
         final double b = bT + (bB - bT) * fy;
         final double a = aT + (aB - aT) * fy;
 
-        image.setPixel(
+        image.setPixelRgba(
           xStart + x,
           yStart + y,
-          img.ColorFloat32.rgb(r, g, b)..a = a,
+          (r * 255).toInt(),
+          (g * 255).toInt(),
+          (b * 255).toInt(),
+          (a * 255).toInt(),
         );
       }
     }

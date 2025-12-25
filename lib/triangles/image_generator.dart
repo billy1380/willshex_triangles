@@ -424,7 +424,26 @@ class ImageGenerator {
 
   static img.Image _composite(
       img.Image imageA, img.Image imageB, BlendComposite composite) {
-    return composite.composeImages(imageB, imageA);
+    img.Image background = imageB;
+
+    if (imageA.width != imageB.width || imageA.height != imageB.height) {
+      background = _tile(imageB, imageA.width, imageA.height);
+    }
+
+    return composite.composeImages(background, imageA);
+  }
+
+  static img.Image _tile(img.Image texture, int width, int height) {
+    final img.Image tiled =
+        img.Image(width: width, height: height, numChannels: 4);
+
+    for (int y = 0; y < height; y += texture.height) {
+      for (int x = 0; x < width; x += texture.width) {
+        img.compositeImage(tiled, texture, dstX: x, dstY: y);
+      }
+    }
+
+    return tiled;
   }
 
   static Uint8List _encodeImage(img.Image image, img.ImageFormat format) {

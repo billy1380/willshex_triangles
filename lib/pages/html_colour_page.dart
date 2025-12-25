@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:go_router/go_router.dart";
 import "package:logging/logging.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:willshex_triangles/parts/app_drawer.dart";
@@ -69,10 +70,14 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
             "${b.toRadixString(16).padLeft(2, '0')}";
       }).toList();
 
+      final prefs = await SharedPreferences.getInstance();
+      final width = prefs.getInt("image_width") ?? 800;
+      final height = prefs.getInt("image_height") ?? 600;
+
       final properties = <String, String>{
         ImageGeneratorConfig.typeKey: _selectedType.name,
-        ImageGeneratorConfig.widthKey: "800",
-        ImageGeneratorConfig.heightKey: "600",
+        ImageGeneratorConfig.widthKey: width.toString(),
+        ImageGeneratorConfig.heightKey: height.toString(),
         ImageGeneratorConfig.paletteKey: PaletteType.commaSeparatedList.name,
         ImageGeneratorConfig.paletteColoursKey: hexColors.join(","),
       };
@@ -113,208 +118,226 @@ class _HtmlColourPageState extends State<HtmlColourPage> {
       drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text("HTML Colour"),
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.history),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+              tooltip: "Show History",
+            ),
+          ),
+        ],
       ),
-      body: Row(
+      endDrawer: Drawer(
+        width: 300,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "History",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      _generateRandomPalette();
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.add),
+                    tooltip: "New Palette",
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _history.clear();
+                      });
+                      _generateRandomPalette();
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.delete_sweep),
+                    tooltip: "Clear History",
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Expanded(
+              child: PaletteHistoryWidget(
+                palettes: _history,
+                selectedPalette: _currentPalette,
+                onSelected: (palette) {
+                  setState(() {
+                    _currentPalette = palette;
+                    _generateImage();
+                  });
+                  Navigator.pop(context); // Close drawer on selection
+                },
+                onDelete: _history.length <= 1
+                    ? null
+                    : (palette) {
+                        setState(() {
+                          _history.remove(palette);
+                          if (_currentPalette == palette) {
+                            _currentPalette = null;
+                          }
+                        });
+                      },
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
         children: [
-          // Main Content (Canvas + Controls)
-          Expanded(
-            flex: 3,
-            child: Column(
+          // Toolbar
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            color: Theme.of(context).colorScheme.surfaceContainer,
+            child: Row(
               children: [
-                // Toolbar
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  child: Row(
-                    children: [
-                      // Triangle Type Dropdown
-                      Expanded(
-                        child: DropdownButtonFormField<TrianglesType>(
-                          initialValue: _selectedType,
-                          decoration: const InputDecoration(
-                            labelText: "Type",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 0),
+                // Triangle Type Dropdown
+                Expanded(
+                  child: DropdownButtonFormField<TrianglesType>(
+                    initialValue: _selectedType,
+                    decoration: const InputDecoration(
+                      labelText: "Type",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    ),
+                    items: TrianglesType.values.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(type.toString().split(".").last),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedType = value);
+                        _generateImage();
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Background Image Dropdown
+                Expanded(
+                  child: DropdownButtonFormField<TilableImage?>(
+                    isExpanded: true,
+                    initialValue: _selectedImage,
+                    decoration: const InputDecoration(
+                      labelText: "Texture",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    ),
+                    items: [
+                      const DropdownMenuItem(
+                        value: null,
+                        child: Text("None"),
+                      ),
+                      ...TilableImage.values.map((img) {
+                        return DropdownMenuItem(
+                          value: img,
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: Image.asset(
+                                  img.path,
+                                  width: 24,
+                                  height: 24,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  img.name,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                          items: TrianglesType.values.map((type) {
-                            return DropdownMenuItem(
-                              value: type,
-                              child: Text(type.toString().split(".").last),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
+                        );
+                      }),
+                    ],
+                    onChanged: (value) {
+                      setState(() => _selectedImage = value);
+                      _generateImage();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Blend Mode Dropdown (Disabled if no image)
+                Expanded(
+                  child: DropdownButtonFormField<BlendingMode>(
+                    initialValue: _selectedBlendMode,
+                    decoration: const InputDecoration(
+                      labelText: "Blend Mode",
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    ),
+                    items: BlendingMode.values.map((mode) {
+                      return DropdownMenuItem(
+                        value: mode,
+                        child: Text(mode.name),
+                      );
+                    }).toList(),
+                    onChanged: _selectedImage == null
+                        ? null
+                        : (value) {
                             if (value != null) {
-                              setState(() => _selectedType = value);
+                              setState(() => _selectedBlendMode = value);
                               _generateImage();
                             }
                           },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Background Image Dropdown
-                      Expanded(
-                        child: DropdownButtonFormField<TilableImage?>(
-                          isExpanded: true,
-                          initialValue: _selectedImage,
-                          decoration: const InputDecoration(
-                            labelText: "Texture",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 0),
-                          ),
-                          items: [
-                            const DropdownMenuItem(
-                              value: null,
-                              child: Text("None"),
-                            ),
-                            ...TilableImage.values.map((img) {
-                              return DropdownMenuItem(
-                                value: img,
-                                child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Image.asset(
-                                        img.path,
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        img.name,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
-                          ],
-                          onChanged: (value) {
-                            setState(() => _selectedImage = value);
-                            _generateImage();
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Blend Mode Dropdown (Disabled if no image)
-                      Expanded(
-                        child: DropdownButtonFormField<BlendingMode>(
-                          initialValue: _selectedBlendMode,
-                          decoration: const InputDecoration(
-                            labelText: "Blend Mode",
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 0),
-                          ),
-                          items: BlendingMode.values.map((mode) {
-                            return DropdownMenuItem(
-                              value: mode,
-                              child: Text(mode.name),
-                            );
-                          }).toList(),
-                          onChanged: _selectedImage == null
-                              ? null
-                              : (value) {
-                                  if (value != null) {
-                                    setState(() => _selectedBlendMode = value);
-                                    _generateImage();
-                                  }
-                                },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Generate Button
-                      FilledButton.icon(
-                        onPressed: _generateRandomPalette,
-                        icon: const Icon(Icons.refresh),
-                        label: const Text("New Palette"),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Canvas Area
-                Expanded(
-                  child: Center(
-                    child: _isGenerating
-                        ? const CircularProgressIndicator()
-                        : Container(
-                            margin: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                              color: Colors.white,
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                )
-                              ],
-                            ),
-                            child: _generatedImage != null
-                                ? Image.memory(
-                                    _generatedImage!,
-                                    fit: BoxFit.contain,
-                                  )
-                                : const SizedBox(
-                                    width: 400,
-                                    height: 300,
-                                    child: Center(
-                                      child: Text(
-                                        "Click 'New Palette' to generate",
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                          ),
                   ),
                 ),
               ],
             ),
           ),
 
-          // History Sidebar
-          Container(
-            width: 300,
-            decoration: BoxDecoration(
-              border: Border(left: BorderSide(color: Colors.grey[300]!)),
-              color: Theme.of(context).colorScheme.surface,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "History",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-                Expanded(
-                  child: PaletteHistoryWidget(
-                    palettes: _history,
-                    onSelected: (palette) {
-                      setState(() {
-                        _currentPalette = palette;
-                        _generateImage();
-                      });
-                    },
-                    onDelete: (palette) {
-                      setState(() {
-                        _history.remove(palette);
-                        if (_currentPalette == palette) {
-                          _currentPalette = null;
-                        }
-                      });
-                    },
-                  ),
-                ),
-              ],
+          // Canvas Area
+          Expanded(
+            child: Center(
+              child: _isGenerating
+                  ? const CircularProgressIndicator()
+                  : Container(
+                      margin: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          )
+                        ],
+                      ),
+                      child: _generatedImage != null
+                          ? Image.memory(
+                              _generatedImage!,
+                              fit: BoxFit.contain,
+                            )
+                          : const SizedBox(
+                              width: 400,
+                              height: 300,
+                              child: Center(
+                                child: Text(
+                                  "Click 'New Palette' to generate",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                    ),
             ),
           ),
         ],

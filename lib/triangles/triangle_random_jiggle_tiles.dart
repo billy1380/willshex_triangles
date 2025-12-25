@@ -54,7 +54,6 @@ class TriangleRandomJiggleTiles {
     _jiggledPointsLeft.clear();
     _jiggledPointsRight.clear();
 
-    List<Point> temp;
     bool first;
 
     int i = 0;
@@ -111,19 +110,27 @@ class TriangleRandomJiggleTiles {
         }
 
         if (i % 2 == 0) {
-          p1 = p2!;
-          p2 = p3!;
-          p3 = _jiggledPointsRight.length <= r + 1
-              ? null
-              : _jiggledPointsRight[r + 1];
+          if (p2 != null && p3 != null) {
+            p1 = p2;
+            p2 = p3;
+            p3 = _jiggledPointsRight.length <= r + 1
+                ? null
+                : _jiggledPointsRight[r + 1];
+          } else {
+            p3 = null; // Invalidate to prevent drawing
+          }
         } else {
-          p2 = p3!;
-          p3 = _jiggledPointsLeft.length <= r + 1
-              ? null
-              : _jiggledPointsLeft[r + 1];
+          if (p3 != null) {
+            p2 = p3;
+            p3 = _jiggledPointsLeft.length <= r + 1
+                ? null
+                : _jiggledPointsLeft[r + 1];
+          } else {
+            p3 = null; // Invalidate to prevent drawing
+          }
         }
 
-        if (p3 != null) {
+        if (p2 != null && p3 != null) {
           _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
         }
       }
@@ -137,11 +144,9 @@ class TriangleRandomJiggleTiles {
       //   drawCircleAtPoint(c, point);
       // }
 
-      temp = List<Point>.from(_jiggledPointsLeft);
       _jiggledPointsLeft.clear();
       _jiggledPointsLeft.addAll(_jiggledPointsRight);
       _jiggledPointsRight.clear();
-      _jiggledPointsRight.addAll(temp);
 
       origin = Point.xyPoint(
         origin.x + tWidth,

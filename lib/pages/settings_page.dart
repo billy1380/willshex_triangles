@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
 
 class SettingsPage extends StatefulWidget {
@@ -16,9 +17,44 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final TextEditingController _widthController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
   final TextEditingController _sizeRatioController = TextEditingController();
   final TextEditingController _countRatioController = TextEditingController();
   bool _addTriangleGradients = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _widthController.text = (prefs.getInt("image_width") ?? 800).toString();
+      _heightController.text = (prefs.getInt("image_height") ?? 600).toString();
+      _sizeRatioController.text =
+          (prefs.getDouble("size_ratio") ?? 1.0).toString();
+      _countRatioController.text =
+          (prefs.getDouble("count_ratio") ?? 1.0).toString();
+      _addTriangleGradients = prefs.getBool("add_triangle_gradients") ?? true;
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(
+        "image_width", int.tryParse(_widthController.text) ?? 800);
+    await prefs.setInt(
+        "image_height", int.tryParse(_heightController.text) ?? 600);
+    // ... (other fields if needed)
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Settings saved")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +67,20 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField("Width", _widthController,
+                      keyboardType: TextInputType.number),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildTextField("Height", _heightController,
+                      keyboardType: TextInputType.number),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             _buildTextField("Size Ratio", _sizeRatioController),
             const SizedBox(height: 16),
             _buildTextField("Count Ratio", _countRatioController),
@@ -59,9 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Save logic
-                    },
+                    onPressed: _saveSettings,
                     child: const Text("Save"),
                   ),
                 ),
@@ -73,13 +121,15 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(String label, TextEditingController controller,
+      {TextInputType keyboardType = TextInputType.text}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
         TextField(
           controller: controller,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             label: Text(label),
           ),
