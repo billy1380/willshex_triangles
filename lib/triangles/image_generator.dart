@@ -1,8 +1,9 @@
-import "dart:io";
+import "dart:async";
 import "dart:math";
 import "dart:typed_data";
 
 import "package:blend_composites/blend_composites.dart";
+import "package:fs_shim/fs_shim.dart";
 import "package:image/image.dart" as img;
 import "package:image_blend_composites/blend_composite.dart";
 import "package:logging/logging.dart";
@@ -22,13 +23,35 @@ class ImageGenerator {
 
   static final Random _rand = Random();
 
-  /// Generate an image based on properties
+  /// Generate an image based on properties and write to output
   static Future<String?> generate(
     Map<String, String> properties,
     Future<Palette> Function() paletteSupplier,
-    IOSink output,
-    Store? store,
-  ) async {
+    StreamSink<List<int>> output,
+    Store? store, {
+    Future<Uint8List?> Function(String path)? assetLoader,
+    FileSystem? fs,
+  }) async {
+    final StoreImage? image = await generateImage(
+        properties, paletteSupplier, store,
+        assetLoader: assetLoader, fs: fs);
+
+    if (image != null) {
+      _write(image, output);
+      return image.format;
+    }
+
+    return null;
+  }
+
+  /// Generate an image object based on properties
+  static Future<StoreImage?> generateImage(
+    Map<String, String> properties,
+    Future<Palette> Function() paletteSupplier,
+    Store? store, {
+    Future<Uint8List?> Function(String path)? assetLoader,
+    FileSystem? fs,
+  }) async {
     StoreImage? loaded;
 
     final String? name = _stringNullable(properties,
@@ -38,17 +61,27 @@ class ImageGenerator {
     final bool force = _integer(properties, ImageGeneratorConfig.forceKey,
             ImageGeneratorConfig.defaultForce, 0, 1) ==
         1;
-    _integer(properties, ImageGeneratorConfig.annotateKey,
-            ImageGeneratorConfig.defaultAnnotate, 0, 1) ==
-        1;
 
     img.Image? composite;
     final String? texture = _stringNullable(properties,
         ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
     if (texture != null && texture.isNotEmpty) {
-      final File textureFile = File(texture);
-      if (textureFile.existsSync()) {
-        composite = img.decodeImage(textureFile.readAsBytesSync());
+      if (assetLoader != null) {
+        try {
+          final Uint8List? bytes = await assetLoader(texture);
+          if (bytes != null) {
+            composite = img.decodeImage(bytes);
+          }
+        } catch (e) {
+          _log.warning("Failed to load asset: $texture", e);
+        }
+      }
+
+      if (composite == null && fs != null) {
+        final File textureFile = fs.file(texture);
+        if (await textureFile.exists()) {
+          composite = img.decodeImage(await textureFile.readAsBytes());
+        }
       }
     }
 
@@ -84,12 +117,8 @@ class ImageGenerator {
           ImageGeneratorConfig.defaultRatioN, 1, 10000);
       int denominator = _integer(properties, ImageGeneratorConfig.ratioDKey,
           ImageGeneratorConfig.defaultRatioD, 1, 10000);
-      final bool annotate = _integer(
-              properties,
-              ImageGeneratorConfig.annotateKey,
-              ImageGeneratorConfig.defaultAnnotate,
-              0,
-              1) ==
+      bool annotate = _integer(properties, ImageGeneratorConfig.annotateKey,
+              ImageGeneratorConfig.defaultAnnotate, 0, 1) ==
           1;
 
       if (numerator > denominator) {
@@ -122,18 +151,15 @@ class ImageGenerator {
 
       if (generated.content == null) {
         _log.warning("Looks like image was not generated");
+        return null;
       } else {
-        _write(generated, output);
-
         if (store != null && name != null) {
           store.save(generated, name, index);
         }
       }
-    } else {
-      _write(loaded, output);
     }
 
-    return loaded?.format ?? generated?.format;
+    return loaded ?? generated;
   }
 
   /// Convert color strings to Color objects
@@ -155,24 +181,27 @@ class ImageGenerator {
 
     switch (colorString.length) {
       case 8:
-        red = int.parse(colorString.substring(0, 2), radix: 16) / 255.0;
-        green = int.parse(colorString.substring(2, 4), radix: 16) / 255.0;
-        blue = int.parse(colorString.substring(4, 6), radix: 16) / 255.0;
-        alpha = int.parse(colorString.substring(6, 8), radix: 16) / 255.0;
+        final int val = int.parse(colorString, radix: 16);
+        red = ((val >> 24) & 0xff) / 255.0;
+        green = ((val >> 16) & 0xff) / 255.0;
+        blue = ((val >> 8) & 0xff) / 255.0;
+        alpha = (val & 0xff) / 255.0;
         break;
       case 6:
-        red = int.parse(colorString.substring(0, 2), radix: 16) / 255.0;
-        green = int.parse(colorString.substring(2, 4), radix: 16) / 255.0;
-        blue = int.parse(colorString.substring(4, 6), radix: 16) / 255.0;
+        final int val = int.parse(colorString, radix: 16);
+        red = ((val >> 16) & 0xff) / 255.0;
+        green = ((val >> 8) & 0xff) / 255.0;
+        blue = (val & 0xff) / 255.0;
         break;
       case 3:
-        red = int.parse(colorString.substring(0, 1), radix: 16) / 15.0;
-        green = int.parse(colorString.substring(1, 2), radix: 16) / 15.0;
-        blue = int.parse(colorString.substring(2, 3), radix: 16) / 15.0;
+        final int val = int.parse(colorString, radix: 16);
+        red = ((val >> 8) & 0xf) / 15.0;
+        green = ((val >> 4) & 0xf) / 15.0;
+        blue = (val & 0xf) / 15.0;
         break;
       case 1:
-        red = green =
-            blue = int.parse(colorString.substring(0, 1), radix: 16) / 15.0;
+        final int val = int.parse(colorString, radix: 16);
+        red = green = blue = val / 15.0;
         break;
       default:
         red = green = blue = 0.0;
@@ -183,7 +212,7 @@ class ImageGenerator {
   }
 
   /// Write image to output stream
-  static void _write(StoreImage image, IOSink output) {
+  static void _write(StoreImage image, StreamSink<List<int>> output) {
     if (image.content != null) {
       output.add(image.content!);
     }

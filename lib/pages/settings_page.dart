@@ -18,8 +18,6 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _sizeRatioController = TextEditingController();
   final TextEditingController _countRatioController = TextEditingController();
-  final TextEditingController _historyItemCountController =
-      TextEditingController();
   bool _addTriangleGradients = true;
 
   @override
@@ -47,8 +45,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
               },
             ),
-            const SizedBox(height: 16),
-            _buildTextField("Shown palette items", _historyItemCountController),
             const SizedBox(height: 24),
             Row(
               children: [

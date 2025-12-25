@@ -24,7 +24,9 @@ dependencies:
     path: ../image_blend_composites
   url_launcher: ^6.3.2
   google_fonts: ^6.3.3
-  
+  subtle_backgrounds:
+    path: ./packages/subtle_backgrounds
+  fs_shim: ^2.4.0+1
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +36,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/subtle_background/image/
     - assets/fonts/monaco/
     - assets/samples/

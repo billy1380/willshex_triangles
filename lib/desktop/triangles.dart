@@ -1,5 +1,7 @@
-import "dart:io";
+import "dart:async";
+import "dart:io" as io;
 
+import "package:fs_shim/fs_io.dart";
 import "package:logging/logging.dart";
 import "package:willshex/willshex.dart";
 import "package:willshex_draw/willshex_draw.dart";
@@ -17,16 +19,17 @@ class Triangles {
 
   /// Main entry point for the desktop application
   static Future<void> main(List<String> args) async {
+    final FileSystem fs = fileSystemIo;
     String? command;
     String? name;
     String? format;
     int count = 0;
-    bool exit = false;
+    bool exitLoop = false;
     Map<String, String>? map;
 
     if (args.isEmpty) {
-      stdout.writeln("Enter parameters or exit to exit");
-      stdout.writeln(
+      _log.info("Enter parameters or exit to exit");
+      _log.info(
           "e.g. w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=RandomColourLovers&a=1");
     } else {
       command = args.first;
@@ -34,12 +37,12 @@ class Triangles {
 
     do {
       if (command == null || command.isEmpty) {
-        stdout.writeln(">");
-        command = stdin.readLineSync();
+        // We still need dart:io for stdin in CLI
+        command = io.stdin.readLineSync();
       }
 
       if (command == null || command.toLowerCase() == "exit") {
-        exit = true;
+        exitLoop = true;
       } else {
         if (_isSame(command)) {
           if (map == null) {
@@ -48,8 +51,8 @@ class Triangles {
         } else {
           try {
             map = _toMap(command);
-          } catch (e) {
-            stderr.writeln(e);
+          } catch (e, stack) {
+            _log.severe("Error parsing command", e, stack);
             continue;
           }
         }
@@ -59,31 +62,37 @@ class Triangles {
           count++;
 
           // Create output directory if it doesn't exist
-          final outputDir = Directory("output");
+          final Directory outputDir = fs.directory("output");
           if (!await outputDir.exists()) {
             await outputDir.create(recursive: true);
           }
 
+          final File validFile = fs.file(name);
+          final StreamSink<List<int>> sink = validFile.openWrite();
+
           format = await ImageGenerator.generate(
             map,
             _newPalette,
-            File(name).openWrite(),
+            sink,
             _store,
+            fs: fs,
           );
 
-          await File(name).rename("$name.$format");
-          stdout.writeln("Generated image: $name.$format");
-        } catch (e) {
-          stderr.writeln("Error generating image: $e");
+          await sink.close();
+
+          await validFile.rename("$name.$format");
+          _log.info("Generated image: $name.$format");
+        } catch (e, stack) {
+          _log.severe("Error generating image", e, stack);
         }
       }
 
       if (args.isNotEmpty) {
-        exit = true;
+        exitLoop = true;
       }
-    } while (!exit);
+    } while (!exitLoop);
 
-    stdout.writeln("Bye!");
+    _log.info("Bye!");
   }
 
   /// Check if command is empty (same as previous)
