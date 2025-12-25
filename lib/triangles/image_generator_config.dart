@@ -67,7 +67,7 @@ abstract class ImageGeneratorConfig {
   static const String? defaultPaletteColours = null;
 
   static const String compositeKey = 'c';
-  static const String defaultComposite = 'ColorBurn';
+  static const String defaultComposite = 'colorBurn';
 
   static const String annotateKey = 'a';
   static const int defaultAnnotate = 0;

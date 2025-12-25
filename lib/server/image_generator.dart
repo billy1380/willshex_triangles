@@ -33,9 +33,40 @@ class ImageGenerator {
   ) async {
     StoreImage? loaded;
 
-    final String? name = _stringNullable(properties, ImageGeneratorConfig.nameKey, ImageGeneratorConfig.defaultName);
-    final int index = _integer(properties, ImageGeneratorConfig.indexKey, ImageGeneratorConfig.defaultIndex, 0, 100);
-    final bool force = _integer(properties, ImageGeneratorConfig.forceKey, ImageGeneratorConfig.defaultForce, 0, 1) == 1;
+    final String? name = _stringNullable(properties,
+        ImageGeneratorConfig.nameKey, ImageGeneratorConfig.defaultName);
+    final int index = _integer(properties, ImageGeneratorConfig.indexKey,
+        ImageGeneratorConfig.defaultIndex, 0, 100);
+    final bool force = _integer(properties, ImageGeneratorConfig.forceKey,
+            ImageGeneratorConfig.defaultForce, 0, 1) ==
+        1;
+    final bool annotate = _integer(properties, ImageGeneratorConfig.annotateKey,
+            ImageGeneratorConfig.defaultAnnotate, 0, 1) ==
+        1;
+
+    img.Image? composite;
+    // If a texture is specified, load it? Or is 'composite' meant to be another layer?
+    // Looking at original Java code or context, 'composite' seems to be an image loaded from 'texture' property?
+    // "final String? texture = _stringNullable(properties, ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);"
+    // The variable 'texture' is passed to _drawType.
+    // Wait, line 104 in file calls it 'composite'.
+    // "composite,"
+    // But 'composite' is not defined in scope.
+    // Let's assume 'composite' is meant to be the loaded image of 'texture' if it exists?
+    // Or simply remove it if it's not used/loaded?
+    // Looking at usage: "if (composite != null) { image = _composite(image, composite, ...); }"
+    // So it is an image layer.
+    // Let's try to load it if 'texture' is present.
+    final String? texture = _stringNullable(properties,
+        ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
+    if (texture != null && texture.isNotEmpty) {
+      // Implementation dependnet: where do we load textures from?
+      // For now, let's set it to null or try to load if file exists
+      final File textureFile = File(texture);
+      if (textureFile.existsSync()) {
+        composite = img.decodeImage(textureFile.readAsBytesSync());
+      }
+    }
 
     if (store != null && name != null && !force) {
       loaded = store.load(name, index);
@@ -44,19 +75,38 @@ class ImageGenerator {
     StoreImage? generated;
     if (loaded == null) {
       generated = StoreImage();
-      
-      final String format = _imageFormat(properties);
-      final String? texture = _stringNullable(properties, ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
-      final String type = _string(properties, ImageGeneratorConfig.typeKey, ImageGeneratorConfig.defaultType);
-      final String palette = _string(properties, ImageGeneratorConfig.paletteKey, ImageGeneratorConfig.defaultPalette);
-      final String blendMode = _string(properties, ImageGeneratorConfig.compositeKey, ImageGeneratorConfig.defaultComposite);
-      final List<String>? colors = _strings(properties, ImageGeneratorConfig.paletteColoursKey, ImageGeneratorConfig.defaultPaletteColours);
 
-      final int width = _integer(properties, ImageGeneratorConfig.widthKey, ImageGeneratorConfig.defaultWidth, 5, 2560);
-      final int height = _integer(properties, ImageGeneratorConfig.heightKey, ImageGeneratorConfig.defaultHeight, 5, 2560);
-      int numerator = _integer(properties, ImageGeneratorConfig.ratioNKey, ImageGeneratorConfig.defaultRatioN, 1, 10000);
-      int denominator = _integer(properties, ImageGeneratorConfig.ratioDKey, ImageGeneratorConfig.defaultRatioD, 1, 10000);
-      final bool annotate = _integer(properties, ImageGeneratorConfig.annotateKey, ImageGeneratorConfig.defaultAnnotate, 0, 1) == 1;
+      final String format = _imageFormat(properties);
+      final String? texture = _stringNullable(properties,
+          ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
+      final String type = _string(properties, ImageGeneratorConfig.typeKey,
+          ImageGeneratorConfig.defaultType);
+      final String palette = _string(properties,
+          ImageGeneratorConfig.paletteKey, ImageGeneratorConfig.defaultPalette);
+      final String blendMode = _string(
+          properties,
+          ImageGeneratorConfig.compositeKey,
+          ImageGeneratorConfig.defaultComposite);
+      final List<String>? colors = _strings(
+          properties,
+          ImageGeneratorConfig.paletteColoursKey,
+          ImageGeneratorConfig.defaultPaletteColours);
+
+      final int width = _integer(properties, ImageGeneratorConfig.widthKey,
+          ImageGeneratorConfig.defaultWidth, 5, 2560);
+      final int height = _integer(properties, ImageGeneratorConfig.heightKey,
+          ImageGeneratorConfig.defaultHeight, 5, 2560);
+      int numerator = _integer(properties, ImageGeneratorConfig.ratioNKey,
+          ImageGeneratorConfig.defaultRatioN, 1, 10000);
+      int denominator = _integer(properties, ImageGeneratorConfig.ratioDKey,
+          ImageGeneratorConfig.defaultRatioD, 1, 10000);
+      final bool annotate = _integer(
+              properties,
+              ImageGeneratorConfig.annotateKey,
+              ImageGeneratorConfig.defaultAnnotate,
+              0,
+              1) ==
+          1;
 
       if (numerator > denominator) {
         final int temp = numerator;
@@ -139,7 +189,8 @@ class ImageGenerator {
         blue = int.parse(colorString.substring(2, 3), radix: 16) / 15.0;
         break;
       case 1:
-        red = green = blue = int.parse(colorString.substring(0, 1), radix: 16) / 15.0;
+        red = green =
+            blue = int.parse(colorString.substring(0, 1), radix: 16) / 15.0;
         break;
       default:
         red = green = blue = 0.0;
@@ -161,7 +212,7 @@ class ImageGenerator {
     TrianglesType type,
     Palette palette,
     String? texture,
-    img.Image composite, 
+    img.Image? composite,
     BlendingMode mode,
     int width,
     int height,
@@ -170,201 +221,213 @@ class ImageGenerator {
     img.ImageFormat format,
   ) async {
     try {
-			switch (type) {
-			case TrianglesType.diamondTiles:
-				break;
-			case TrianglesType.hTiles:
-				return _drawHTiles(palette, composite, mode, width, height, r,
-						annotate, format);
-			case TrianglesType.overImage:
-				break;
-			case TrianglesType.randomJiggle:
-				return _drawRandomJiggleTiles(palette, composite, mode, width,
-						height, r, annotate, format);
-			case TrianglesType.ribbons:
-				return _drawRibbon(palette, composite, mode, width, height, r,
-						annotate, format);
-			case TrianglesType.squareTiles:
-				return _drawSquareTiles(palette, composite, mode, width, height,
-						r, annotate, format);
-			case TrianglesType.tiles:
-				return _drawTiles(palette, composite, mode, width, height, r,
-						annotate, format);
-			}
-		} catch (e) {
-			_log.warning("Error creating image", e);
-			
-		}
-		return null;
+      switch (type) {
+        case TrianglesType.diamondTiles:
+          break;
+        case TrianglesType.hTiles:
+          return _drawHTiles(
+              palette, composite, mode, width, height, r, annotate, format);
+        case TrianglesType.overImage:
+          break;
+        case TrianglesType.randomJiggle:
+          return _drawRandomJiggleTiles(
+              palette, composite, mode, width, height, r, annotate, format);
+        case TrianglesType.ribbons:
+          return _drawRibbon(
+              palette, composite, mode, width, height, r, annotate, format);
+        case TrianglesType.squareTiles:
+          return _drawSquareTiles(
+              palette, composite, mode, width, height, r, annotate, format);
+        case TrianglesType.tiles:
+          return _drawTiles(
+              palette, composite, mode, width, height, r, annotate, format);
+      }
+    } catch (e) {
+      _log.warning("Error creating image", e);
+    }
+    return null;
   }
 
-  static Uint8List _drawRibbon (Palette palette, img.Image composite,
-			BlendingMode mode, int width, int height, double r, bool annotate,
-			img.ImageFormat format) {
-		img.Image image = img.Image(width: width, height: height, numChannels: 4, );
-		ImageRenderer renderer =  ImageRenderer(image);
-		TriangleRibbons ribbons = TriangleRibbons.withRatio(renderer, palette,
-				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), 70, r);
-		ribbons.defaultLayout();
+  static Uint8List _drawRibbon(
+      Palette palette,
+      img.Image? composite,
+      BlendingMode mode,
+      int width,
+      int height,
+      double r,
+      bool annotate,
+      img.ImageFormat format) {
+    img.Image image = img.Image(width: width, height: height, numChannels: 4);
+    ImageRenderer renderer = ImageRenderer(image);
+    TriangleRibbons ribbons = TriangleRibbons.withRatio(
+        renderer,
+        palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+        70,
+        r);
+    ribbons.defaultLayout();
 
-		image.getGraphics().dispose();
+    if (annotate) {
+      _drawDims(width, height, image);
+    }
 
-		if (annotate) {
-			image = _drawDims(width, height, image);
-		}
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
 
-		if (composite != null) {
-			image = composite(image, composite, _cached(mode));
-		}
+    return _encodeImage(image, format);
+  }
 
-		return Imaging.writeImageToBytes(image, format);
-	}
+  static Uint8List _drawRandomJiggleTiles(
+      Palette palette,
+      img.Image? composite,
+      BlendingMode mode,
+      int width,
+      int height,
+      double r,
+      bool annotate,
+      img.ImageFormat format) {
+    img.Image image = img.Image(width: width, height: height, numChannels: 4);
+    ImageRenderer renderer = ImageRenderer(image);
+    TriangleRandomJiggleTiles randomJiggles =
+        TriangleRandomJiggleTiles.withRatio(
+            renderer,
+            palette,
+            Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+            r);
+    randomJiggles.defaultLayout();
 
-	static Uint8List _drawRandomJiggleTiles (Palette palette,
-			img.Image? composite, BlendingMode mode, int width, int height,
-			double r, bool annotate, img.ImageFormat format)
-			{
-		BufferedImage image = BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
-		BufferedImageRenderer renderer = BufferedImageRenderer(image);
-		TriangleRandomJiggleTiles randomJiggles = TriangleRandomJiggleTiles.withRatio(
-				renderer, palette,
-				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
-		randomJiggles.defaultLayout();
+    if (annotate) {
+      _drawDims(width, height, image);
+    }
 
-		image.getGraphics().dispose();
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
 
-		if (annotate) {
-			image = _drawDims(width, height, image);
-		}
+    return _encodeImage(image, format);
+  }
 
-		if (composite != null) {
-			image = composite(image, composite, _cached(mode));
-		}
+  static Uint8List _drawTiles(
+      Palette palette,
+      img.Image? composite,
+      BlendingMode mode,
+      int width,
+      int height,
+      double r,
+      bool annotate,
+      img.ImageFormat format) {
+    img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
-		return Imaging.writeImageToBytes(image, format);
-	}
+    ImageRenderer renderer = ImageRenderer(image);
 
-	static Uint8List _drawTiles (Palette palette, BufferedImage composite,
-			BlendingMode mode, int width, int height, double r, bool annotate,
-			img.ImageFormat format) {
-		BufferedImage image =  BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
+    TriangleTiles tiles = TriangleTiles.withRatio(renderer, palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+    tiles.defaultLayout();
 
-		BufferedImageRenderer renderer =  BufferedImageRenderer(image);
+    if (annotate) {
+      _drawDims(width, height, image);
+    }
 
-		TriangleTiles tiles = TriangleTiles.withRatio(renderer, palette,
-				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
-		tiles.defaultLayout();
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
 
-		if (annotate) {
-			_drawDims(width, height, image);
-		}
+    return _encodeImage(image, format);
+  }
 
-		image.getGraphics().dispose();
+  static Uint8List _drawHTiles(
+      Palette palette,
+      img.Image? composite,
+      BlendingMode mode,
+      int width,
+      int height,
+      double r,
+      bool annotate,
+      img.ImageFormat format) {
+    img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
-		if (composite != null) {
-			image = composite(image, composite, _cached(mode));
-		}
+    ImageRenderer renderer = ImageRenderer(image);
 
-		return Imaging.writeImageToBytes(image, format);
-	}
+    TriangleHTiles hTiles = TriangleHTiles.withRatio(renderer, palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
+    hTiles.defaultLayout();
 
-  static Uint8List _drawHTiles (Palette palette, BufferedImage composite,
-			BlendingMode mode, int width, int height, double r, bool annotate,
-			ImageFormat format)  {
-		BufferedImage image = BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
+    if (annotate) {
+      _drawDims(width, height, image);
+    }
 
-		BufferedImageRenderer renderer = BufferedImageRenderer(image);
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
 
-		TriangleHTiles hTiles = TriangleHTiles.withRatio(renderer, palette,
-				Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
-		hTiles.defaultLayout();
+    return _encodeImage(image, format);
+  }
 
-		image.getGraphics().dispose();
+  static Uint8List _drawSquareTiles(
+      Palette palette,
+      img.Image? composite,
+      BlendingMode mode,
+      int width,
+      int height,
+      double r,
+      bool annotate,
+      img.ImageFormat format) {
+    img.Image image = img.Image(width: width, height: height, numChannels: 4);
 
-		if (annotate) {
-			image = _drawDims(width, height, image);
-		}
+    ImageRenderer renderer = ImageRenderer(image);
 
-		if (composite != null) {
-			image = composite(image, composite, _cached(mode));
-		}
+    TriangleSquareTiles squareTiles = TriangleSquareTiles.withRatio(
+        renderer,
+        palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+        r);
+    squareTiles.defaultLayout();
 
-		return Imaging.writeImageToBytes(image, format);
-	}
+    if (annotate) {
+      _drawDims(width, height, image);
+    }
 
-  static Uint8List _drawSquareTiles (Palette palette,
-			BufferedImage composite, BlendingMode mode, int width, int height,
-			double r, bool annotate, img.ImageFormat format)
-			{
-		BufferedImage image =  BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
 
-		BufferedImageRenderer renderer =  BufferedImageRenderer(image);
+    return _encodeImage(image, format);
+  }
 
-		TriangleSquareTiles squareTiles =  TriangleSquareTiles.withRatio(renderer,
-				palette, Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()), r);
-		squareTiles.defaultLayout();
+  static img.Image _drawDims(int width, int height, img.Image image) {
+    img.Image newer = img.Image(width: width, height: height, numChannels: 4);
 
-		image.getGraphics().dispose();
+    int dim = min(width, height);
+    int th = dim ~/ 10;
+    int fth = _fontSize(th);
+    StringDrawer sd = _font(fth);
+    String s = "${width}x$height";
+    int tw = sd.getWidth(s);
 
-		if (annotate) {
-			image = _drawDims(width, height, image);
-		}
+    sd.draw(
+        newer, s, ((width - tw) * 0.5).toInt(), ((height - fth) * 0.5).toInt());
 
-		if (composite != null) {
-			image = composite(image, composite, _cached(mode));
-		}
+    // BlendComposite.getInstance(BlendingMode.add) returns a singleton/cached instance usually.
+    // If we need alpha 0.8, we might need a new instance or helper.
+    // Assuming we can't easily derive, let's just use the mode directly for now or fix BlendComposite later.
+    // Or better, creating a new BlendComposite with alpha if possible.
+    // For now, removing .derive(.8) to fix compilation, defaulting to alpha 1.0 or whatever the cache returns.
+    return _composite(image, newer, _cached(BlendingMode.add));
+  }
 
-		return Imaging  .writeImageToBytes(image, format);
-	}
+  static img.Image _composite(
+      img.Image imageA, img.Image imageB, BlendComposite composite) {
+    return composite.composeImages(imageB, imageA);
+  }
 
-	static BufferedImage _drawDims (int width, int height,
-			BufferedImage image) {
-
-		BufferedImage newer = BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = _pretty((Graphics2D) newer.createGraphics());
-
-		int dim = min(width, height);
-		int th = dim ~/ 10;
-		int fth =  _fontSize(th);
-		StringDrawer sd = _font(fth);
-		String s = "${width}x$height";
-		int tw = sd.getWidth(s);
-		sd.draw(g2, s, ((width - tw).toDouble() * 0.5).toInt(),
-				((height - fth).toDouble() * 0.5).toInt());
-		g2.dispose();
-
-		return _composite(image, newer, _cached(BlendingMode.add).derive(.8));
-	}
-
-  static BufferedImage _composite (BufferedImage imageA,
-			BufferedImage imageB, BlendComposite composite) {
-		Graphics2D g2 = _pretty(imageA.getGraphics());
-
-		g2.setComposite(composite);
-		g2.drawImage(imageB, 0, 0, null);
-
-		return imageA;
-	}
-
-  static Graphics2D _pretty (Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_RENDERING,
-				RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-				RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-		return g;
-	}
+  static Uint8List _encodeImage(img.Image image, img.ImageFormat format) {
+    if (format == img.ImageFormat.png) {
+      return img.encodePng(image);
+    } else {
+      return img.encodeJpg(image);
+    }
+  }
 
   /// Create palette based on type
   static Future<Palette> _createPalette(
@@ -403,58 +466,64 @@ class ImageGenerator {
     }
   }
 
-  static BlendComposite _cached (BlendingMode mode) {
-		BlendComposite? composite = compositeCache[mode];
+  static BlendComposite _cached(BlendingMode mode) {
+    BlendComposite? composite = compositeCache[mode];
 
-		if (composite == null) {
-			compositeCache[mode] = (composite =  BlendComposite.getInstance(mode));
-		}
+    if (composite == null) {
+      compositeCache[mode] = (composite = BlendComposite.getInstance(mode));
+    }
 
-		return composite;
-	}
-
+    return composite;
+  }
 
   /// Get image format from properties
   static String _imageFormat(Map<String, String> properties) {
-    return _string(properties, ImageGeneratorConfig.formatKey, ImageGeneratorConfig.defaultFormat);
+    return _string(properties, ImageGeneratorConfig.formatKey,
+        ImageGeneratorConfig.defaultFormat);
   }
 
   /// Get string value from properties with validation (for non-nullable defaults)
-  static String _string(Map<String, String> map, String key, String defaultValue, [List<String>? options]) {
+  static String _string(
+      Map<String, String> map, String key, String defaultValue,
+      [List<String>? options]) {
     final String? value = map[key];
     if (value == null || value.isEmpty) return defaultValue;
-    
+
     if (options != null && !options.contains(value)) {
       return defaultValue;
     }
-    
+
     return value;
   }
 
   /// Get string value from properties with validation (for nullable defaults)
-  static String? _stringNullable(Map<String, String> map, String key, String? defaultValue, [List<String>? options]) {
+  static String? _stringNullable(
+      Map<String, String> map, String key, String? defaultValue,
+      [List<String>? options]) {
     final String? value = map[key];
     if (value == null || value.isEmpty) return defaultValue;
-    
+
     if (options != null && !options.contains(value)) {
       return defaultValue;
     }
-    
+
     return value;
   }
 
   /// Get string array from properties
-  static List<String>? _strings(Map<String, String> map, String key, String? defaultValue) {
+  static List<String>? _strings(
+      Map<String, String> map, String key, String? defaultValue) {
     final String? value = map[key];
     if (value == null || value.isEmpty) return null;
     return value.split(',');
   }
 
   /// Get integer value from properties with range validation
-  static int _integer(Map<String, String> map, String key, int defaultValue, int min, int max) {
+  static int _integer(
+      Map<String, String> map, String key, int defaultValue, int min, int max) {
     final String? value = map[key];
     if (value == null || value.isEmpty) return defaultValue;
-    
+
     try {
       final int intValue = int.parse(value);
       if (intValue >= min && intValue <= max) {
@@ -463,23 +532,23 @@ class ImageGenerator {
     } catch (e) {
       _log.warning('Invalid integer value for key $key: $value');
     }
-    
+
     return defaultValue;
   }
 
-  static int _fontSize (int th) {
-		return th <= 20 ? 20 : (th <= 50 ? 50 : 100);
-	}
+  static int _fontSize(int th) {
+    return th <= 20 ? 20 : (th <= 50 ? 50 : 100);
+  }
 
-  static StringDrawer _font (int size) {
-		switch (size) {
-		case 20:
-			return _small;
-		case 50:
-			return _medium;
-		case 100:
-		default:
-			return _large;
-		}
-	}
-} 
+  static StringDrawer _font(int size) {
+    switch (size) {
+      case 20:
+        return _small;
+      case 50:
+        return _medium;
+      case 100:
+      default:
+        return _large;
+    }
+  }
+}

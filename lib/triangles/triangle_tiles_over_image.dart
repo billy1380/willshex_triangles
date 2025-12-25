@@ -11,11 +11,16 @@ class TriangleTilesOverImage {
 
   /// Constructor with default ratio
   TriangleTilesOverImage(this._renderer, this._palette, this._bounds)
-      : _lineLength = (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) * 0.08333;
+      : _lineLength =
+            (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
+                0.08333;
 
   /// Constructor with custom ratio
-  TriangleTilesOverImage.withRatio(this._renderer, this._palette, this._bounds, double ratio)
-      : _lineLength = (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) * ratio;
+  TriangleTilesOverImage.withRatio(
+      this._renderer, this._palette, this._bounds, double ratio)
+      : _lineLength =
+            (_bounds.width > _bounds.height ? _bounds.height : _bounds.width) *
+                ratio;
 
   /// Get the next point in the triangle pattern
   Point _nextPoint(Point p) {
@@ -38,14 +43,12 @@ class TriangleTilesOverImage {
       Point p2 = Point.xyPoint(start.x + tWidth, start.y + tHeight);
       Point p3;
 
-      double midX;
       final Point middle = Point.xyPoint(0, 0);
       int index;
 
       do {
         p3 = _nextPoint(p1);
 
-        middle.x = midX = p1.x + (tWidth * 0.5);
         if (i % 2 == 0) {
           middle.y = (p1.y + p2.y) * 0.5;
         } else {
@@ -73,4 +76,4 @@ class TriangleTilesOverImage {
     _renderer.renderRect(_bounds, _palette[0]);
     draw(Point.xyPoint(_bounds.x, _bounds.y));
   }
-} 
+}
