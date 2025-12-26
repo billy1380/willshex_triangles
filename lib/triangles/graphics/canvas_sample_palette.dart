@@ -58,6 +58,8 @@ class CanvasSamplePalette extends Palette {
   /// Private constructor
   CanvasSamplePalette._(List<Color> colors, Map<int, int> populations)
       : _populations = populations {
+    name = "Image Sample Palette";
+
     // Add colors to the parent palette
     addColors(colors);
 
