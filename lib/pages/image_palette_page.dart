@@ -5,8 +5,7 @@ import "package:go_router/go_router.dart";
 import "package:http/http.dart" as http;
 import "package:image/image.dart" as img;
 import "package:willshex_triangles/parts/triangle_generator_page.dart";
-import "package:willshex_triangles/triangles/graphics/canvas_sample_palette.dart";
-import "package:willshex_triangles/triangles/helper/image_pixel_extension.dart";
+import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 
 class ImagePalettePage extends StatelessWidget {
   static const String routePath = "/imagepalette";
@@ -24,7 +23,7 @@ class ImagePalettePage extends StatelessWidget {
       paletteProvider: () async {
         final image =
             await _fetchAndDecodeImage("https://picsum.photos/400/300");
-        return CanvasSamplePalette.generate(image.toArgbPixels());
+        return ImagePixelPalette(image);
       },
     );
   }
