@@ -32,43 +32,29 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text("Software", style: Theme.of(context).textTheme.titleLarge),
             const Text(
-                "Triangles is possible because of tons of software we did not actually write."),
-            _buildLink(context, "GWT", "http://www.gwtproject.org/"),
-            _buildLink(context, "Bootstrap", "http://getbootstrap.com/"),
+                "Triangles is built with Flutter and made possible by many open source libraries:"),
+            _buildLink(context, "Flutter", "https://flutter.dev/"),
             _buildLink(
-                context, "COLOUR Lovers", "http://www.colourlovers.com/api"),
+                context, "COLOURlovers API", "http://www.colourlovers.com/api"),
             _buildLink(context, "Romain Guy's blend modes",
                 "http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/"),
             const SizedBox(height: 16),
             Text("Images", style: Theme.of(context).textTheme.titleLarge),
-            const Text(
-                "We have used some images on the site and here is where they came from."),
+            const Text("Sample images and backgrounds are provided by:"),
             _buildLink(
               context,
-              "PlaceIMG",
-              "http://placeimg.com/",
-              isDead: true,
+              "Lorem Picsum",
+              "https://picsum.photos/",
             ),
-            _buildLink(
-                context, "Subtle background", "http://subtlepatterns.com/"),
-            const SizedBox(height: 16),
-            Text("Roadmap", style: Theme.of(context).textTheme.titleLarge),
-            const Text("• Add settings e.g. triangle size..."),
-            const Text(
-                "• Make generated cavases downloadable via app-engine service"),
-            const Text(
-                "• Integrate more colour services - Update: for some reason random queries on Kuler started to return the same colour palette, so I switched to using COLOURLovers, not sure if there are any others out there."),
+            _buildLink(context, "Subtle Patterns",
+                "https://www.toptal.com/designers/subtlepatterns/"),
             const SizedBox(height: 16),
             Text("Legal", style: Theme.of(context).textTheme.titleLarge),
             const Text(
-                "You can use any of the images you generate/download for free for all commercial and non-commercial projects. We would also love to hear from you about how you are using the images and for what projects. Finally if you feel like giving us a mention we would really appreciate that too."),
+                "You can use any of the images you generate/download for free for all commercial and non-commercial projects. We would love to hear from you about how you are using the images and for what projects. If you feel like giving us a mention we would really appreciate that too."),
             const SizedBox(height: 8),
             const Text(
                 "SPACEHOPPER STUDIOS Logo is property of SPACEHOPPER STUDIOS LTD."),
-            const SizedBox(height: 16),
-            Text("Social", style: Theme.of(context).textTheme.titleLarge),
-            const Text(
-                "If you like this follow us on Google+ and Twitter - we have a Facebook page too."),
           ],
         ),
       ),
