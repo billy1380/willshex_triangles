@@ -17,6 +17,18 @@ class ImageSamplerPalettePage extends StatelessWidget {
 
   const ImageSamplerPalettePage._();
 
+  @override
+  Widget build(BuildContext context) {
+    return TriangleGeneratorPage(
+      title: "From Image",
+      paletteProvider: () async {
+        final image =
+            await _fetchAndDecodeImage("https://picsum.photos/400/300");
+        return CanvasSamplePalette.generate(image.toArgbPixels());
+      },
+    );
+  }
+
   static Future<img.Image> _fetchAndDecodeImage(String url) async {
     final response =
         await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
@@ -32,17 +44,5 @@ class ImageSamplerPalettePage extends StatelessWidget {
     }
 
     return decodedImage;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TriangleGeneratorPage(
-      title: "From Image",
-      paletteProvider: () async {
-        final image =
-            await _fetchAndDecodeImage("https://picsum.photos/400/300");
-        return CanvasSamplePalette.generate(image.toArgbPixels());
-      },
-    );
   }
 }
