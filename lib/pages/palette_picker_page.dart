@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:willshex_draw/willshex_draw.dart' as ws;
-import 'package:willshex_triangles/parts/triangle_generator_page.dart';
-import 'package:willshex_triangles/parts/app_drawer.dart';
+import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
+import "package:willshex_draw/willshex_draw.dart" as ws;
+import "package:willshex_triangles/parts/triangle_generator_page.dart";
+import "package:willshex_triangles/parts/app_drawer.dart";
 
 class PalettePickerPage extends StatefulWidget {
   static const String routePath = "/palettepicker";
@@ -29,14 +29,14 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
         builder: (context) {
           Color tempColor = pickerColor;
           return AlertDialog(
-            title: const Text('Pick a color'),
+            title: const Text("Pick a color"),
             content: SingleChildScrollView(
               child: StatefulBuilder(builder: (context, setState) {
                 return Column(
                   children: [
                     Container(height: 50, width: 50, color: tempColor),
                     Slider(
-                      value: tempColor.red.toDouble(),
+                      value: tempColor.r * 255,
                       min: 0,
                       max: 255,
                       label: "R",
@@ -45,7 +45,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
                           () => tempColor = tempColor.withRed(v.toInt())),
                     ),
                     Slider(
-                      value: tempColor.green.toDouble(),
+                      value: tempColor.g * 255,
                       min: 0,
                       max: 255,
                       label: "G",
@@ -54,7 +54,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
                           () => tempColor = tempColor.withGreen(v.toInt())),
                     ),
                     Slider(
-                      value: tempColor.blue.toDouble(),
+                      value: tempColor.b * 255,
                       min: 0,
                       max: 255,
                       label: "B",
@@ -68,7 +68,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Got it'),
+                child: const Text("Got it"),
                 onPressed: () {
                   Navigator.of(context).pop(tempColor);
                 },
@@ -86,10 +86,8 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
 
   void _usePalette() {
     final palette = ws.Palette(_nameController.text);
-    palette.addColors(_colors
-        .map((c) => ws.Color.rgbaColor(
-            c.red / 255.0, c.green / 255.0, c.blue / 255.0, c.opacity))
-        .toList());
+    palette.addColors(
+        _colors.map((c) => ws.Color.rgbaColor(c.r, c.g, c.b, c.a)).toList());
 
     Navigator.of(context).push(
       MaterialPageRoute(

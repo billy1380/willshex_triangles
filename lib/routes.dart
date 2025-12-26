@@ -5,7 +5,6 @@ import "package:willshex_triangles/pages/colour_lovers_page.dart";
 import "package:willshex_triangles/pages/image_palette_page.dart";
 import "package:willshex_triangles/pages/image_sampler_palette_page.dart";
 import "package:willshex_triangles/pages/settings_page.dart";
-import "package:willshex_triangles/pages/settings_page.dart";
 import "package:willshex_triangles/pages/about_page.dart";
 import "package:willshex_triangles/pages/palette_picker_page.dart";
 

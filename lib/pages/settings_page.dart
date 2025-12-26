@@ -20,7 +20,6 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _sizeRatioController = TextEditingController();
-  final TextEditingController _countRatioController = TextEditingController();
   bool _addTriangleGradients = true;
   bool _annotateWithDimensions = false;
 

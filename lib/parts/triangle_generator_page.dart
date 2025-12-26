@@ -36,6 +36,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   final List<ws.Palette> _history = [];
   Uint8List? _generatedImage;
   bool _isGenerating = false;
+  bool _showImageOverlay = true;
 
   late int width;
   late int height;
@@ -140,9 +141,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
         actions: [
           if (_currentPalette?.source != null)
             IconButton(
-              icon: Icon(_showImageOverlay
-                  ? Icons.image
-                  : Icons.image_outlined),
+              icon:
+                  Icon(_showImageOverlay ? Icons.image : Icons.image_outlined),
               onPressed: () {
                 setState(() {
                   _showImageOverlay = !_showImageOverlay;
@@ -357,8 +357,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                                 width: 100,
                                 height: 100,
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.white, width: 2),
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
                                   boxShadow: const [
                                     BoxShadow(
                                       color: Colors.black26,
@@ -393,14 +393,10 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
       // Or check if we can support local files.
       // The user mentioned "palette colours are picked by the user from a colour picker" later.
       // "palettes generated from images" -> mostly implies the ImagePalettePage or similar.
-      return Image.network(source, fit: BoxFit.cover, errorBuilder: (_, __, ___) {
-         return const Center(child: Icon(Icons.broken_image));
+      return Image.network(source, fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) {
+        return const Center(child: Icon(Icons.broken_image));
       });
     }
-  }
-          ),
-        ],
-      ),
-    );
   }
 }
