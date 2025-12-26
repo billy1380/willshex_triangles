@@ -164,13 +164,16 @@ class ColorCutQuantizer {
     }
 
     // Now go through all of the colors and keep those which we do not want to ignore
-    _colors.length = rawColorCount;
+    final tempColors = List<int>.filled(rawColorCount, 0);
     int validColorCount = 0;
     for (int color in rawColors) {
       if (!_shouldIgnoreColorInt(color)) {
-        _colors[validColorCount++] = color;
+        tempColors[validColorCount++] = color;
       }
     }
+
+    // Copy valid colors to the final list
+    _colors.addAll(tempColors.take(validColorCount));
 
     if (validColorCount <= maxColors) {
       // The image has fewer colors than the maximum requested, so just return the colors
