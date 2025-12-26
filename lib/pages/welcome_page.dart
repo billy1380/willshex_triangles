@@ -41,6 +41,8 @@ class WelcomePage extends StatelessWidget {
                       _buildSample(context, "samples/33.jpeg"),
                       _buildSample(context, "samples/29.jpeg"),
                       _buildSample(context, "samples/32.jpeg"),
+                      _buildSample(context, "samples/14.jpeg"),
+                      _buildSample(context, "samples/34.jpeg"),
                     ],
                   ),
                 ),
