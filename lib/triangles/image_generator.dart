@@ -561,7 +561,7 @@ class ImageGenerator {
           Color.rgbaColor(1.0, 0.0, 1.0),
         ]);
         return palette;
-      case PaletteType.randomColourLovers:
+      case PaletteType.random:
         return await paletteSupplier();
       case PaletteType.randomGrayScale:
         final palette = Palette("Random Grayscale");

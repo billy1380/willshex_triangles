@@ -4,27 +4,29 @@ import "package:willshex_draw/willshex_draw.dart";
 class RandomColorPalette extends Palette {
   static final Logger _log = Logger("RandomColorPalette");
 
-  RandomColorPalette([super.name, super.externalId]);
+  RandomColorPalette([super.name = "Random Colors", super.externalId]);
 
   /// Generate random colors locally as fallback
-  void generateRandomColors() {
+  void generateRandomColors([int? count]) {
     final List<Color> colors = <Color>[];
+
+    count ??= 4 + Palette.random.nextInt(4);
 
     // Generate different types of color palettes
     final int paletteType = Palette.random.nextInt(4);
 
     switch (paletteType) {
-      case 0: // Warm colors
-        generateWarmPalette(colors);
+      case 0:
+        generateWarmPalette(count, colors);
         break;
-      case 1: // Cool colors
-        generateCoolPalette(colors);
+      case 1:
+        generateCoolPalette(count, colors);
         break;
-      case 2: // Complementary colors
-        generateComplementaryPalette(colors);
+      case 2:
+        generateComplementaryPalette(count, colors);
         break;
-      case 3: // Analogous colors
-        generateAnalogousPalette(colors);
+      case 3:
+        generateAnalogousPalette(count, colors);
         break;
     }
 
@@ -35,8 +37,9 @@ class RandomColorPalette extends Palette {
   }
 
   /// Generate warm color palette (reds, oranges, yellows)
-  void generateWarmPalette(List<Color> colors) {
-    for (int i = 0; i < 8; i++) {
+  void generateWarmPalette(int count, List<Color> colors) {
+    name = "Random Warm Colors";
+    for (int i = 0; i < count; i++) {
       final double r = 0.5 + Palette.random.nextDouble() * 0.5; // 0.5-1.0
       final double g = Palette.random.nextDouble() * 0.6; // 0.0-0.6
       final double b = Palette.random.nextDouble() * 0.3; // 0.0-0.3
@@ -45,8 +48,9 @@ class RandomColorPalette extends Palette {
   }
 
   /// Generate cool color palette (blues, greens, purples)
-  void generateCoolPalette(List<Color> colors) {
-    for (int i = 0; i < 8; i++) {
+  void generateCoolPalette(int count, List<Color> colors) {
+    name = "Random Cool Colors";
+    for (int i = 0; i < count; i++) {
       final double r = Palette.random.nextDouble() * 0.4; // 0.0-0.4
       final double g = Palette.random.nextDouble() * 0.7; // 0.0-0.7
       final double b = 0.4 + Palette.random.nextDouble() * 0.6; // 0.4-1.0
@@ -55,10 +59,11 @@ class RandomColorPalette extends Palette {
   }
 
   /// Generate complementary color palette
-  void generateComplementaryPalette(List<Color> colors) {
+  void generateComplementaryPalette(int count, List<Color> colors) {
+    name = "Random Complementary Colors";
     final double baseHue = Palette.random.nextDouble();
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < count; i++) {
       final double hue = (baseHue + i * 0.1667) % 1.0; // 60-degree intervals
       final double saturation =
           0.6 + Palette.random.nextDouble() * 0.4; // 0.6-1.0
@@ -70,10 +75,11 @@ class RandomColorPalette extends Palette {
   }
 
   /// Generate analogous color palette
-  void generateAnalogousPalette(List<Color> colors) {
+  void generateAnalogousPalette(int count, List<Color> colors) {
+    name = "Random Analogous Colors";
     final double baseHue = Palette.random.nextDouble();
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < count; i++) {
       final double hue = (baseHue + i * 0.125) % 1.0; // 45-degree intervals
       final double saturation =
           0.5 + Palette.random.nextDouble() * 0.5; // 0.5-1.0

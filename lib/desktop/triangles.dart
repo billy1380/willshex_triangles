@@ -30,7 +30,7 @@ class Triangles {
     if (args.isEmpty) {
       _log.info("Enter parameters or exit to exit");
       _log.info(
-          "e.g. w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=RandomColourLovers&a=1");
+          "e.g. w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1");
     } else {
       command = args.first;
     }
@@ -115,7 +115,7 @@ class Triangles {
     return result;
   }
 
-  /// Create a new palette from COLOURlovers
+  /// Create a new random palette
   static Future<Palette> _newPalette() async {
     final palette = RandomColorPalette();
     palette.generateRandomColors();
@@ -128,6 +128,6 @@ Future<void> main(List<String> args) async {
   setupLogging();
 
   await Triangles.main([
-    "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=RandomColourLovers&a=1"
+    "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1"
   ]);
 }

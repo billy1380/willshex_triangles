@@ -20,7 +20,7 @@ This directory contains the Dart/Flutter port of the willshex-triangles Java pro
 ### `/desktop/` - Desktop Application Components
 - **`triangles.dart`** - Main desktop application with CLI interface
 - **`store/file_store.dart`** - File-based implementation of the Store interface
-- **`colourlovers/apache_client_palette.dart`** - HTTP client for COLOURlovers API
+- **`graphics/random_color_palette.dart`** - Generator for random color palettes
 
 ## Usage Examples
 
@@ -34,7 +34,7 @@ final Map<String, String> properties = {
   'w': '800',           // width
   'h': '600',           // height
   't': 'RandomJiggle',  // triangle type
-  'p': 'RandomColourLovers', // palette type
+  'p': 'Random', // palette type
   'f': 'png',           // format
   'rd': '12',           // ratio denominator
   'rn': '1',            // ratio numerator
@@ -44,8 +44,8 @@ final Map<String, String> properties = {
 
 // Create palette supplier
 Future<Palette> paletteSupplier() async {
-  final palette = ApacheClientPalette();
-  await palette.getColors('random', 0, 1);
+  final palette = RandomColorPalette();
+  palette.generateRandomColors();
   return palette;
 }
 
@@ -147,7 +147,7 @@ This port requires the following dependencies:
 - Core triangle generation algorithms
 - Configuration system
 - Store interface and file implementation
-- HTTP client for COLOURlovers
+- Local Random Color Palette generator
 - CLI interface structure
 - Type definitions and enums
 
