@@ -39,11 +39,14 @@ class TriangleDiamondTiles {
     final int height = (_bounds.height / diagonal).ceil() + 2;
 
     // Simple nested loop for proper tiling
-    for (int i = -1; i < width; i++) {
-      for (int j = -1; j < height; j++) {
+    for (int j = -1; j < height; j++) {
+      for (int i = -1; i < width; i++) {
+        // Offset every other row by half a diagonal for tessellation
+        final double xOffset = (j % 2) * halfDiagonal;
+
         // Center position for this diamond
         final Point center = Point.xyPoint(
-          origin.x + (i * diagonal) + halfDiagonal,
+          origin.x + (i * diagonal) + halfDiagonal + xOffset,
           origin.y + (j * diagonal) + halfDiagonal,
         );
 
