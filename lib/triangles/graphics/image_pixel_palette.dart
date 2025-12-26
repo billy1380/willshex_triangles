@@ -15,7 +15,7 @@ class ImagePixelPalette extends Palette {
   int get count => _width * _height;
 
   @override
-  Color colorAtIndex(int index) {
+  Color operator [](int index) {
     // Convert linear index to x,y coordinates
     int y = (index / _width).floor();
     int x = index - (y * _width);
