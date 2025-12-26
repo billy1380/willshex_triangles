@@ -17,7 +17,7 @@ class RandomPalettePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "Random Palette",
-      paletteProvider: (_, __) async {
+      paletteProvider: () async {
         final palette = RandomColorPalette();
         palette.generateRandomColors();
         return palette;

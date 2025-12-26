@@ -1,12 +1,12 @@
 import "package:willshex_draw/willshex_draw.dart";
-import "triangles_type.dart";
-import "triangle_tiles.dart";
+import "package:willshex_triangles/triangles/triangle_tiles.dart";
+
+import "triangle_diamond_tiles.dart";
+import "triangle_h_tiles.dart";
 import "triangle_random_jiggle_tiles.dart";
 import "triangle_ribbons.dart";
-import "triangle_h_tiles.dart";
 import "triangle_square_tiles.dart";
-import "triangle_diamond_tiles.dart";
-import "triangle_tiles_over_image.dart";
+import "triangles_type.dart";
 
 /// Factory for creating triangle generator instances
 class TriangleFactory {
@@ -47,10 +47,6 @@ class TriangleFactory {
         return ratio != null
             ? TriangleTiles.withRatio(renderer, palette, bounds, ratio)
             : TriangleTiles(renderer, palette, bounds);
-      case TrianglesType.overImage:
-        return ratio != null
-            ? TriangleTilesOverImage.withRatio(renderer, palette, bounds, ratio)
-            : TriangleTilesOverImage(renderer, palette, bounds);
     }
   }
 }

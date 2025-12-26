@@ -22,7 +22,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "Palette Picker",
-      paletteProvider: (int width, int height) async {
+      paletteProvider: () async {
         final Palette? palette = await showDialog<Palette>(
           context: context,
           barrierDismissible: false,

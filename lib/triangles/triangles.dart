@@ -13,7 +13,6 @@ export "triangle_ribbons.dart";
 export "triangle_h_tiles.dart";
 export "triangle_square_tiles.dart";
 export "triangle_diamond_tiles.dart";
-export "triangle_tiles_over_image.dart";
 
 // Helper classes
 export "helper/drawing_helper.dart";

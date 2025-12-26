@@ -1,4 +1,5 @@
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 import "package:willshex_triangles/triangles/image_renderer.dart";
 
 import "triangle_tiles.dart";
@@ -41,11 +42,28 @@ class TriangleHTiles extends TriangleTiles {
 
       do {
         p3 = nextPoint(p1);
-        if (useGradient && renderer is ImageRenderer) {
-          (renderer as ImageRenderer)
-              .renderTriangle(palette.randomColor, p1, p2, p3, true);
+        if (palette is ImagePixelPalette) {
+          Point middle = Point.xyPoint(
+            (p1.x + p2.x + p3.x) / 3.0,
+            (p1.y + p2.y + p3.y) / 3.0,
+          );
+          // final image = (palette as ImagePixelPalette).source;
+          int ix = (middle.x - bounds.x).floor();
+          int iy = (middle.y - bounds.y).floor();
+          int index = ix + (bounds.width.toInt() * iy);
+          if (useGradient && renderer is ImageRenderer) {
+            (renderer as ImageRenderer)
+                .renderTriangle(palette[index], p1, p2, p3, true);
+          } else {
+            renderer.renderTriangle(palette[index], p1, p2, p3);
+          }
         } else {
-          renderer.renderTriangle(palette.randomColor, p1, p2, p3);
+          if (useGradient && renderer is ImageRenderer) {
+            (renderer as ImageRenderer)
+                .renderTriangle(palette.randomColor, p1, p2, p3, true);
+          } else {
+            renderer.renderTriangle(palette.randomColor, p1, p2, p3);
+          }
         }
 
         p1 = p2;

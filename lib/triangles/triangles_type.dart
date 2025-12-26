@@ -5,8 +5,7 @@ enum TrianglesType {
   ribbons,
   squareTiles,
   diamondTiles,
-  tiles,
-  overImage;
+  tiles;
 
   /// Convert enum to string for serialization
   String get name {
@@ -23,8 +22,6 @@ enum TrianglesType {
         return "DiamondTiles";
       case TrianglesType.tiles:
         return "Tiles";
-      case TrianglesType.overImage:
-        return "OverImage";
     }
   }
 
@@ -43,8 +40,6 @@ enum TrianglesType {
         return TrianglesType.diamondTiles;
       case "Tiles":
         return TrianglesType.tiles;
-      case "OverImage":
-        return TrianglesType.overImage;
       default:
         return TrianglesType.randomJiggle; // Default fallback
     }

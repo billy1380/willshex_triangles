@@ -1,6 +1,7 @@
 import "dart:math";
 
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 import "package:willshex_triangles/triangles/image_renderer.dart";
 
 class TriangleDiamondTiles {
@@ -46,24 +47,78 @@ class TriangleDiamondTiles {
         final bool splitDiag = _random.nextBool();
 
         if (splitDiag) {
-          if (_useGradient && _renderer is ImageRenderer) {
-            (_renderer as ImageRenderer)
-                .renderTriangle(_palette.randomColor, top, right, bottom, true);
-            (_renderer as ImageRenderer)
-                .renderTriangle(_palette.randomColor, top, left, bottom, true);
+          if (_palette is ImagePixelPalette) {
+            Point middle1 = Point.xyPoint((top.x + right.x + bottom.x) / 3.0,
+                (top.y + right.y + bottom.y) / 3.0);
+            Point middle2 = Point.xyPoint((top.x + left.x + bottom.x) / 3.0,
+                (top.y + left.y + bottom.y) / 3.0);
+
+            // final image = (_palette as ImagePixelPalette).source;
+            int ix1 = (middle1.x - _bounds.x).floor();
+            int iy1 = (middle1.y - _bounds.y).floor();
+            int ix2 = (middle2.x - _bounds.x).floor();
+            int iy2 = (middle2.y - _bounds.y).floor();
+
+            int index1 = ix1 + (_bounds.width.toInt() * iy1);
+            int index2 = ix2 + (_bounds.width.toInt() * iy2);
+
+            if (_useGradient && _renderer is ImageRenderer) {
+              (_renderer as ImageRenderer)
+                  .renderTriangle(_palette[index1], top, right, bottom, true);
+              (_renderer as ImageRenderer)
+                  .renderTriangle(_palette[index2], top, left, bottom, true);
+            } else {
+              _renderer.renderTriangle(_palette[index1], top, right, bottom);
+              _renderer.renderTriangle(_palette[index2], top, left, bottom);
+            }
           } else {
-            _renderer.renderTriangle(_palette.randomColor, top, right, bottom);
-            _renderer.renderTriangle(_palette.randomColor, top, left, bottom);
+            if (_useGradient && _renderer is ImageRenderer) {
+              (_renderer as ImageRenderer).renderTriangle(
+                  _palette.randomColor, top, right, bottom, true);
+              (_renderer as ImageRenderer).renderTriangle(
+                  _palette.randomColor, top, left, bottom, true);
+            } else {
+              _renderer.renderTriangle(
+                  _palette.randomColor, top, right, bottom);
+              _renderer.renderTriangle(_palette.randomColor, top, left, bottom);
+            }
           }
         } else {
-          if (_useGradient && _renderer is ImageRenderer) {
-            (_renderer as ImageRenderer)
-                .renderTriangle(_palette.randomColor, top, right, left, true);
-            (_renderer as ImageRenderer).renderTriangle(
-                _palette.randomColor, right, bottom, left, true);
+          if (_palette is ImagePixelPalette) {
+            Point middle1 = Point.xyPoint((top.x + right.x + left.x) / 3.0,
+                (top.y + right.y + left.y) / 3.0);
+            Point middle2 = Point.xyPoint((right.x + bottom.x + left.x) / 3.0,
+                (right.y + bottom.y + left.y) / 3.0);
+
+            // final image = (_palette as ImagePixelPalette).source;
+            int ix1 = (middle1.x - _bounds.x).floor();
+            int iy1 = (middle1.y - _bounds.y).floor();
+            int ix2 = (middle2.x - _bounds.x).floor();
+            int iy2 = (middle2.y - _bounds.y).floor();
+
+            int index1 = ix1 + (_bounds.width.toInt() * iy1);
+            int index2 = ix2 + (_bounds.width.toInt() * iy2);
+
+            if (_useGradient && _renderer is ImageRenderer) {
+              (_renderer as ImageRenderer)
+                  .renderTriangle(_palette[index1], top, right, left, true);
+              (_renderer as ImageRenderer)
+                  .renderTriangle(_palette[index2], right, bottom, left, true);
+            } else {
+              _renderer.renderTriangle(_palette[index1], top, right, left);
+              _renderer.renderTriangle(_palette[index2], right, bottom, left);
+            }
           } else {
-            _renderer.renderTriangle(_palette.randomColor, top, right, left);
-            _renderer.renderTriangle(_palette.randomColor, right, bottom, left);
+            if (_useGradient && _renderer is ImageRenderer) {
+              (_renderer as ImageRenderer)
+                  .renderTriangle(_palette.randomColor, top, right, left, true);
+              (_renderer as ImageRenderer).renderTriangle(
+                  _palette.randomColor, right, bottom, left, true);
+            } else {
+              _renderer.renderTriangle(_palette.randomColor, top, right, left);
+              _renderer.renderTriangle(
+                  _palette.randomColor, right, bottom, left);
+            }
           }
         }
       }

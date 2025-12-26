@@ -8,7 +8,6 @@ import "package:image/image.dart" as img;
 import "package:image_blend_composites/blend_composite.dart";
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
-
 import "package:willshex_triangles/triangles/triangles.dart";
 
 /// Image generator for creating triangle-based images
@@ -81,6 +80,10 @@ class ImageGenerator {
           composite = img.decodeImage(await textureFile.readAsBytes());
         }
       }
+    }
+
+    if (composite != null && composite.numChannels != 4) {
+      composite = composite.convert(numChannels: 4);
     }
 
     if (store != null && name != null && !force) {
@@ -252,8 +255,6 @@ class ImageGenerator {
           return _drawHTiles(palette, composite, mode, width, height, r,
               annotate, format, addGradients,
               assetLoader: assetLoader, fs: fs);
-        case TrianglesType.overImage:
-          break;
         case TrianglesType.randomJiggle:
           return _drawRandomJiggleTiles(palette, composite, mode, width, height,
               r, annotate, format, addGradients,
@@ -364,11 +365,12 @@ class ImageGenerator {
     ImageRenderer renderer = ImageRenderer(image);
 
     TriangleTiles tiles = TriangleTiles.withRatio(
-        renderer,
-        palette,
-        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
-        r,
-        addGradients);
+      renderer,
+      palette,
+      Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+      r,
+      addGradients,
+    );
     tiles.defaultLayout();
 
     if (composite != null) {

@@ -16,7 +16,7 @@ class HtmlColourPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "HTML Colour",
-      paletteProvider: (_, __) async => NamedColorPalette(),
+      paletteProvider: () async => NamedColorPalette(),
     );
   }
 }

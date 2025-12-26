@@ -1,6 +1,7 @@
 import "dart:math";
 
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 import "package:willshex_triangles/triangles/image_renderer.dart";
 
 /// Triangle ribbons pattern generator
@@ -87,11 +88,28 @@ class TriangleRibbons {
       final Point p3 = _nextPoint(p2);
       _triangles.add(p3);
 
-      if (_useGradient && _renderer is ImageRenderer) {
-        (_renderer as ImageRenderer)
-            .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+      if (_palette is ImagePixelPalette) {
+        Point middle = Point.xyPoint(
+          (p1.x + p2.x + p3.x) / 3.0,
+          (p1.y + p2.y + p3.y) / 3.0,
+        );
+        // final image = (_palette as ImagePixelPalette).source;
+        int ix = (middle.x - _bounds.x).floor();
+        int iy = (middle.y - _bounds.y).floor();
+        int index = ix + (_bounds.width.toInt() * iy);
+        if (_useGradient && _renderer is ImageRenderer) {
+          (_renderer as ImageRenderer)
+              .renderTriangle(_palette[index], p1, p2, p3, true);
+        } else {
+          _renderer.renderTriangle(_palette[index], p1, p2, p3);
+        }
       } else {
-        _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+        if (_useGradient && _renderer is ImageRenderer) {
+          (_renderer as ImageRenderer)
+              .renderTriangle(_palette.randomColor, p1, p2, p3, true);
+        } else {
+          _renderer.renderTriangle(_palette.randomColor, p1, p2, p3);
+        }
       }
     }
   }

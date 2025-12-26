@@ -13,7 +13,7 @@ import "package:willshex_triangles/parts/palette_history_widget.dart";
 import "package:willshex_triangles/triangles/graphics/from_source.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
 
-typedef PaletteProvider = Future<ws.Palette?> Function(int width, int height);
+typedef PaletteProvider = Future<ws.Palette?> Function();
 
 class TriangleGeneratorPage extends StatefulWidget {
   final String title;
@@ -79,12 +79,12 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     addGradients = prefs.getBool("add_triangle_gradients") ?? true;
     annotate = prefs.getBool("annotate_with_dimensions") ?? false;
 
-    _generatePalette(width, height);
+    _generatePalette();
   }
 
-  Future<void> _generatePalette(int width, int height) async {
+  Future<void> _generatePalette() async {
     try {
-      final palette = await widget.paletteProvider(width, height);
+      final palette = await widget.paletteProvider();
       if (!mounted) {
         return;
       }
@@ -225,7 +225,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                         Navigator.pop(context);
                       }
 
-                      _generatePalette(width, height);
+                      _generatePalette();
                     },
                     icon: const Icon(Icons.add),
                     tooltip: "New Palette",
@@ -240,7 +240,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                         Navigator.pop(context);
                       }
 
-                      _generatePalette(width, height);
+                      _generatePalette();
                     },
                     icon: const Icon(Icons.delete_sweep),
                     tooltip: "Clear History",
@@ -290,9 +290,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     ),
-                    items: TrianglesType.values
-                        .where((type) => type != TrianglesType.overImage)
-                        .map((type) {
+                    items: TrianglesType.values.map((type) {
                       return DropdownMenuItem(
                         value: type,
                         child: Text(type.toString().split(".").last),
