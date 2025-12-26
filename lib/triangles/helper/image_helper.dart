@@ -6,9 +6,21 @@ import "package:image/image.dart" as img;
 /// Helper functions for fetching and decoding images
 class ImageHelper {
   /// Fetches an image from a URL and decodes it
-  static Future<img.Image> fetchAndDecodeImage(String url) async {
-    final response =
-        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+  /// If width and height are provided, they are used in the URL
+  static Future<img.Image> fetchAndDecodeImage(
+    String url, {
+    int? width,
+    int? height,
+  }) async {
+    // If dimensions are provided and URL is Lorem Picsum, use them
+    String finalUrl = url;
+    if (width != null && height != null && url.contains("picsum.photos")) {
+      finalUrl = "https://picsum.photos/$width/$height";
+    }
+
+    final response = await http
+        .get(Uri.parse(finalUrl))
+        .timeout(const Duration(seconds: 10));
 
     if (response.statusCode != 200) {
       throw Exception("Failed to fetch image: HTTP ${response.statusCode}");
