@@ -12,6 +12,8 @@ class ImagePixelPalette extends Palette {
   ImagePixelPalette(this._image)
       : _width = _image.width,
         _height = _image.height {
+    name = "Image Palette";
+
     // Pre-populate with a sample of colors from the image for compatibility
     // Sample every Nth pixel to get a representative palette
     const sampleRate = 20; // Sample every 20th pixel
