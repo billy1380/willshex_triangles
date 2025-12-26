@@ -11,7 +11,8 @@ import "package:willshex_triangles/pages/welcome_page.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
 import "package:willshex_triangles/parts/palette_history.dart";
 import "package:willshex_triangles/triangles/graphics/from_source.dart";
-import "package:willshex_triangles/triangles/graphics/palette_provider/fixed_palette_provider.dart";
+
+import "package:willshex_triangles/triangles/graphics/palette_provider/generator_palette_provider.dart";
 import "package:willshex_triangles/triangles/graphics/palette_provider/palette_provider.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
 
@@ -136,7 +137,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
       final storeImage = await ImageGenerator.generateImage(
         properties,
-        FixedPaletteProvider(_currentPalette!.colors),
+        GeneratorPaletteProvider(() async => _currentPalette),
         null,
         assetLoader: (path) async {
           return (await rootBundle.load(path)).buffer.asUint8List();
