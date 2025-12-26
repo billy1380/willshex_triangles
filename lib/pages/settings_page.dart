@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
+import "package:willshex_triangles/triangles/triangles.dart";
 
 class SettingsPage extends StatefulWidget {
   static const String routePath = "/settings";
@@ -33,10 +34,16 @@ class _SettingsPageState extends State<SettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      _widthController.text = (prefs.getInt("image_width") ?? 800).toString();
-      _heightController.text = (prefs.getInt("image_height") ?? 600).toString();
-      _sizeRatioController.text =
-          (prefs.getDouble("size_ratio") ?? 12.0).toString();
+      _widthController.text =
+          (prefs.getInt("image_width") ?? ImageGeneratorConfig.defaultWidth)
+              .toString();
+      _heightController.text =
+          (prefs.getInt("image_height") ?? ImageGeneratorConfig.defaultHeight)
+              .toString();
+      _sizeRatioController.text = (prefs.getDouble("size_ratio") ??
+              ImageGeneratorConfig.defaultRatioN /
+                  ImageGeneratorConfig.defaultRatioD)
+          .toString();
       _addTriangleGradients = prefs.getBool("add_triangle_gradients") ?? true;
       _annotateWithDimensions =
           prefs.getBool("annotate_with_dimensions") ?? false;
@@ -46,11 +53,18 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _saveSettings() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(
-        "image_width", int.tryParse(_widthController.text) ?? 800);
+        "image_width",
+        int.tryParse(_widthController.text) ??
+            ImageGeneratorConfig.defaultWidth);
     await prefs.setInt(
-        "image_height", int.tryParse(_heightController.text) ?? 600);
+        "image_height",
+        int.tryParse(_heightController.text) ??
+            ImageGeneratorConfig.defaultHeight);
     await prefs.setDouble(
-        "size_ratio", double.tryParse(_sizeRatioController.text) ?? 12.0);
+        "size_ratio",
+        double.tryParse(_sizeRatioController.text) ??
+            ImageGeneratorConfig.defaultRatioN /
+                ImageGeneratorConfig.defaultRatioD);
     await prefs.setBool("add_triangle_gradients", _addTriangleGradients);
     await prefs.setBool("annotate_with_dimensions", _annotateWithDimensions);
   }

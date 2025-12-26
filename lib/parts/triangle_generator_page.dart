@@ -62,7 +62,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     height = prefs.getInt("image_height") ?? 600;
 
     Object? ratioObj = prefs.get("size_ratio");
-    double ratioVal = 12.0;
+    double ratioVal =
+        ImageGeneratorConfig.defaultRatioN / ImageGeneratorConfig.defaultRatioD;
     if (ratioObj is int) {
       ratioVal = ratioObj.toDouble();
     } else if (ratioObj is double) {
