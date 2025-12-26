@@ -10,7 +10,6 @@ class TriangleDiamondTiles {
   final Rect _bounds;
   final double _lineLength;
   final bool _useGradient;
-  final Random _random = Random();
 
   TriangleDiamondTiles(this._renderer, this._palette, this._bounds,
       [this._useGradient = false])
@@ -44,7 +43,7 @@ class TriangleDiamondTiles {
         final Point bottom = Point.xyPoint(cx, cy + halfDiagonal);
         final Point left = Point.xyPoint(cx - halfDiagonal, cy);
 
-        final bool splitDiag = _random.nextBool();
+        final bool splitDiag = RandomHelper.random.nextBool();
 
         if (splitDiag) {
           if (_palette is ImagePixelPalette) {

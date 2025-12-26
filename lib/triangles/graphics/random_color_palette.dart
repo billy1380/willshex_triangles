@@ -10,10 +10,10 @@ class RandomColorPalette extends Palette {
   void generateRandomColors([int? count]) {
     final List<Color> colors = <Color>[];
 
-    count ??= 4 + Palette.random.nextInt(4);
+    count ??= 4 + RandomHelper.random.nextInt(4);
 
     // Generate different types of color palettes
-    final int paletteType = Palette.random.nextInt(4);
+    final int paletteType = RandomHelper.random.nextInt(4);
 
     switch (paletteType) {
       case 0:
@@ -40,9 +40,9 @@ class RandomColorPalette extends Palette {
   void generateWarmPalette(int count, List<Color> colors) {
     name = "Random Warm Colors";
     for (int i = 0; i < count; i++) {
-      final double r = 0.5 + Palette.random.nextDouble() * 0.5; // 0.5-1.0
-      final double g = Palette.random.nextDouble() * 0.6; // 0.0-0.6
-      final double b = Palette.random.nextDouble() * 0.3; // 0.0-0.3
+      final double r = 0.5 + RandomHelper.random.nextDouble() * 0.5; // 0.5-1.0
+      final double g = RandomHelper.random.nextDouble() * 0.6; // 0.0-0.6
+      final double b = RandomHelper.random.nextDouble() * 0.3; // 0.0-0.3
       colors.add(Color.rgbaColor(r, g, b));
     }
   }
@@ -51,9 +51,9 @@ class RandomColorPalette extends Palette {
   void generateCoolPalette(int count, List<Color> colors) {
     name = "Random Cool Colors";
     for (int i = 0; i < count; i++) {
-      final double r = Palette.random.nextDouble() * 0.4; // 0.0-0.4
-      final double g = Palette.random.nextDouble() * 0.7; // 0.0-0.7
-      final double b = 0.4 + Palette.random.nextDouble() * 0.6; // 0.4-1.0
+      final double r = RandomHelper.random.nextDouble() * 0.4; // 0.0-0.4
+      final double g = RandomHelper.random.nextDouble() * 0.7; // 0.0-0.7
+      final double b = 0.4 + RandomHelper.random.nextDouble() * 0.6; // 0.4-1.0
       colors.add(Color.rgbaColor(r, g, b));
     }
   }
@@ -61,13 +61,14 @@ class RandomColorPalette extends Palette {
   /// Generate complementary color palette
   void generateComplementaryPalette(int count, List<Color> colors) {
     name = "Random Complementary Colors";
-    final double baseHue = Palette.random.nextDouble();
+    final double baseHue = RandomHelper.random.nextDouble();
 
     for (int i = 0; i < count; i++) {
       final double hue = (baseHue + i * 0.1667) % 1.0; // 60-degree intervals
       final double saturation =
-          0.6 + Palette.random.nextDouble() * 0.4; // 0.6-1.0
-      final double value = 0.7 + Palette.random.nextDouble() * 0.3; // 0.7-1.0
+          0.6 + RandomHelper.random.nextDouble() * 0.4; // 0.6-1.0
+      final double value =
+          0.7 + RandomHelper.random.nextDouble() * 0.3; // 0.7-1.0
 
       final List<double> rgb = _hsvToRgb(hue, saturation, value);
       colors.add(Color.rgbaColor(rgb[0], rgb[1], rgb[2]));
@@ -77,13 +78,14 @@ class RandomColorPalette extends Palette {
   /// Generate analogous color palette
   void generateAnalogousPalette(int count, List<Color> colors) {
     name = "Random Analogous Colors";
-    final double baseHue = Palette.random.nextDouble();
+    final double baseHue = RandomHelper.random.nextDouble();
 
     for (int i = 0; i < count; i++) {
       final double hue = (baseHue + i * 0.125) % 1.0; // 45-degree intervals
       final double saturation =
-          0.5 + Palette.random.nextDouble() * 0.5; // 0.5-1.0
-      final double value = 0.6 + Palette.random.nextDouble() * 0.4; // 0.6-1.0
+          0.5 + RandomHelper.random.nextDouble() * 0.5; // 0.5-1.0
+      final double value =
+          0.6 + RandomHelper.random.nextDouble() * 0.4; // 0.6-1.0
 
       final List<double> rgb = _hsvToRgb(hue, saturation, value);
       colors.add(Color.rgbaColor(rgb[0], rgb[1], rgb[2]));

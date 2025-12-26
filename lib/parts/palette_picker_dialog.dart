@@ -3,23 +3,33 @@ import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:willshex_triangles/extensions/color_ex.dart";
 
 class PalettePickerDialog extends StatefulWidget {
-  const PalettePickerDialog({super.key});
+  final ws.Palette? initialPalette;
+
+  const PalettePickerDialog({super.key, this.initialPalette});
 
   @override
   State<PalettePickerDialog> createState() => _PalettePickerDialogState();
 }
 
 class _PalettePickerDialogState extends State<PalettePickerDialog> {
-  final TextEditingController _nameController =
-      TextEditingController(text: "My Custom Palette");
+  late TextEditingController _nameController;
   final List<ws.Color> _colors = [];
   int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 2; i++) {
-      _addColor();
+    _nameController = TextEditingController(
+      text: widget.initialPalette?.name ?? "My Custom Palette",
+    );
+
+    if (widget.initialPalette != null) {
+      _colors.addAll(widget.initialPalette!.colors);
+      _selectedIndex = _colors.isNotEmpty ? 0 : -1;
+    } else {
+      for (int i = 0; i < 2; i++) {
+        _addColor();
+      }
     }
   }
 
@@ -70,7 +80,10 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Text("Create Custom Palette",
+              Text(
+                  widget.initialPalette != null
+                      ? "Edit Palette"
+                      : "Create Custom Palette",
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 16),
               TextField(
@@ -149,12 +162,21 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
               const Divider(height: 32),
               if (currentColor != null) ...[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Text(
+                      "Edit Color",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     Container(
-                        height: 40, width: 40, color: currentColor.toColor()),
-                    const SizedBox(width: 16),
-                    Text("Edit Color",
-                        style: Theme.of(context).textTheme.titleMedium),
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: currentColor.toColor(),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black12),
+                      ),
+                    ),
                   ],
                 ),
                 Slider(

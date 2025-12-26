@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:willshex_triangles/extensions/color_ex.dart";
+import "package:willshex_triangles/triangles/graphics/from_source.dart";
 
 /// A widget that displays a list of palettes history.
 /// Each palette is shown with its name and a row of circular color previews.
@@ -14,6 +15,9 @@ class PaletteHistory extends StatelessWidget {
   /// Callback when a palette is deleted (optional)
   final ValueChanged<ws.Palette>? onDelete;
 
+  /// Callback when a palette is edited (optional)
+  final ValueChanged<ws.Palette>? onEdit;
+
   /// The currently selected palette (for highlighting)
   final ws.Palette? selectedPalette;
 
@@ -22,6 +26,7 @@ class PaletteHistory extends StatelessWidget {
     required this.palettes,
     this.onSelected,
     this.onDelete,
+    this.onEdit,
     this.selectedPalette,
   });
 
@@ -65,19 +70,41 @@ class PaletteHistory extends StatelessWidget {
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children:
-                      palette.colors.map((c) => _buildColorCircle(c)).toList(),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: palette.colors
+                        .map((c) => _buildColorCircle(c))
+                        .toList(),
+                  ),
                 ),
               ),
             ),
-            trailing: onDelete != null
-                ? IconButton(
-                    icon: const Icon(Icons.delete_outline, size: 20),
-                    onPressed: () => onDelete!(palette),
-                    color: isSelected ? colorScheme.onSecondaryContainer : null,
+            trailing: (onEdit != null || onDelete != null)
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (onEdit != null && palette is! FromSource)
+                        IconButton(
+                          icon: const Icon(Icons.edit_outlined, size: 20),
+                          onPressed: () => onEdit!(palette),
+                          color: isSelected
+                              ? colorScheme.onSecondaryContainer
+                              : null,
+                          tooltip: "Edit Palette",
+                        ),
+                      if (onDelete != null)
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 20),
+                          onPressed: () => onDelete!(palette),
+                          color: isSelected
+                              ? colorScheme.onSecondaryContainer
+                              : null,
+                          tooltip: "Delete Palette",
+                        ),
+                    ],
                   )
                 : null,
             onTap: onSelected != null ? () => onSelected!(palette) : null,

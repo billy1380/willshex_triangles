@@ -9,7 +9,7 @@ class TriangleRibbons {
   final Renderer _renderer;
   final Palette _palette;
   final Rect _bounds;
-  final Random _random = Random();
+
   final List<Point> _triangles = <Point>[];
   final int _count;
   final double _lineLength;
@@ -65,7 +65,7 @@ class TriangleRibbons {
   Point _nextPoint(Point p) {
     Point pN;
     do {
-      final double angle = _random.nextDouble() * _pi2;
+      final double angle = RandomHelper.random.nextDouble() * _pi2;
       pN = Point.xyPoint(
         p.x + (_lineLength * cos(angle)),
         p.y + (_lineLength * sin(angle)),

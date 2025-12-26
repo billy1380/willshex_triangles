@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "package:willshex_draw/willshex_draw.dart";
 import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 import "package:willshex_triangles/triangles/image_renderer.dart";
@@ -17,8 +15,6 @@ class TriangleRandomJiggleTiles {
 
   final List<Point> _jiggledPointsLeft = <Point>[];
   final List<Point> _jiggledPointsRight = <Point>[];
-
-  final Random _random = Random();
 
   /// Constructor with default ratio
   TriangleRandomJiggleTiles(this._renderer, this._palette, this._bounds,
@@ -43,8 +39,8 @@ class TriangleRandomJiggleTiles {
   /// Apply random jiggle to a point
   Point _jiggle(Point p) {
     return Point.xyPoint(
-      p.x + ((_random.nextDouble() - 0.5) * _lineLength),
-      p.y + ((_random.nextDouble() - 0.5) * _lineLength),
+      p.x + ((RandomHelper.random.nextDouble() - 0.5) * _lineLength),
+      p.y + ((RandomHelper.random.nextDouble() - 0.5) * _lineLength),
     );
   }
 

@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "package:willshex_draw/willshex_draw.dart";
 import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 import "package:willshex_triangles/triangles/image_renderer.dart";
@@ -11,7 +9,6 @@ class TriangleSquareTiles {
   final Rect _bounds;
   final double _lineLength;
   final bool _useGradient;
-  final Random _random = Random();
 
   /// Constructor with default ratio
   TriangleSquareTiles(this._renderer, this._palette, this._bounds,
@@ -47,7 +44,7 @@ class TriangleSquareTiles {
       Point p4 = Point.xyPoint(p1.x, p3.y);
 
       do {
-        topPointLeft = _random.nextBool();
+        topPointLeft = RandomHelper.random.nextBool();
         if (topPointLeft) {
           if (_palette is ImagePixelPalette) {
             Point middle1 = Point.xyPoint(

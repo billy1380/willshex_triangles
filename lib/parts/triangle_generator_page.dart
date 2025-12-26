@@ -10,8 +10,8 @@ import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:willshex_triangles/pages/welcome_page.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
 import "package:willshex_triangles/parts/palette_history.dart";
+import "package:willshex_triangles/parts/palette_picker_dialog.dart";
 import "package:willshex_triangles/triangles/graphics/from_source.dart";
-
 import "package:willshex_triangles/triangles/graphics/palette_provider/generator_palette_provider.dart";
 import "package:willshex_triangles/triangles/graphics/palette_provider/palette_provider.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
@@ -250,6 +250,28 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                     _generateImage();
                   });
                   Navigator.pop(context);
+                },
+                onEdit: (palette) async {
+                  final editedPalette = await showDialog<ws.Palette>(
+                    context: context,
+                    builder: (context) =>
+                        PalettePickerDialog(initialPalette: palette),
+                  );
+
+                  if (editedPalette != null && mounted) {
+                    setState(() {
+                      final index = _history.indexOf(palette);
+                      if (index != -1) {
+                        _history[index] = editedPalette;
+                        if (_currentPalette == palette) {
+                          _currentPalette = editedPalette;
+                        }
+                      }
+                    });
+                    if (_currentPalette == editedPalette) {
+                      _generateImage();
+                    }
+                  }
                 },
                 onDelete: _history.length <= 1
                     ? null

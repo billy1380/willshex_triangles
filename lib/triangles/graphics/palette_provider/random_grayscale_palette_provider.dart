@@ -7,7 +7,7 @@ class RandomGrayscalePaletteProvider implements PaletteProvider {
   @override
   Palette call() => Palette("Random Grayscale")
     ..addColors([
-      for (int i = 0; i < 2 + (Palette.random.nextInt(6)); i++)
-        Color.grayscaleColor(Palette.random.nextDouble())
+      for (int i = 0; i < 2 + (RandomHelper.random.nextInt(6)); i++)
+        Color.grayscaleColor(RandomHelper.random.nextDouble())
     ]);
 }
