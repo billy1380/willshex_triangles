@@ -1,28 +1,28 @@
 import "package:blend_composites/blend_composites.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:go_router/go_router.dart";
 import "package:image/image.dart" as img;
 import "package:logging/logging.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
+import "package:willshex_triangles/pages/welcome_page.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
 import "package:willshex_triangles/parts/palette_history_widget.dart";
 import "package:willshex_triangles/triangles/graphics/from_source.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
 
-typedef PaletteProvider = Future<ws.Palette> Function(int width, int height);
+typedef PaletteProvider = Future<ws.Palette?> Function(int width, int height);
 
 class TriangleGeneratorPage extends StatefulWidget {
   final String title;
   final PaletteProvider paletteProvider;
-  final VoidCallback? onAddPalette;
 
   const TriangleGeneratorPage({
     super.key,
     required this.title,
     required this.paletteProvider,
-    this.onAddPalette,
   });
 
   @override
@@ -72,29 +72,47 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     // N = 10000, D = ratioVal * 10000
     ratioN = 10000;
     ratioD = (ratioVal * 10000).toInt();
-    if (ratioD == 0) ratioD = 1;
+    if (ratioD == 0) {
+      ratioD = 1;
+    }
 
     addGradients = prefs.getBool("add_triangle_gradients") ?? true;
     annotate = prefs.getBool("annotate_with_dimensions") ?? false;
 
-    _generateRandomPalette(width, height);
+    _generatePalette(width, height);
   }
 
-  Future<void> _generateRandomPalette(int width, int height) async {
+  Future<void> _generatePalette(int width, int height) async {
     try {
       final palette = await widget.paletteProvider(width, height);
-      setState(() {
-        _currentPalette = palette;
-        _history.insert(0, _currentPalette!);
-      });
-      await _generateImage();
+      if (!mounted) {
+        return;
+      }
+
+      if (palette != null) {
+        setState(() {
+          _currentPalette = palette;
+          _history.insert(0, _currentPalette!);
+        });
+        await _generateImage();
+      } else {
+        if (_history.isEmpty) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            context.go(WelcomePage.routePath);
+          }
+        }
+      }
     } catch (e, stack) {
       _log.severe("Error generating palette", e, stack);
     }
   }
 
   Future<void> _generateImage() async {
-    if (_currentPalette == null) return;
+    if (_currentPalette == null) {
+      return;
+    }
 
     setState(() {
       _isGenerating = true;
@@ -203,12 +221,11 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                   ),
                   IconButton(
                     onPressed: () {
-                      if (widget.onAddPalette != null) {
-                        widget.onAddPalette!();
-                      } else {
-                        _generateRandomPalette(width, height);
+                      if (Navigator.canPop(context)) {
                         Navigator.pop(context);
                       }
+
+                      _generatePalette(width, height);
                     },
                     icon: const Icon(Icons.add),
                     tooltip: "New Palette",
@@ -218,7 +235,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                       setState(() {
                         _history.clear();
                       });
-                      _generateRandomPalette(width, height);
+                      _generatePalette(width, height);
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.delete_sweep),
