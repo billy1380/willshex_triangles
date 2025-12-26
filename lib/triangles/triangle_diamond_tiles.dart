@@ -34,20 +34,19 @@ class TriangleDiamondTiles {
     final double diagonal = _lineLength * sqrt2;
     final double halfDiagonal = diagonal / 2;
 
-    final int width = (_bounds.width / diagonal).floor() + 2;
-    final int height = (_bounds.height / diagonal).floor() + 2;
+    // Calculate how many diamonds we need to cover the canvas with extra margin
+    final int width = (_bounds.width / diagonal).ceil() + 2;
+    final int height = (_bounds.height / diagonal).ceil() + 2;
 
-    int i = 0;
-    do {
-      int j = 0;
+    // Simple nested loop for proper tiling
+    for (int i = -1; i < width; i++) {
+      for (int j = -1; j < height; j++) {
+        // Center position for this diamond
+        final Point center = Point.xyPoint(
+          origin.x + (i * diagonal) + halfDiagonal,
+          origin.y + (j * diagonal) + halfDiagonal,
+        );
 
-      // Start position for this column
-      Point center = Point.xyPoint(
-        origin.x + halfDiagonal + (i * diagonal),
-        origin.y + halfDiagonal + ((i % 2) * halfDiagonal),
-      );
-
-      do {
         // Diamond points: top, right, bottom, left
         final Point top = Point.xyPoint(center.x, center.y - halfDiagonal);
         final Point right = Point.xyPoint(center.x + halfDiagonal, center.y);
@@ -80,26 +79,15 @@ class TriangleDiamondTiles {
             _renderer.renderTriangle(_palette.randomColor, right, bottom, left);
           }
         }
-
-        center = Point.xyPoint(center.x, center.y + diagonal);
-        j++;
-      } while (j <= height);
-
-      i++;
-    } while (i <= width);
+      }
+    }
   }
 
-  /// Draw the default layout with gradient background
+  /// Draw the default layout without background
   void defaultLayout() {
     if (_palette.count < 1) return;
 
-    _renderer.renderGradientRect(
-      _bounds,
-      _palette[0],
-      _palette[1],
-      _palette[2],
-      _palette[3],
-    );
+    // No gradient background - just draw the diamonds
     draw(Point.xyPoint(_bounds.x, _bounds.y));
   }
 }
