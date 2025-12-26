@@ -18,7 +18,7 @@ class ColourLoversPage extends StatelessWidget {
       title: "COLOURLovers Palette",
       paletteProvider: (_, __) async {
         final palette = ColourLoversClientPalette();
-        await palette.getColors("random", 0, 1);
+        await palette.fetchColors("random", 0, 1);
         return palette;
       },
     );

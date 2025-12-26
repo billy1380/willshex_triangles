@@ -118,7 +118,7 @@ class Triangles {
   /// Create a new palette from COLOURlovers
   static Future<Palette> _newPalette() async {
     final palette = ColourLoversClientPalette();
-    await palette.getColors("random", 0, 1);
+    await palette.fetchColors("random", 0, 1);
     return palette;
   }
 }

@@ -13,7 +13,7 @@ class NamedColorPalette extends Palette {
 
   NamedColorPalette() : super("Named Colors", "named-colors") {
     // Generate between 1 and 6 colors (inclusive)
-    final int count = 1 + Palette.mRandom.nextInt(6);
+    final int count = 1 + Palette.random.nextInt(6);
 
     final List<Color> generatedColors = [];
 

@@ -1,14 +1,16 @@
-import "dart:convert";
 import "dart:async";
+import "dart:convert";
 import "dart:io";
-import "dart:math";
+
 import "package:http/http.dart" as http;
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/random_color_palette.dart";
+
 import "../graphics/color_utils.dart";
 
 /// Client for fetching color palettes from COLOURlovers API
-class ColourLoversClientPalette extends Palette {
+class ColourLoversClientPalette extends RandomColorPalette {
   static final Logger _log = Logger("ColourLoversClientPalette");
 
   /// Base URLs for the COLOURlovers API (try HTTPS first, then HTTP)
@@ -55,7 +57,8 @@ class ColourLoversClientPalette extends Palette {
   /// [type] - The type of palette to fetch (e.g., 'random', 'top', 'new')
   /// [numResults] - Number of results to fetch
   /// [resultOffset] - Offset for pagination
-  Future<void> getColors(String type, int resultOffset, int numResults) async {
+  Future<void> fetchColors(
+      String type, int resultOffset, int numResults) async {
     for (final String baseUrl in _baseUrls) {
       try {
         final String url =
@@ -87,6 +90,16 @@ class ColourLoversClientPalette extends Palette {
         if (response.statusCode == 200) {
           final List<dynamic> palettes =
               json.decode(response.body) as List<dynamic>;
+
+          if (palettes.isNotEmpty) {
+            final Map<String, dynamic> firstPalette = palettes.first;
+            if (firstPalette.containsKey("title")) {
+              name = firstPalette["title"];
+            }
+            if (firstPalette.containsKey("id")) {
+              externalId = firstPalette["id"].toString();
+            }
+          }
 
           final List<Color> colors = <Color>[];
           for (final Map<String, dynamic> palette in palettes) {
@@ -128,113 +141,11 @@ class ColourLoversClientPalette extends Palette {
     _addFallbackColors();
   }
 
-  /// Generate random colors locally as fallback
-  void _generateRandomColors() {
-    final List<Color> colors = <Color>[];
-    final Random random = Random();
-
-    // Generate different types of color palettes
-    final int paletteType = random.nextInt(4);
-
-    switch (paletteType) {
-      case 0: // Warm colors
-        _generateWarmPalette(colors, random);
-        break;
-      case 1: // Cool colors
-        _generateCoolPalette(colors, random);
-        break;
-      case 2: // Complementary colors
-        _generateComplementaryPalette(colors, random);
-        break;
-      case 3: // Analogous colors
-        _generateAnalogousPalette(colors, random);
-        break;
-    }
-
-    addColors(colors);
-    _log.info(
-        "Generated ${colors.length} random colors locally (palette type: $paletteType)");
-  }
-
-  /// Generate warm color palette (reds, oranges, yellows)
-  void _generateWarmPalette(List<Color> colors, Random random) {
-    for (int i = 0; i < 8; i++) {
-      final double r = 0.5 + random.nextDouble() * 0.5; // 0.5-1.0
-      final double g = random.nextDouble() * 0.6; // 0.0-0.6
-      final double b = random.nextDouble() * 0.3; // 0.0-0.3
-      colors.add(Color.rgbaColor(r, g, b));
-    }
-  }
-
-  /// Generate cool color palette (blues, greens, purples)
-  void _generateCoolPalette(List<Color> colors, Random random) {
-    for (int i = 0; i < 8; i++) {
-      final double r = random.nextDouble() * 0.4; // 0.0-0.4
-      final double g = random.nextDouble() * 0.7; // 0.0-0.7
-      final double b = 0.4 + random.nextDouble() * 0.6; // 0.4-1.0
-      colors.add(Color.rgbaColor(r, g, b));
-    }
-  }
-
-  /// Generate complementary color palette
-  void _generateComplementaryPalette(List<Color> colors, Random random) {
-    final double baseHue = random.nextDouble();
-
-    for (int i = 0; i < 6; i++) {
-      final double hue = (baseHue + i * 0.1667) % 1.0; // 60-degree intervals
-      final double saturation = 0.6 + random.nextDouble() * 0.4; // 0.6-1.0
-      final double value = 0.7 + random.nextDouble() * 0.3; // 0.7-1.0
-
-      final List<double> rgb = _hsvToRgb(hue, saturation, value);
-      colors.add(Color.rgbaColor(rgb[0], rgb[1], rgb[2]));
-    }
-  }
-
-  /// Generate analogous color palette
-  void _generateAnalogousPalette(List<Color> colors, Random random) {
-    final double baseHue = random.nextDouble();
-
-    for (int i = 0; i < 8; i++) {
-      final double hue = (baseHue + i * 0.125) % 1.0; // 45-degree intervals
-      final double saturation = 0.5 + random.nextDouble() * 0.5; // 0.5-1.0
-      final double value = 0.6 + random.nextDouble() * 0.4; // 0.6-1.0
-
-      final List<double> rgb = _hsvToRgb(hue, saturation, value);
-      colors.add(Color.rgbaColor(rgb[0], rgb[1], rgb[2]));
-    }
-  }
-
-  /// Convert HSV to RGB
-  List<double> _hsvToRgb(double h, double s, double v) {
-    final int i = (h * 6).floor();
-    final double f = h * 6 - i;
-    final double p = v * (1 - s);
-    final double q = v * (1 - f * s);
-    final double t = v * (1 - (1 - f) * s);
-
-    switch (i % 6) {
-      case 0:
-        return [v, t, p];
-      case 1:
-        return [q, v, p];
-      case 2:
-        return [p, v, t];
-      case 3:
-        return [p, q, v];
-      case 4:
-        return [t, p, v];
-      case 5:
-        return [v, p, q];
-      default:
-        return [v, t, p];
-    }
-  }
-
   /// Add fallback colors when API fails
   void _addFallbackColors() {
     // Try to generate random colors first, then fall back to predefined colors
     try {
-      _generateRandomColors();
+      generateRandomColors();
     } catch (e) {
       _log.warning(
           "Failed to generate random colors, using predefined colors: $e");

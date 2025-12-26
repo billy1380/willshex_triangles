@@ -10,7 +10,7 @@ import 'dart:math';
 import 'package:willshex_draw/src/color.dart';
 
 class Palette {
-  static final Random mRandom = Random();
+  static final Random random = Random();
 
   final List<Color> _colors = <Color>[];
 
@@ -31,5 +31,5 @@ class Palette {
 
   List<Color> get colors => List.unmodifiable(_colors);
 
-  Color get randomColor => this[mRandom.nextInt(count)];
+  Color get randomColor => this[random.nextInt(count)];
 }
