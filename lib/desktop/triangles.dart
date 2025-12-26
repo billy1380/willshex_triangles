@@ -30,7 +30,7 @@ class Triangles {
     if (args.isEmpty) {
       _log.info("Enter parameters or exit to exit");
       _log.info(
-          "e.g. w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1");
+          "e.g. w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=RandomColour&a=1");
     } else {
       command = args.first;
     }

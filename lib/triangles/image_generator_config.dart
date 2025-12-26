@@ -1,14 +1,14 @@
 /// Palette types for color generation
 enum PaletteType {
   randomNamed,
-  random,
+  randomColour,
   randomGrayScale,
   commaSeparatedList;
 
   /// Convert enum to string for serialization
   String get name => switch (this) {
         randomNamed => "RandomNamed",
-        random => "Random",
+        randomColour => "RandomColour",
         randomGrayScale => "RandomGrayScale",
         commaSeparatedList => "CommaSeparatedList",
       };
@@ -16,7 +16,7 @@ enum PaletteType {
   /// Parse string to enum
   static PaletteType fromString(String name) => switch (name) {
         "RandomNamed" => PaletteType.randomNamed,
-        "Random" => PaletteType.random,
+        "RandomColour" => PaletteType.randomColour,
         "RandomGrayScale" => PaletteType.randomGrayScale,
         "CommaSeparatedList" => PaletteType.commaSeparatedList,
         _ => PaletteType.randomNamed, // Default fallback

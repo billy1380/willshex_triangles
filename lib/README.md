@@ -34,7 +34,7 @@ final Map<String, String> properties = {
   'w': '800',           // width
   'h': '600',           // height
   't': 'RandomJiggle',  // triangle type
-  'p': 'Random', // palette type
+  'p': 'RandomColour', // palette type
   'f': 'png',           // format
   'rd': '12',           // ratio denominator
   'rn': '1',            // ratio numerator
