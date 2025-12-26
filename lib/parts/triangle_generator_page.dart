@@ -50,11 +50,14 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   late int ratioD;
   late bool addGradients;
   late bool annotate;
+  late final List<BlendingMode> sortedBlendModes;
 
   @override
   void initState() {
     super.initState();
     _loadSettingsAndGenerate();
+    sortedBlendModes = BlendingMode.values.toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
   }
 
   Future<void> _loadSettingsAndGenerate() async {
@@ -71,8 +74,6 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
       ratioVal = ratioObj;
     }
 
-    // Convert scale factor to fraction 1/ratioVal
-    // N = 10000, D = ratioVal * 10000
     ratioN = 10000;
     ratioD = (ratioVal * 10000).toInt();
     if (ratioD == 0) {
@@ -394,7 +395,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     ),
-                    items: BlendingMode.values.map((mode) {
+                    items: sortedBlendModes.map((mode) {
                       return DropdownMenuItem(
                         value: mode,
                         child: Text(mode.name),
