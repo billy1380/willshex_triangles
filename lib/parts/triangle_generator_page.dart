@@ -315,22 +315,22 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
             ),
           ),
           Expanded(
-            child: Center(
-              child: _isGenerating
-                  ? const CircularProgressIndicator()
-                  : _generatedImage != null
-                      ? InteractiveViewer(
-                          minScale: 0.1,
-                          maxScale: 20.0,
-                          boundaryMargin: const EdgeInsets.all(double.infinity),
-                          panEnabled: true,
+            child: _isGenerating
+                ? const Center(child: CircularProgressIndicator())
+                : _generatedImage != null
+                    ? InteractiveViewer(
+                        minScale: 0.1,
+                        maxScale: 20.0,
+                        boundaryMargin: const EdgeInsets.all(double.infinity),
+                        panEnabled: true,
+                        child: Center(
                           child: Image.memory(
                             _generatedImage!,
                             fit: BoxFit.contain,
                           ),
-                        )
-                      : const Text("Building Triangles..."),
-            ),
+                        ),
+                      )
+                    : const Center(child: Text("Building Triangles...")),
           ),
         ],
       ),
