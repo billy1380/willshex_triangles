@@ -58,8 +58,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   Future<void> _loadSettingsAndGenerate() async {
     final prefs = await SharedPreferences.getInstance();
-    width = prefs.getInt("image_width") ?? 800;
-    height = prefs.getInt("image_height") ?? 600;
+    width = prefs.getInt("image_width") ?? ImageGeneratorConfig.defaultWidth;
+    height = prefs.getInt("image_height") ?? ImageGeneratorConfig.defaultHeight;
 
     Object? ratioObj = prefs.get("size_ratio");
     double ratioVal =
