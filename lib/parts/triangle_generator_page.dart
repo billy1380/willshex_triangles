@@ -1,4 +1,5 @@
 import "package:blend_composites/blend_composites.dart";
+import "package:file_saver/file_saver.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:go_router/go_router.dart";
@@ -171,6 +172,21 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: _generatedImage != null
+          ? FloatingActionButton(
+              onPressed: () async {
+                await FileSaver.instance.saveFile(
+                  name: "triangles",
+                  bytes: _generatedImage!,
+                  fileExtension: "png",
+                  mimeType: MimeType.png,
+                );
+              },
+              tooltip: "Download Image",
+              child: const Icon(Icons.download),
+            )
+          : null,
       drawer: const AppDrawer(),
       appBar: AppBar(
         title: Text(widget.title),

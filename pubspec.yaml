@@ -27,6 +27,7 @@ dependencies:
   subtle_backgrounds:
     path: ./packages/subtle_backgrounds
   fs_shim: ^2.4.0+1
+  file_saver: ^0.3.1
 
 dev_dependencies:
   flutter_test:

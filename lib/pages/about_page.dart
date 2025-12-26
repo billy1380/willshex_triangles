@@ -27,9 +27,6 @@ class AboutPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("About",
-                    style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: 16),
                 Text("Project", style: Theme.of(context).textTheme.titleLarge),
                 const Text(
                     "Triangles is written and maintained by WillShex Limited for fun and because we like triangles (in case you have not noticed)."),
@@ -39,7 +36,8 @@ class AboutPage extends StatelessWidget {
                     "Triangles is built with Flutter and made possible by many open source libraries:"),
                 _buildLink(context, "Flutter", "https://flutter.dev/"),
                 _buildLink(context, "Romain Guy's blend modes",
-                    "http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/", isDead: true),,
+                    "http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/",
+                    isDead: true),
                 const SizedBox(height: 16),
                 Text("Images", style: Theme.of(context).textTheme.titleLarge),
                 const Text("Sample images and backgrounds are provided by:"),
