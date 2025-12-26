@@ -71,12 +71,12 @@ class AppDrawer extends StatelessWidget {
         const NavigationDrawerDestination(
           icon: Icon(Icons.image_outlined),
           selectedIcon: Icon(Icons.image),
-          label: Text("Image Palette"),
+          label: Text("Image"),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.palette_outlined),
           selectedIcon: Icon(Icons.palette),
-          label: Text("Image Sampler Palette"),
+          label: Text("Image Sampler"),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
