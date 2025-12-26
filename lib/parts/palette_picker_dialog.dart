@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
+import "package:willshex_triangles/extensions/color_ex.dart";
 
 class PalettePickerDialog extends StatefulWidget {
   const PalettePickerDialog({super.key});
@@ -11,18 +12,29 @@ class PalettePickerDialog extends StatefulWidget {
 class _PalettePickerDialogState extends State<PalettePickerDialog> {
   final TextEditingController _nameController =
       TextEditingController(text: "My Custom Palette");
-  final List<Color> _colors = [];
+  final List<ws.Color> _colors = [];
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 2; i++) {
+      _addColor();
+    }
+  }
 
   void _addColor() {
     setState(() {
-      Color nextColor;
+      ws.Color nextColor;
+
       if (_colors.isEmpty) {
-        nextColor = Colors.red;
+        nextColor = ws.NamedColorHelper.randomNamedColor;
       } else {
         // Simple related color: shift hue by ~30 degrees
-        final HSLColor lastHsl = HSLColor.fromColor(_colors.last);
-        nextColor = lastHsl.withHue((lastHsl.hue + 30) % 360).toColor();
+        final HSLColor lastHsl = HSLColor.fromColor(_colors.last.toColor());
+        final Color colour =
+            lastHsl.withHue((lastHsl.hue + 30) % 360).toColor();
+        nextColor = ws.Color.rgbaColor(colour.r, colour.g, colour.b, colour.a);
       }
       _colors.add(nextColor);
       _selectedIndex = _colors.length - 1;
@@ -31,13 +43,12 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
 
   void _usePalette() {
     final palette = ws.Palette(_nameController.text);
-    palette.addColors(
-        _colors.map((c) => ws.Color.rgbaColor(c.r, c.g, c.b, c.a)).toList());
+    palette.addColors(_colors);
 
     Navigator.of(context).pop(palette);
   }
 
-  void _updateSelectedColor(Color newColor) {
+  void _updateSelectedColor(ws.Color newColor) {
     setState(() {
       if (_selectedIndex >= 0 && _selectedIndex < _colors.length) {
         _colors[_selectedIndex] = newColor;
@@ -47,7 +58,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    Color? currentColor;
+    ws.Color? currentColor;
     if (_selectedIndex >= 0 && _selectedIndex < _colors.length) {
       currentColor = _colors[_selectedIndex];
     }
@@ -103,7 +114,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: color,
+                            color: color.toColor(),
                             borderRadius: BorderRadius.circular(8),
                             border: isSelected
                                 ? Border.all(
@@ -139,38 +150,48 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
               if (currentColor != null) ...[
                 Row(
                   children: [
-                    Container(height: 40, width: 40, color: currentColor),
+                    Container(
+                        height: 40, width: 40, color: currentColor.toColor()),
                     const SizedBox(width: 16),
                     Text("Edit Color",
                         style: Theme.of(context).textTheme.titleMedium),
                   ],
                 ),
                 Slider(
-                  value: currentColor.r * 255,
+                  value: currentColor.red * 255,
                   min: 0,
                   max: 255,
                   label: "R",
                   activeColor: Colors.red,
-                  onChanged: (v) =>
-                      _updateSelectedColor(currentColor!.withRed(v.toInt())),
+                  onChanged: (v) => _updateSelectedColor(ws.Color.rgbaColor(
+                      v / 255.0,
+                      currentColor!.green,
+                      currentColor.blue,
+                      currentColor.alpha)),
                 ),
                 Slider(
-                  value: currentColor.g * 255,
+                  value: currentColor.green * 255,
                   min: 0,
                   max: 255,
                   label: "G",
                   activeColor: Colors.green,
-                  onChanged: (v) =>
-                      _updateSelectedColor(currentColor!.withGreen(v.toInt())),
+                  onChanged: (v) => _updateSelectedColor(ws.Color.rgbaColor(
+                      currentColor!.red,
+                      v / 255.0,
+                      currentColor.blue,
+                      currentColor.alpha)),
                 ),
                 Slider(
-                  value: currentColor.b * 255,
+                  value: currentColor.blue * 255,
                   min: 0,
                   max: 255,
                   label: "B",
                   activeColor: Colors.blue,
-                  onChanged: (v) =>
-                      _updateSelectedColor(currentColor!.withBlue(v.toInt())),
+                  onChanged: (v) => _updateSelectedColor(ws.Color.rgbaColor(
+                      currentColor!.red,
+                      currentColor.green,
+                      v / 255.0,
+                      currentColor.alpha)),
                 ),
               ] else
                 const SizedBox(

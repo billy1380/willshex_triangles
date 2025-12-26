@@ -9,7 +9,7 @@ import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:willshex_triangles/pages/welcome_page.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
-import "package:willshex_triangles/parts/palette_history_widget.dart";
+import "package:willshex_triangles/parts/palette_history.dart";
 import "package:willshex_triangles/triangles/graphics/from_source.dart";
 import "package:willshex_triangles/triangles/graphics/palette_provider/fixed_palette_provider.dart";
 import "package:willshex_triangles/triangles/graphics/palette_provider/palette_provider.dart";
@@ -239,7 +239,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
             ),
             const Divider(),
             Expanded(
-              child: PaletteHistoryWidget(
+              child: PaletteHistory(
                 palettes: _history,
                 selectedPalette: _currentPalette,
                 onSelected: (palette) {

@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
+import "package:willshex_triangles/extensions/color_ex.dart";
 
 /// A widget that displays a list of palettes history.
 /// Each palette is shown with its name and a row of circular color previews.
-class PaletteHistoryWidget extends StatelessWidget {
+class PaletteHistory extends StatelessWidget {
   /// The list of palettes to display
   final List<ws.Palette> palettes;
 
@@ -16,7 +17,7 @@ class PaletteHistoryWidget extends StatelessWidget {
   /// The currently selected palette (for highlighting)
   final ws.Palette? selectedPalette;
 
-  const PaletteHistoryWidget({
+  const PaletteHistory({
     super.key,
     required this.palettes,
     this.onSelected,
@@ -92,12 +93,7 @@ class PaletteHistoryWidget extends StatelessWidget {
       width: 24,
       height: 24,
       decoration: BoxDecoration(
-        color: Color.fromARGB(
-          (c.alpha * 255).toInt(),
-          (c.red * 255).toInt(),
-          (c.green * 255).toInt(),
-          (c.blue * 255).toInt(),
-        ),
+        color: c.toColor(),
         shape: BoxShape.circle,
         border: Border.all(
           color: Colors.black12,
