@@ -223,7 +223,9 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     ),
-                    items: TrianglesType.values.map((type) {
+                    items: TrianglesType.values
+                        .where((type) => type != TrianglesType.overImage)
+                        .map((type) {
                       return DropdownMenuItem(
                         value: type,
                         child: Text(type.toString().split(".").last),

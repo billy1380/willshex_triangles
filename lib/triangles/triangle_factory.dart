@@ -51,9 +51,6 @@ class TriangleFactory {
         return ratio != null
             ? TriangleTilesOverImage.withRatio(renderer, palette, bounds, ratio)
             : TriangleTilesOverImage(renderer, palette, bounds);
-      // Add more cases as needed for other types
-      default:
-        throw ArgumentError("Unsupported TrianglesType: $type");
     }
   }
 }
