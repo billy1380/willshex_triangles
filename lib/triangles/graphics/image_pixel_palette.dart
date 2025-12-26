@@ -14,7 +14,7 @@ class ImagePixelPalette extends Palette {
         _height = _image.height {
     // Pre-populate with a sample of colors from the image for compatibility
     // Sample every Nth pixel to get a representative palette
-    final sampleRate = 20; // Sample every 20th pixel
+    const sampleRate = 20; // Sample every 20th pixel
     for (int y = 0; y < _height; y += sampleRate) {
       for (int x = 0; x < _width; x += sampleRate) {
         final pixel = _image.getPixel(x, y);
@@ -29,9 +29,6 @@ class ImagePixelPalette extends Palette {
       }
     }
   }
-
-  @override
-  int get count => super.count; // Now returns the count of sampled colors
 
   @override
   Color operator [](int index) {
