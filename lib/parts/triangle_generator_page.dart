@@ -235,8 +235,12 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                       setState(() {
                         _history.clear();
                       });
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+
                       _generatePalette(width, height);
-                      Navigator.pop(context);
                     },
                     icon: const Icon(Icons.delete_sweep),
                     tooltip: "Clear History",
