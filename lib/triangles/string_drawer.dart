@@ -205,7 +205,12 @@ class StringDrawer {
 
   /// Draw a string at the specified position
   void draw(img.Image dst, String s, int ox, int oy) {
-    if (_texture == null) return;
+    if (_texture == null) {
+      _log.warning("Cannot draw text: texture is null");
+      return;
+    }
+    _log.info(
+        "Drawing text: '$s' at ($ox, $oy), texture size: ${_texture!.width}x${_texture!.height}");
 
     int offset = 0;
 
@@ -220,13 +225,20 @@ class StringDrawer {
       final int x = charData["x"] ?? 0;
       final int y = charData["y"] ?? 0;
 
-      img.compositeImage(dst, _texture!,
-          srcX: x,
-          srcY: y,
-          srcW: width,
-          srcH: height,
-          dstX: ox + offset + xOffset,
-          dstY: oy + yOffset);
+      if (c == 0) {
+        _log.info(
+            "First char '$character' (${character.codeUnitAt(0)}): x=$x, y=$y, w=$width, h=$height, xoff=$xOffset, yoff=$yOffset");
+      }
+
+      // Extract the character region from the font texture
+      if (width > 0 && height > 0) {
+        final charImg =
+            img.copyCrop(_texture!, x: x, y: y, width: width, height: height);
+
+        // Composite the character onto the destination
+        img.compositeImage(dst, charImg,
+            dstX: ox + offset + xOffset, dstY: oy + yOffset);
+      }
 
       offset += getCharacterAdvance(character);
     }

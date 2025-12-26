@@ -458,6 +458,9 @@ class ImageGenerator {
       FileSystem? fs}) async {
     img.Image newer = img.Image(width: width, height: height, numChannels: 4);
 
+    // Fill with semi-transparent white background
+    img.fill(newer, color: img.ColorRgba8(255, 255, 255, 200));
+
     int dim = min(width, height);
     int th = dim ~/ 10;
     int fth = _fontSize(th);
