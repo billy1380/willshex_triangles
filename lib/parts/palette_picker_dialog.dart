@@ -11,7 +11,7 @@ class PalettePickerDialog extends StatefulWidget {
 class _PalettePickerDialogState extends State<PalettePickerDialog> {
   final TextEditingController _nameController =
       TextEditingController(text: "My Custom Palette");
-  final List<Color> _colors = [Colors.red, Colors.green, Colors.blue];
+  final List<Color> _colors = [];
   int _selectedIndex = 0;
 
   void _addColor() {
