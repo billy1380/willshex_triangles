@@ -1,10 +1,11 @@
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/from_source.dart";
 
 import "color_cut_quantizer.dart";
 import "color_utils.dart";
 
 /// A helper class to extract prominent colors from an image
-class CanvasSamplePalette extends Palette {
+class CanvasSamplePalette<T> extends Palette implements FromSource<T> {
   static const int _defaultCalculateNumberColors = 16;
 
   static const double _targetDarkLuma = 0.26;
@@ -24,6 +25,7 @@ class CanvasSamplePalette extends Palette {
   static const double _minVibrantSaturation = 0.35;
 
   final Map<int, int> _populations;
+  final T? _source;
 
   Color? _vibrantColor;
   Color? _mutedColor;
@@ -33,13 +35,18 @@ class CanvasSamplePalette extends Palette {
   Color? _lightMutedColor;
 
   /// Generate a CanvasSamplePalette from pixel data using the default number of colors
-  static CanvasSamplePalette generate(List<int> pixels) {
-    return generateWithColors(pixels, _defaultCalculateNumberColors);
+  static CanvasSamplePalette generate<T>(List<int> pixels, {T? source}) {
+    return generateWithColors<T>(
+      pixels,
+      _defaultCalculateNumberColors,
+      source: source,
+    );
   }
 
   /// Generate a CanvasSamplePalette from pixel data using the specified number of colors
-  static CanvasSamplePalette generateWithColors(
-      List<int> pixels, int numColors) {
+  static CanvasSamplePalette generateWithColors<T>(
+      List<int> pixels, int numColors,
+      {T? source}) {
     if (numColors < 1) {
       throw ArgumentError("numColors must be 1 or greater");
     }
@@ -49,15 +56,20 @@ class CanvasSamplePalette extends Palette {
         ColorCutQuantizer.fromPixels(pixels, numColors);
 
     // Now return a CanvasSamplePalette instance
-    return CanvasSamplePalette._(
+    return CanvasSamplePalette<T>._(
       quantizer.quantizedColors,
       quantizer.quantizedColorPopulations,
+      source: source,
     );
   }
 
   /// Private constructor
-  CanvasSamplePalette._(List<Color> colors, Map<int, int> populations)
-      : _populations = populations {
+  CanvasSamplePalette._(
+    List<Color> colors,
+    Map<int, int> populations, {
+    T? source,
+  })  : _populations = populations,
+        _source = source {
     name = "Image Sample Palette";
 
     // Add colors to the parent palette
@@ -356,4 +368,7 @@ class CanvasSamplePalette extends Palette {
 
     return sum / sumWeight;
   }
+
+  @override
+  T? get source => _source;
 }

@@ -1,19 +1,19 @@
 import "package:image/image.dart" as img;
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/from_source.dart";
 
 /// A palette that samples colors directly from an image's pixel data
 /// This palette pretends to have a reasonable count but samples from the image
 /// based on the requested index mapped to pixel positions
-class ImagePixelPalette extends Palette {
+class ImagePixelPalette extends Palette implements FromSource<img.Image> {
   final img.Image _image;
   final int _width;
   final int _height;
 
-  ImagePixelPalette(this._image, {String? source})
+  ImagePixelPalette(this._image)
       : _width = _image.width,
         _height = _image.height {
     name = "Image Palette";
-    this.source = source;
 
     // Pre-populate with a sample of colors from the image for compatibility
     // Sample every Nth pixel to get a representative palette
@@ -57,4 +57,7 @@ class ImagePixelPalette extends Palette {
       pixel.a / 255.0,
     );
   }
+
+  @override
+  img.Image get source => _image;
 }

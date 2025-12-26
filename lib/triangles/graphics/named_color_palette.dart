@@ -11,8 +11,7 @@ class NamedColorPalette extends Palette {
   static const double _minDistance = 0.4;
   static const int _maxRetries = 3;
 
-  NamedColorPalette()
-      : super("Named Colors", "named-colors", "NamedColorHelper") {
+  NamedColorPalette() : super("Named Colors", "named-colors") {
     // Generate between 1 and 6 colors (inclusive)
     final int count = 1 + Palette.mRandom.nextInt(6);
 

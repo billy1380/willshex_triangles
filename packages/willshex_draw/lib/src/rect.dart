@@ -3,7 +3,7 @@
 //  willshex_draw
 //
 //  Created by William Shakour on 21 Jun 2013.
-//  Copyright © 2013 SPACEHOPPER STUDIOS LTD. All rights reserved.
+//  Copyright © 2013 WillShex Limited. All rights reserved.
 //
 
 import 'package:willshex_draw/src/point.dart';

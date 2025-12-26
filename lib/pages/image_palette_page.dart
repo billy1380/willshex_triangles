@@ -24,7 +24,7 @@ class ImagePalettePage extends StatelessWidget {
           width: width,
           height: height,
         );
-        return ImagePixelPalette(image, source: url);
+        return ImagePixelPalette(image);
       },
     );
   }

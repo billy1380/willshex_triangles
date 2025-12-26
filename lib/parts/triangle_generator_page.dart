@@ -1,12 +1,14 @@
 import "package:blend_composites/blend_composites.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:image/image.dart" as img;
 import "package:logging/logging.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:willshex_triangles/parts/app_drawer.dart";
 import "package:willshex_triangles/parts/palette_history_widget.dart";
+import "package:willshex_triangles/triangles/graphics/from_source.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
 
 typedef PaletteProvider = Future<ws.Palette> Function(int width, int height);
@@ -14,11 +16,13 @@ typedef PaletteProvider = Future<ws.Palette> Function(int width, int height);
 class TriangleGeneratorPage extends StatefulWidget {
   final String title;
   final PaletteProvider paletteProvider;
+  final VoidCallback? onAddPalette;
 
   const TriangleGeneratorPage({
     super.key,
     required this.title,
     required this.paletteProvider,
+    this.onAddPalette,
   });
 
   @override
@@ -40,7 +44,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   late int width;
   late int height;
-  late int ratio;
+  late int ratioN;
+  late int ratioD;
   late bool addGradients;
   late bool annotate;
 
@@ -54,7 +59,21 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     final prefs = await SharedPreferences.getInstance();
     width = prefs.getInt("image_width") ?? 800;
     height = prefs.getInt("image_height") ?? 600;
-    ratio = prefs.getInt("size_ratio") ?? 12;
+
+    Object? ratioObj = prefs.get("size_ratio");
+    double ratioVal = 12.0;
+    if (ratioObj is int) {
+      ratioVal = ratioObj.toDouble();
+    } else if (ratioObj is double) {
+      ratioVal = ratioObj;
+    }
+
+    // Convert scale factor to fraction 1/ratioVal
+    // N = 10000, D = ratioVal * 10000
+    ratioN = 10000;
+    ratioD = (ratioVal * 10000).toInt();
+    if (ratioD == 0) ratioD = 1;
+
     addGradients = prefs.getBool("add_triangle_gradients") ?? true;
     annotate = prefs.getBool("annotate_with_dimensions") ?? false;
 
@@ -95,7 +114,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
         ImageGeneratorConfig.typeKey: _selectedType.name,
         ImageGeneratorConfig.widthKey: width.toString(),
         ImageGeneratorConfig.heightKey: height.toString(),
-        ImageGeneratorConfig.ratioDKey: ratio.toString(),
+        ImageGeneratorConfig.ratioNKey: ratioN.toString(),
+        ImageGeneratorConfig.ratioDKey: ratioD.toString(),
         ImageGeneratorConfig.addGameGradientsKey: addGradients ? "1" : "0",
         ImageGeneratorConfig.annotateKey: annotate ? "1" : "0",
         ImageGeneratorConfig.paletteKey: PaletteType.commaSeparatedList.name,
@@ -132,6 +152,13 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     }
   }
 
+  img.Image? get _paletteSource {
+    if (_currentPalette is FromSource) {
+      return (_currentPalette as FromSource).source;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +166,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          if (_currentPalette?.source != null)
+          if (_paletteSource != null)
             IconButton(
               icon:
                   Icon(_showImageOverlay ? Icons.image : Icons.image_outlined),
@@ -176,8 +203,12 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                   ),
                   IconButton(
                     onPressed: () {
-                      _generateRandomPalette(width, height);
-                      Navigator.pop(context);
+                      if (widget.onAddPalette != null) {
+                        widget.onAddPalette!();
+                      } else {
+                        _generateRandomPalette(width, height);
+                        Navigator.pop(context);
+                      }
                     },
                     icon: const Icon(Icons.add),
                     tooltip: "New Palette",
@@ -348,8 +379,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                               ),
                             ),
                           ),
-                          if (_showImageOverlay &&
-                              _currentPalette?.source != null)
+                          if (_showImageOverlay && _paletteSource != null)
                             Positioned(
                               bottom: 20,
                               right: 20,
@@ -367,8 +397,8 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                                     ),
                                   ],
                                 ),
-                                child: _buildPaletteSourceImage(
-                                    _currentPalette!.source!),
+                                child:
+                                    _buildPaletteSourceImage(_paletteSource!),
                               ),
                             ),
                         ],
@@ -380,23 +410,13 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     );
   }
 
-  Widget _buildPaletteSourceImage(String source) {
-    if (source.startsWith("http")) {
-      return Image.network(source, fit: BoxFit.cover);
-    } else {
-      // Assuming file path if not http
-      // This requires dart:io but we are in a widget, Image.asset or Image.file?
-      // Given previous context, it is likely network or specialized.
-      // But for safety let's assume network for now as that's the primary use case requested (Picsum)
-      // If it is a local file path (from file picker maybe?), Image.file would be needed.
-      // However, we don't import dart:io. Let's try Image.network for http and just text for others?
-      // Or check if we can support local files.
-      // The user mentioned "palette colours are picked by the user from a colour picker" later.
-      // "palettes generated from images" -> mostly implies the ImagePalettePage or similar.
-      return Image.network(source, fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) {
-        return const Center(child: Icon(Icons.broken_image));
-      });
+  Widget _buildPaletteSourceImage(dynamic source) {
+    if (source is img.Image) {
+      return Image.memory(
+        Uint8List.fromList(img.encodePng(source)),
+        fit: BoxFit.cover,
+      );
     }
+    return const SizedBox();
   }
 }

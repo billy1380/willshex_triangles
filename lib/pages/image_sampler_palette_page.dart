@@ -24,7 +24,10 @@ class ImageSamplerPalettePage extends StatelessWidget {
           width: width,
           height: height,
         );
-        return CanvasSamplePalette.generate(image.toArgbPixels());
+        return CanvasSamplePalette.generate(
+          image.toArgbPixels(),
+          source: image,
+        );
       },
     );
   }

@@ -68,7 +68,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text("Got it"),
+                child: const Text("Select"),
                 onPressed: () {
                   Navigator.of(context).pop(tempColor);
                 },
@@ -94,6 +94,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
         builder: (context) => TriangleGeneratorPage(
           title: palette.name ?? "Custom",
           paletteProvider: (_, __) async => palette,
+          onAddPalette: () => Navigator.pop(context),
         ),
       ),
     );
@@ -138,22 +139,92 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
                     );
                   }
                   final color = _colors[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.black12),
-                    ),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        icon: const Icon(Icons.close,
-                            size: 16, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            _colors.removeAt(index);
+                  return InkWell(
+                    onTap: () async {
+                      Color pickerColor = color;
+                      final Color? newColor = await showDialog<Color>(
+                          context: context,
+                          builder: (context) {
+                            Color tempColor = pickerColor;
+                            return AlertDialog(
+                              title: const Text("Pick a color"),
+                              content: SingleChildScrollView(
+                                child: StatefulBuilder(
+                                    builder: (context, setState) {
+                                  return Column(
+                                    children: [
+                                      Container(
+                                          height: 50,
+                                          width: 50,
+                                          color: tempColor),
+                                      Slider(
+                                        value: tempColor.r * 255,
+                                        min: 0,
+                                        max: 255,
+                                        label: "R",
+                                        activeColor: Colors.red,
+                                        onChanged: (v) => setState(() =>
+                                            tempColor =
+                                                tempColor.withRed(v.toInt())),
+                                      ),
+                                      Slider(
+                                        value: tempColor.g * 255,
+                                        min: 0,
+                                        max: 255,
+                                        label: "G",
+                                        activeColor: Colors.green,
+                                        onChanged: (v) => setState(() =>
+                                            tempColor =
+                                                tempColor.withGreen(v.toInt())),
+                                      ),
+                                      Slider(
+                                        value: tempColor.b * 255,
+                                        min: 0,
+                                        max: 255,
+                                        label: "B",
+                                        activeColor: Colors.blue,
+                                        onChanged: (v) => setState(() =>
+                                            tempColor =
+                                                tempColor.withBlue(v.toInt())),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text("Select"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(tempColor);
+                                  },
+                                ),
+                              ],
+                            );
                           });
-                        },
+
+                      if (newColor != null) {
+                        setState(() {
+                          _colors[index] = newColor;
+                        });
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black12),
+                      ),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.close,
+                              size: 16, color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              _colors.removeAt(index);
+                            });
+                          },
+                        ),
                       ),
                     ),
                   );

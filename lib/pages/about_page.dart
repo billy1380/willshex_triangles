@@ -28,7 +28,7 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text("Project", style: Theme.of(context).textTheme.titleLarge),
             const Text(
-                "Triangles is written and maintained by SPACEHOPPER STUDIOS LTD for fun and because we like triangles (in case you have not noticed)."),
+                "Triangles is written and maintained by WillShex Limited for fun and because we like triangles (in case you have not noticed)."),
             const SizedBox(height: 16),
             Text("Software", style: Theme.of(context).textTheme.titleLarge),
             const Text(
@@ -52,9 +52,6 @@ class AboutPage extends StatelessWidget {
             Text("Legal", style: Theme.of(context).textTheme.titleLarge),
             const Text(
                 "You can use any of the images you generate/download for free for all commercial and non-commercial projects. We would love to hear from you about how you are using the images and for what projects. If you feel like giving us a mention we would really appreciate that too."),
-            const SizedBox(height: 8),
-            const Text(
-                "SPACEHOPPER STUDIOS Logo is property of SPACEHOPPER STUDIOS LTD."),
           ],
         ),
       ),

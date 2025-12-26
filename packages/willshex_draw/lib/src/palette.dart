@@ -3,7 +3,7 @@
 //  willshex_draw
 //
 //  Created by William Shakour on 21 Jun 2013.
-//  Copyright © 2013 SPACEHOPPER STUDIOS LTD. All rights reserved.
+//  Copyright © 2013 WillShex Limited. All rights reserved.
 //
 import 'dart:math';
 
@@ -16,9 +16,8 @@ class Palette {
 
   String? name;
   String? externalId;
-  String? source;
 
-  Palette([this.name, this.externalId, this.source]);
+  Palette([this.name, this.externalId]);
 
   void addColors(List<Color> colors) {
     for (int i = 0; i < colors.length; i++) {
