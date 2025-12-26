@@ -20,31 +20,38 @@ class WelcomePage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(32.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Our triangles wallpaper project!",
-                style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: 16),
-            const Text(
-                "You can generate many variations of images with different colours and textures. Check out some of the samples below to get an idea."),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSample(context, "samples/19.jpeg"),
-                _buildSample(context, "samples/33.jpeg"),
-                _buildSample(context, "samples/29.jpeg"),
-                _buildSample(context, "samples/32.jpeg"),
+                Text("Our triangles wallpaper project!",
+                    style: Theme.of(context).textTheme.headlineSmall),
+                const SizedBox(height: 16),
+                const Text(
+                    "You can generate many variations of images with different colours and textures. Check out some of the samples below to get an idea."),
+                const SizedBox(height: 24),
+                Center(
+                  child: Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      _buildSample(context, "samples/19.jpeg"),
+                      _buildSample(context, "samples/33.jpeg"),
+                      _buildSample(context, "samples/29.jpeg"),
+                      _buildSample(context, "samples/32.jpeg"),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                    "To begin, just select a pattern from the types menu and get generating. Make changes by refreshing the palette or refreshing the positions of the triangles and colours."),
+                const SizedBox(height: 16),
+                const Text("Enjoy!"),
               ],
             ),
-            const SizedBox(height: 24),
-            const Text(
-                "To begin, just select a pattern from the types menu and get generating. Make changes by refreshing the palette or refreshing the positions of the triangles and colours."),
-            const SizedBox(height: 16),
-            const Text("Enjoy!"),
-          ],
+          ),
         ),
       ),
     );

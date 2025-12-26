@@ -26,7 +26,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
       paletteProvider: GeneratorPaletteProvider(() async {
         final Palette? palette = await showDialog<Palette>(
           context: context,
-          barrierDismissible: false,
+          barrierDismissible: true,
           builder: (context) => const PalettePickerDialog(),
         );
 

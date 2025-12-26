@@ -254,6 +254,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                 onEdit: (palette) async {
                   final editedPalette = await showDialog<ws.Palette>(
                     context: context,
+                    barrierDismissible: true,
                     builder: (context) =>
                         PalettePickerDialog(initialPalette: palette),
                   );
