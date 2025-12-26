@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:willshex_triangles/pages/about_page.dart";
 import "package:willshex_triangles/pages/random_palette_page.dart";
+import "package:willshex_triangles/pages/random_grayscale_palette_page.dart";
 import "package:willshex_triangles/pages/html_colour_page.dart";
 import "package:willshex_triangles/pages/image_palette_page.dart";
 import "package:willshex_triangles/pages/palette_picker_page.dart";
@@ -75,6 +76,11 @@ class AppDrawer extends StatelessWidget {
           label: Text("Random Palette"),
         ),
         const NavigationDrawerDestination(
+          icon: Icon(Icons.contrast_outlined),
+          selectedIcon: Icon(Icons.contrast),
+          label: Text("Random Grayscale"),
+        ),
+        const NavigationDrawerDestination(
           icon: Icon(Icons.image_outlined),
           selectedIcon: Icon(Icons.image),
           label: Text("Image"),
@@ -107,10 +113,11 @@ class AppDrawer extends StatelessWidget {
     if (location.startsWith(PalettePickerPage.routePath)) return 1;
     if (location.startsWith(HtmlColourPage.routePath)) return 2;
     if (location.startsWith(RandomPalettePage.routePath)) return 3;
-    if (location.startsWith(ImagePalettePage.routePath)) return 4;
-    if (location.startsWith(ImageSamplerPalettePage.routePath)) return 5;
-    if (location.startsWith(SettingsPage.routePath)) return 6;
-    if (location.startsWith(AboutPage.routePath)) return 7;
+    if (location.startsWith(RandomGrayscalePalettePage.routePath)) return 4;
+    if (location.startsWith(ImagePalettePage.routePath)) return 5;
+    if (location.startsWith(ImageSamplerPalettePage.routePath)) return 6;
+    if (location.startsWith(SettingsPage.routePath)) return 7;
+    if (location.startsWith(AboutPage.routePath)) return 8;
     return 0; // Default
   }
 
@@ -125,12 +132,14 @@ class AppDrawer extends StatelessWidget {
       case 3:
         return RandomPalettePage.routePath;
       case 4:
-        return ImagePalettePage.routePath;
+        return RandomGrayscalePalettePage.routePath;
       case 5:
-        return ImageSamplerPalettePage.routePath;
+        return ImagePalettePage.routePath;
       case 6:
-        return SettingsPage.routePath;
+        return ImageSamplerPalettePage.routePath;
       case 7:
+        return SettingsPage.routePath;
+      case 8:
         return AboutPage.routePath;
       default:
         return WelcomePage.routePath;

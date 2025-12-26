@@ -53,11 +53,6 @@ class _SettingsPageState extends State<SettingsPage> {
         "size_ratio", double.tryParse(_sizeRatioController.text) ?? 12.0);
     await prefs.setBool("add_triangle_gradients", _addTriangleGradients);
     await prefs.setBool("annotate_with_dimensions", _annotateWithDimensions);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Settings saved")),
-      );
-    }
   }
 
   @override
@@ -74,19 +69,31 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               children: [
                 Expanded(
-                  child: _buildTextField("Width", _widthController,
-                      keyboardType: TextInputType.number),
+                  child: _buildTextField(
+                    "Width",
+                    _widthController,
+                    keyboardType: TextInputType.number,
+                    onChanged: (_) => _saveSettings(),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: _buildTextField("Height", _heightController,
-                      keyboardType: TextInputType.number),
+                  child: _buildTextField(
+                    "Height",
+                    _heightController,
+                    keyboardType: TextInputType.number,
+                    onChanged: (_) => _saveSettings(),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            _buildTextField("Scale Factor", _sizeRatioController,
-                keyboardType: TextInputType.number),
+            _buildTextField(
+              "Scale Factor",
+              _sizeRatioController,
+              keyboardType: TextInputType.number,
+              onChanged: (_) => _saveSettings(),
+            ),
             const SizedBox(height: 16),
             SwitchListTile(
               contentPadding: const EdgeInsets.all(0),
@@ -96,6 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() {
                   _addTriangleGradients = value ?? false;
                 });
+                _saveSettings();
               },
             ),
             const SizedBox(height: 16),
@@ -107,27 +115,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() {
                   _annotateWithDimensions = value ?? false;
                 });
+                _saveSettings();
               },
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      // Reset logic
-                    },
-                    child: const Text("Reset"),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _saveSettings,
-                    child: const Text("Save"),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -136,12 +125,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text}) {
+      {TextInputType keyboardType = TextInputType.text,
+      ValueChanged<String>? onChanged}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
         TextField(
+          onChanged: onChanged,
           controller: controller,
           keyboardType: keyboardType,
           decoration: InputDecoration(

@@ -1,11 +1,12 @@
 import "dart:io";
+
 import "package:flutter_test/flutter_test.dart";
+import "package:image/image.dart" as img;
+import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/generator_palette_provider.dart";
 import "package:willshex_triangles/triangles/image_generator.dart";
 import "package:willshex_triangles/triangles/image_generator_config.dart";
-import "package:willshex_draw/willshex_draw.dart";
-
-import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
-import "package:image/image.dart" as img;
 
 void main() {
   test("ImageGenerator generates a PNG image", () async {
@@ -22,7 +23,8 @@ void main() {
 
     final format = await ImageGenerator.generate(
       properties,
-      () async => Palette("test"), // Mock palette supplier
+      GeneratorPaletteProvider(() async => Palette("test")
+        ..addColors([Color.grayscaleColor(0.5)])), // Mock palette supplier
       sink,
       null, // store
     );
@@ -46,7 +48,6 @@ void main() {
       ImageGeneratorConfig.heightKey: "50",
       ImageGeneratorConfig.typeKey: "Ribbons",
       ImageGeneratorConfig.formatKey: "jpg",
-      ImageGeneratorConfig.paletteKey: "Random Named",
     };
 
     final tempFile = File("test_output.jpg");
@@ -54,7 +55,8 @@ void main() {
 
     final format = await ImageGenerator.generate(
       properties,
-      () async => Palette("test"),
+      GeneratorPaletteProvider(
+          () async => Palette("test")..addColors([Color.grayscaleColor(0.5)])),
       sink,
       null,
     );
@@ -86,7 +88,8 @@ void main() {
 
     final format = await ImageGenerator.generate(
       properties,
-      () async => Palette("test"),
+      GeneratorPaletteProvider(
+          () async => Palette("test")..addColors([Color.grayscaleColor(0.5)])),
       sink,
       null,
     );
@@ -109,7 +112,6 @@ void main() {
       ImageGeneratorConfig.heightKey: "50",
       ImageGeneratorConfig.typeKey: "Tiles",
       ImageGeneratorConfig.formatKey: "png",
-      ImageGeneratorConfig.paletteKey: "Random Colour",
     };
 
     final tempFile = File("test_output_ipp.png");
@@ -122,7 +124,7 @@ void main() {
 
     final format = await ImageGenerator.generate(
       properties,
-      () async => palette,
+      GeneratorPaletteProvider(() async => palette),
       sink,
       null,
     );

@@ -3,6 +3,7 @@ import "package:go_router/go_router.dart";
 import "package:willshex_draw/willshex_draw.dart";
 import "package:willshex_triangles/parts/palette_picker_dialog.dart";
 import "package:willshex_triangles/parts/triangle_generator_page.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/generator_palette_provider.dart";
 
 class PalettePickerPage extends StatefulWidget {
   static const String routePath = "/palettepicker";
@@ -22,7 +23,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "Palette Picker",
-      paletteProvider: () async {
+      paletteProvider: GeneratorPaletteProvider(() async {
         final Palette? palette = await showDialog<Palette>(
           context: context,
           barrierDismissible: false,
@@ -30,7 +31,7 @@ class _PalettePickerPageState extends State<PalettePickerPage> {
         );
 
         return palette;
-      },
+      }),
     );
   }
 }

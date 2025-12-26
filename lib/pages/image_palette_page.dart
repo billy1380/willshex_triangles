@@ -4,6 +4,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import "package:willshex_triangles/parts/triangle_generator_page.dart";
 import "package:willshex_triangles/triangles/graphics/image_pixel_palette.dart";
 import "package:willshex_triangles/triangles/helper/image_helper.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/generator_palette_provider.dart";
 
 class ImagePalettePage extends StatelessWidget {
   static const String routePath = "/imagepalette";
@@ -18,7 +19,7 @@ class ImagePalettePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "Image Palette",
-      paletteProvider: () async {
+      paletteProvider: GeneratorPaletteProvider(() async {
         final prefs = await SharedPreferences.getInstance();
 
         final width = prefs.getInt("image_width") ?? 800;
@@ -31,7 +32,7 @@ class ImagePalettePage extends StatelessWidget {
           height: height,
         );
         return ImagePixelPalette(image);
-      },
+      }),
     );
   }
 }

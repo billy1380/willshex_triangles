@@ -2,6 +2,7 @@ import "package:go_router/go_router.dart";
 import "package:willshex_triangles/pages/welcome_page.dart";
 import "package:willshex_triangles/pages/html_colour_page.dart";
 import "package:willshex_triangles/pages/random_palette_page.dart";
+import "package:willshex_triangles/pages/random_grayscale_palette_page.dart";
 import "package:willshex_triangles/pages/image_palette_page.dart";
 import "package:willshex_triangles/pages/image_sampler_palette_page.dart";
 import "package:willshex_triangles/pages/settings_page.dart";
@@ -30,6 +31,11 @@ final GoRouter router = GoRouter(
       name: "RandomPalettePage",
       path: RandomPalettePage.routePath,
       builder: RandomPalettePage.builder,
+    ),
+    GoRoute(
+      name: "RandomGrayscalePalettePage",
+      path: RandomGrayscalePalettePage.routePath,
+      builder: RandomGrayscalePalettePage.builder,
     ),
     GoRoute(
       name: "ImagePalettePage",

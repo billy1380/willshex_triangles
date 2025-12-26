@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
 import "package:willshex_triangles/parts/triangle_generator_page.dart";
-import "package:willshex_triangles/triangles/graphics/random_color_palette.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/random_color_palette_provider.dart";
 
 class RandomPalettePage extends StatelessWidget {
   static const String routePath = "/random-palette";
@@ -17,11 +17,7 @@ class RandomPalettePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "Random Palette",
-      paletteProvider: () async {
-        final palette = RandomColorPalette();
-        palette.generateRandomColors();
-        return palette;
-      },
+      paletteProvider: RandomColorPaletteProvider(),
     );
   }
 }

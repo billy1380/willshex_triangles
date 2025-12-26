@@ -11,9 +11,9 @@ import "package:willshex_triangles/pages/welcome_page.dart";
 import "package:willshex_triangles/parts/app_drawer.dart";
 import "package:willshex_triangles/parts/palette_history_widget.dart";
 import "package:willshex_triangles/triangles/graphics/from_source.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/fixed_palette_provider.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/palette_provider.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
-
-typedef PaletteProvider = Future<ws.Palette?> Function();
 
 class TriangleGeneratorPage extends StatefulWidget {
   final String title;
@@ -84,7 +84,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   Future<void> _generatePalette() async {
     try {
-      final palette = await widget.paletteProvider();
+      final palette = await widget.paletteProvider.palette;
       if (!mounted) {
         return;
       }
@@ -119,15 +119,6 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     });
 
     try {
-      final List<String> hexColors = _currentPalette!.colors.map((c) {
-        final int r = (c.red * 255).toInt();
-        final int g = (c.green * 255).toInt();
-        final int b = (c.blue * 255).toInt();
-        return "${r.toRadixString(16).padLeft(2, '0')}"
-            "${g.toRadixString(16).padLeft(2, '0')}"
-            "${b.toRadixString(16).padLeft(2, '0')}";
-      }).toList();
-
       final properties = <String, String>{
         ImageGeneratorConfig.typeKey: _selectedType.name,
         ImageGeneratorConfig.widthKey: width.toString(),
@@ -136,8 +127,6 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
         ImageGeneratorConfig.ratioDKey: ratioD.toString(),
         ImageGeneratorConfig.addGameGradientsKey: addGradients ? "1" : "0",
         ImageGeneratorConfig.annotateKey: annotate ? "1" : "0",
-        ImageGeneratorConfig.paletteKey: PaletteType.commaSeparatedList.name,
-        ImageGeneratorConfig.paletteColoursKey: hexColors.join(","),
       };
 
       if (_selectedImage != null) {
@@ -147,7 +136,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
       final storeImage = await ImageGenerator.generateImage(
         properties,
-        () async => _currentPalette!,
+        FixedPaletteProvider(_currentPalette!.colors),
         null,
         assetLoader: (path) async {
           return (await rootBundle.load(path)).buffer.asUint8List();

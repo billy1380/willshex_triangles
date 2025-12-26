@@ -20,9 +20,7 @@ class Palette {
   Palette([this.name, this.externalId]);
 
   void addColors(List<Color> colors) {
-    for (int i = 0; i < colors.length; i++) {
-      _colors.add(colors[i]);
-    }
+    _colors.addAll(colors);
   }
 
   Color operator [](int index) => _colors[index % _colors.length];

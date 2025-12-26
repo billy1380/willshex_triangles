@@ -5,11 +5,10 @@ import "package:fs_shim/fs_io.dart";
 import "package:logging/logging.dart";
 import "package:willshex/willshex.dart";
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/extensions/string_ex.dart";
+import "package:willshex_triangles/triangles/triangles.dart";
 
-import "../triangles/image_generator.dart";
-import "../triangles/store.dart";
-import "../triangles/graphics/random_color_palette.dart";
-import "store/file_store.dart";
+import "../triangles/graphics/palette_provider/generator_palette_provider.dart";
 
 /// Main desktop application for triangle generation
 class Triangles {
@@ -72,7 +71,10 @@ class Triangles {
 
           format = await ImageGenerator.generate(
             map,
-            _newPalette,
+            map[ImageGeneratorConfig.paletteKey].fromConfiguration(
+              map,
+              supplier: GeneratorPaletteProvider(_newPalette),
+            ),
             sink,
             _store,
             fs: fs,

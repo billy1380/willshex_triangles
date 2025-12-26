@@ -8,6 +8,7 @@ import "package:image/image.dart" as img;
 import "package:image_blend_composites/blend_composite.dart";
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_triangles/triangles/graphics/palette_provider/palette_provider.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
 
 /// Image generator for creating triangle-based images
@@ -18,19 +19,17 @@ class ImageGenerator {
 
   static final Map<int, StringDrawer> _fontCache = {};
 
-  static final Random _rand = Random();
-
   /// Generate an image based on properties and write to output
   static Future<String?> generate(
     Map<String, String> properties,
-    Future<Palette> Function() paletteSupplier,
+    PaletteProvider paletteProvider,
     StreamSink<List<int>> output,
     Store? store, {
     Future<Uint8List?> Function(String path)? assetLoader,
     FileSystem? fs,
   }) async {
     final StoreImage? image = await generateImage(
-        properties, paletteSupplier, store,
+        properties, paletteProvider, store,
         assetLoader: assetLoader, fs: fs);
 
     if (image != null) {
@@ -44,7 +43,7 @@ class ImageGenerator {
   /// Generate an image object based on properties
   static Future<StoreImage?> generateImage(
     Map<String, String> properties,
-    Future<Palette> Function() paletteSupplier,
+    PaletteProvider paletteProvider,
     Store? store, {
     Future<Uint8List?> Function(String path)? assetLoader,
     FileSystem? fs,
@@ -99,16 +98,10 @@ class ImageGenerator {
           ImageGeneratorConfig.textureKey, ImageGeneratorConfig.defaultTexture);
       final String type = _string(properties, ImageGeneratorConfig.typeKey,
           ImageGeneratorConfig.defaultType);
-      final String palette = _string(properties,
-          ImageGeneratorConfig.paletteKey, ImageGeneratorConfig.defaultPalette);
       final String blendMode = _string(
           properties,
           ImageGeneratorConfig.compositeKey,
           ImageGeneratorConfig.defaultComposite);
-      final List<String>? colors = _strings(
-          properties,
-          ImageGeneratorConfig.paletteColoursKey,
-          ImageGeneratorConfig.defaultPaletteColours);
 
       final int width = _integer(properties, ImageGeneratorConfig.widthKey,
           ImageGeneratorConfig.defaultWidth, 5, 2560);
@@ -137,15 +130,16 @@ class ImageGenerator {
 
       final double ratio = numerator / denominator;
 
-      final Palette paletteObj = await _createPalette(
-        PaletteType.fromString(palette),
-        _toColors(colors),
-        paletteSupplier,
-      );
+      final Palette? palette = await paletteProvider.palette;
+
+      if (palette == null) {
+        _log.warning("Palette provider returned null palette");
+        return null;
+      }
 
       generated.content = await _drawType(
         TrianglesType.fromString(type),
-        paletteObj,
+        palette,
         texture,
         composite,
         BlendingMode.values.byName(blendMode),
@@ -171,55 +165,6 @@ class ImageGenerator {
     }
 
     return loaded ?? generated;
-  }
-
-  /// Convert color strings to Color objects
-  static List<Color>? _toColors(List<String>? colors) {
-    if (colors == null || colors.isEmpty) return null;
-    return colors.map(_toColor).toList();
-  }
-
-  /// Convert a color string to a Color object
-  static Color _toColor(String colorString) {
-    if (colorString.startsWith("#")) {
-      colorString = colorString.substring(1);
-    }
-    if (colorString.endsWith(";")) {
-      colorString = colorString.substring(0, colorString.length - 1);
-    }
-
-    double red, green, blue, alpha = 1.0;
-
-    switch (colorString.length) {
-      case 8:
-        final int val = int.parse(colorString, radix: 16);
-        red = ((val >> 24) & 0xff) / 255.0;
-        green = ((val >> 16) & 0xff) / 255.0;
-        blue = ((val >> 8) & 0xff) / 255.0;
-        alpha = (val & 0xff) / 255.0;
-        break;
-      case 6:
-        final int val = int.parse(colorString, radix: 16);
-        red = ((val >> 16) & 0xff) / 255.0;
-        green = ((val >> 8) & 0xff) / 255.0;
-        blue = (val & 0xff) / 255.0;
-        break;
-      case 3:
-        final int val = int.parse(colorString, radix: 16);
-        red = ((val >> 8) & 0xf) / 15.0;
-        green = ((val >> 4) & 0xf) / 15.0;
-        blue = (val & 0xf) / 15.0;
-        break;
-      case 1:
-        final int val = int.parse(colorString, radix: 16);
-        red = green = blue = val / 15.0;
-        break;
-      default:
-        red = green = blue = 0.0;
-        break;
-    }
-
-    return Color.rgbaColor(red, green, blue, alpha);
   }
 
   /// Write image to output stream
@@ -546,41 +491,6 @@ class ImageGenerator {
     }
   }
 
-  /// Create palette based on type
-  static Future<Palette> _createPalette(
-    PaletteType type,
-    List<Color>? colors,
-    Future<Palette> Function() paletteSupplier,
-  ) async {
-    switch (type) {
-      case PaletteType.randomNamed:
-        final palette = Palette("Random Named");
-        palette.addColors([
-          Color.rgbaColor(1.0, 0.0, 0.0),
-          Color.rgbaColor(0.0, 1.0, 0.0),
-          Color.rgbaColor(0.0, 0.0, 1.0),
-          Color.rgbaColor(1.0, 1.0, 0.0),
-          Color.rgbaColor(1.0, 0.0, 1.0),
-        ]);
-        return palette;
-      case PaletteType.randomColour:
-        return await paletteSupplier();
-      case PaletteType.randomGrayScale:
-        final palette = Palette("Random Grayscale");
-        for (int i = 0; i < 6; i++) {
-          final double gray = _rand.nextDouble();
-          palette.addColors([Color.grayscaleColor(gray)]);
-        }
-        return palette;
-      case PaletteType.commaSeparatedList:
-        final palette = Palette("Comma Separated");
-        if (colors != null) {
-          palette.addColors(colors);
-        }
-        return palette;
-    }
-  }
-
   static BlendComposite _cached(BlendingMode mode) {
     BlendComposite? composite = compositeCache[mode];
 
@@ -623,14 +533,6 @@ class ImageGenerator {
     }
 
     return value;
-  }
-
-  /// Get string array from properties
-  static List<String>? _strings(
-      Map<String, String> map, String key, String? defaultValue) {
-    final String? value = map[key];
-    if (value == null || value.isEmpty) return null;
-    return value.split(",");
   }
 
   /// Get integer value from properties with range validation
