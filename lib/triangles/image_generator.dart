@@ -130,7 +130,7 @@ class ImageGenerator {
 
       final double ratio = numerator / denominator;
 
-      final Palette? palette = await paletteProvider.palette;
+      final Palette? palette = await paletteProvider();
 
       if (palette == null) {
         _log.warning("Palette provider returned null palette");

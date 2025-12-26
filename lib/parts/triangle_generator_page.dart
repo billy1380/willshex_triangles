@@ -85,7 +85,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   Future<void> _generatePalette() async {
     try {
-      final palette = await widget.paletteProvider.palette;
+      final palette = await widget.paletteProvider();
       if (!mounted) {
         return;
       }

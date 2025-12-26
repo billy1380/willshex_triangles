@@ -8,5 +8,5 @@ class FixedPaletteProvider implements PaletteProvider {
       : _palette = Palette(name ?? "Fixed")..addColors(colors ?? []);
 
   @override
-  Palette get palette => _palette;
+  Palette call() => _palette;
 }

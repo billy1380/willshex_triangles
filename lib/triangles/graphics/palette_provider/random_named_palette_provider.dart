@@ -4,5 +4,5 @@ import "package:willshex_triangles/triangles/graphics/palette_provider/palette_p
 
 class RandomNamedPaletteProvider implements PaletteProvider {
   @override
-  Palette get palette => NamedColorPalette();
+  Palette call() => NamedColorPalette();
 }

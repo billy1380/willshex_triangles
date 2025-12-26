@@ -3,11 +3,13 @@ import "dart:async";
 import "package:willshex_draw/willshex_draw.dart";
 import "package:willshex_triangles/triangles/graphics/palette_provider/palette_provider.dart";
 
-class GeneratorPaletteProvider implements PaletteProvider {
-  final Future<Palette?> Function() _provider;
+typedef GeneratorPalette = FutureOr<Palette?> Function();
 
-  GeneratorPaletteProvider(this._provider);
+class GeneratorPaletteProvider implements PaletteProvider {
+  final GeneratorPalette _generator;
+
+  GeneratorPaletteProvider(this._generator);
 
   @override
-  Future<Palette?> get palette => _provider();
+  FutureOr<Palette?> call() => _generator();
 }
