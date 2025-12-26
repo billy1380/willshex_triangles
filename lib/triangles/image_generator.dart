@@ -458,9 +458,6 @@ class ImageGenerator {
       FileSystem? fs}) async {
     img.Image newer = img.Image(width: width, height: height, numChannels: 4);
 
-    // Fill with semi-transparent white background
-    img.fill(newer, color: img.ColorRgba8(255, 255, 255, 200));
-
     int dim = min(width, height);
     int th = dim ~/ 10;
     int fth = _fontSize(th);
@@ -468,10 +465,13 @@ class ImageGenerator {
     String s = "${width}x$height";
     int tw = sd.getWidth(s);
 
-    sd.draw(
-        newer, s, ((width - tw) * 0.5).toInt(), ((height - fth) * 0.5).toInt());
+    int tx = ((width - tw) * 0.5).toInt();
+    int ty = ((height - fth) * 0.5).toInt();
 
-    return _composite(newer, image, _cached(BlendingMode.normal));
+    final result = _composite(newer, image, _cached(BlendingMode.normal));
+    sd.draw(result, s, tx, ty);
+
+    return result;
   }
 
   static img.Image _composite(

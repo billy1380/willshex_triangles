@@ -205,12 +205,7 @@ class StringDrawer {
 
   /// Draw a string at the specified position
   void draw(img.Image dst, String s, int ox, int oy) {
-    if (_texture == null) {
-      _log.warning("Cannot draw text: texture is null");
-      return;
-    }
-    _log.info(
-        "Drawing text: '$s' at ($ox, $oy), texture size: ${_texture!.width}x${_texture!.height}");
+    if (_texture == null) return;
 
     int offset = 0;
 
@@ -224,11 +219,6 @@ class StringDrawer {
       final int height = charData["height"] ?? 0;
       final int x = charData["x"] ?? 0;
       final int y = charData["y"] ?? 0;
-
-      if (c == 0) {
-        _log.info(
-            "First char '$character' (${character.codeUnitAt(0)}): x=$x, y=$y, w=$width, h=$height, xoff=$xOffset, yoff=$yOffset");
-      }
 
       // Extract the character region from the font texture
       if (width > 0 && height > 0) {
