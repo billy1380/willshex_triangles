@@ -17,26 +17,31 @@ class ImageSamplerPalettePage extends StatelessWidget {
 
   const ImageSamplerPalettePage._();
 
+  static Future<img.Image> _fetchAndDecodeImage(String url) async {
+    final response =
+        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to fetch image: HTTP ${response.statusCode}");
+    }
+
+    final decodedImage =
+        img.decodeImage(Uint8List.fromList(response.bodyBytes));
+    if (decodedImage == null) {
+      throw Exception("Failed to decode image");
+    }
+
+    return decodedImage;
+  }
+
   @override
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "From Image",
       paletteProvider: () async {
-        final response = await http
-            .get(Uri.parse("https://picsum.photos/400/300"))
-            .timeout(const Duration(seconds: 10));
-
-        if (response.statusCode != 200) {
-          throw Exception("Failed to fetch image: HTTP ${response.statusCode}");
-        }
-
-        final decodedImage =
-            img.decodeImage(Uint8List.fromList(response.bodyBytes));
-        if (decodedImage == null) {
-          throw Exception("Failed to decode image");
-        }
-
-        return CanvasSamplePalette.generate(decodedImage.toArgbPixels());
+        final image =
+            await _fetchAndDecodeImage("https://picsum.photos/400/300");
+        return CanvasSamplePalette.generate(image.toArgbPixels());
       },
     );
   }
