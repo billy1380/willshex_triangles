@@ -16,7 +16,7 @@ class ColourLoversPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "COLOURLovers Palette",
-      paletteProvider: () async {
+      paletteProvider: (_, __) async {
         final palette = ColourLoversClientPalette();
         await palette.getColors("random", 0, 1);
         return palette;

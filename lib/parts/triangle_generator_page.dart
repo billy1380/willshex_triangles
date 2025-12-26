@@ -9,7 +9,7 @@ import "package:willshex_triangles/parts/app_drawer.dart";
 import "package:willshex_triangles/parts/palette_history_widget.dart";
 import "package:willshex_triangles/triangles/triangles.dart";
 
-typedef PaletteProvider = Future<ws.Palette> Function();
+typedef PaletteProvider = Future<ws.Palette> Function(int width, int height);
 
 class TriangleGeneratorPage extends StatefulWidget {
   final String title;
@@ -37,15 +37,30 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   Uint8List? _generatedImage;
   bool _isGenerating = false;
 
+  int width = 800;
+  int height = 600;
+  bool addGradients = true;
+  bool annotate = false;
+
   @override
   void initState() {
     super.initState();
-    _generateRandomPalette();
+    _loadSettingsAndGenerate();
   }
 
-  Future<void> _generateRandomPalette() async {
+  Future<void> _loadSettingsAndGenerate() async {
+    final prefs = await SharedPreferences.getInstance();
+    width = prefs.getInt("image_width") ?? 800;
+    height = prefs.getInt("image_height") ?? 600;
+    addGradients = prefs.getBool("add_triangle_gradients") ?? true;
+    annotate = prefs.getBool("annotate_with_dimensions") ?? false;
+
+    _generateRandomPalette(width, height);
+  }
+
+  Future<void> _generateRandomPalette(int width, int height) async {
     try {
-      final palette = await widget.paletteProvider();
+      final palette = await widget.paletteProvider(width, height);
       setState(() {
         _currentPalette = palette;
         _history.insert(0, _currentPalette!);
@@ -72,12 +87,6 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
             "${g.toRadixString(16).padLeft(2, '0')}"
             "${b.toRadixString(16).padLeft(2, '0')}";
       }).toList();
-
-      final prefs = await SharedPreferences.getInstance();
-      final width = prefs.getInt("image_width") ?? 800;
-      final height = prefs.getInt("image_height") ?? 600;
-      final addGradients = prefs.getBool("add_triangle_gradients") ?? true;
-      final annotate = prefs.getBool("annotate_with_dimensions") ?? false;
 
       final properties = <String, String>{
         ImageGeneratorConfig.typeKey: _selectedType.name,
@@ -152,7 +161,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                   ),
                   IconButton(
                     onPressed: () {
-                      _generateRandomPalette();
+                      _generateRandomPalette(width, height);
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.add),
@@ -163,7 +172,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                       setState(() {
                         _history.clear();
                       });
-                      _generateRandomPalette();
+                      _generateRandomPalette(width, height);
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.delete_sweep),
