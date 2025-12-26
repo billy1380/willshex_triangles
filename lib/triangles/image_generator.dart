@@ -300,13 +300,13 @@ class ImageGenerator {
         addGradients);
     ribbons.defaultLayout();
 
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
     if (annotate) {
       image = await _drawDims(width, height, image,
           assetLoader: assetLoader, fs: fs);
-    }
-
-    if (composite != null) {
-      image = _composite(image, composite, _cached(mode));
     }
 
     return _encodeImage(image, format);
@@ -335,13 +335,13 @@ class ImageGenerator {
             addGradients);
     randomJiggles.defaultLayout();
 
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
     if (annotate) {
       image = await _drawDims(width, height, image,
           assetLoader: assetLoader, fs: fs);
-    }
-
-    if (composite != null) {
-      image = _composite(image, composite, _cached(mode));
     }
 
     return _encodeImage(image, format);
@@ -371,13 +371,13 @@ class ImageGenerator {
         addGradients);
     tiles.defaultLayout();
 
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
     if (annotate) {
       image = await _drawDims(width, height, image,
           assetLoader: assetLoader, fs: fs);
-    }
-
-    if (composite != null) {
-      image = _composite(image, composite, _cached(mode));
     }
 
     return _encodeImage(image, format);
@@ -407,13 +407,13 @@ class ImageGenerator {
         addGradients);
     hTiles.defaultLayout();
 
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
     if (annotate) {
       image = await _drawDims(width, height, image,
           assetLoader: assetLoader, fs: fs);
-    }
-
-    if (composite != null) {
-      image = _composite(image, composite, _cached(mode));
     }
 
     return _encodeImage(image, format);
@@ -443,13 +443,13 @@ class ImageGenerator {
         addGradients);
     diamondTiles.defaultLayout();
 
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
     if (annotate) {
       image = await _drawDims(width, height, image,
           assetLoader: assetLoader, fs: fs);
-    }
-
-    if (composite != null) {
-      image = _composite(image, composite, _cached(mode));
     }
 
     return _encodeImage(image, format);
@@ -479,13 +479,13 @@ class ImageGenerator {
         addGradients);
     squareTiles.defaultLayout();
 
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
     if (annotate) {
       image = await _drawDims(width, height, image,
           assetLoader: assetLoader, fs: fs);
-    }
-
-    if (composite != null) {
-      image = _composite(image, composite, _cached(mode));
     }
 
     return _encodeImage(image, format);
