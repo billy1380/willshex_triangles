@@ -37,10 +37,10 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   Uint8List? _generatedImage;
   bool _isGenerating = false;
 
-  int width = 800;
-  int height = 600;
-  bool addGradients = true;
-  bool annotate = false;
+  late int width;
+  late int height;
+  late bool addGradients;
+  late bool annotate;
 
   @override
   void initState() {
@@ -318,35 +318,18 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
             child: Center(
               child: _isGenerating
                   ? const CircularProgressIndicator()
-                  : Container(
-                      margin: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          )
-                        ],
-                      ),
-                      child: _generatedImage != null
-                          ? Image.memory(
-                              _generatedImage!,
-                              fit: BoxFit.contain,
-                            )
-                          : const SizedBox(
-                              width: 400,
-                              height: 300,
-                              child: Center(
-                                child: Text(
-                                  "Click 'New Palette' to generate",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                            ),
-                    ),
+                  : _generatedImage != null
+                      ? InteractiveViewer(
+                          minScale: 0.1,
+                          maxScale: 20.0,
+                          boundaryMargin: const EdgeInsets.all(double.infinity),
+                          panEnabled: true,
+                          child: Image.memory(
+                            _generatedImage!,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : const Text("Building Triangles..."),
             ),
           ),
         ],
