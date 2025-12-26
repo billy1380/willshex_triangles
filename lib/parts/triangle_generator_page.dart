@@ -256,9 +256,13 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                         setState(() {
                           _history.remove(palette);
                           if (_currentPalette == palette) {
-                            _currentPalette = null;
+                            _currentPalette =
+                                _history.isNotEmpty ? _history.last : null;
                           }
                         });
+                        if (_currentPalette != null) {
+                          _generateImage();
+                        }
                       },
               ),
             ),
