@@ -5,6 +5,7 @@ import "triangle_random_jiggle_tiles.dart";
 import "triangle_ribbons.dart";
 import "triangle_h_tiles.dart";
 import "triangle_square_tiles.dart";
+import "triangle_diamond_tiles.dart";
 import "triangle_tiles_over_image.dart";
 
 /// Factory for creating triangle generator instances
@@ -18,6 +19,10 @@ class TriangleFactory {
     double? ratio,
   }) {
     switch (type) {
+      case TrianglesType.diamondTiles:
+        return ratio != null
+            ? TriangleDiamondTiles.withRatio(renderer, palette, bounds, ratio)
+            : TriangleDiamondTiles(renderer, palette, bounds);
       case TrianglesType.hTiles:
         return ratio != null
             ? TriangleHTiles.withRatio(renderer, palette, bounds, ratio)

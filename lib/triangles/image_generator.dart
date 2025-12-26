@@ -245,7 +245,9 @@ class ImageGenerator {
     try {
       switch (type) {
         case TrianglesType.diamondTiles:
-          break;
+          return _drawDiamondTiles(palette, composite, mode, width, height, r,
+              annotate, format, addGradients,
+              assetLoader: assetLoader, fs: fs);
         case TrianglesType.hTiles:
           return _drawHTiles(palette, composite, mode, width, height, r,
               annotate, format, addGradients,
@@ -404,6 +406,42 @@ class ImageGenerator {
         r,
         addGradients);
     hTiles.defaultLayout();
+
+    if (annotate) {
+      image = await _drawDims(width, height, image,
+          assetLoader: assetLoader, fs: fs);
+    }
+
+    if (composite != null) {
+      image = _composite(image, composite, _cached(mode));
+    }
+
+    return _encodeImage(image, format);
+  }
+
+  static Future<Uint8List> _drawDiamondTiles(
+      Palette palette,
+      img.Image? composite,
+      BlendingMode mode,
+      int width,
+      int height,
+      double r,
+      bool annotate,
+      img.ImageFormat format,
+      bool addGradients,
+      {Future<Uint8List?> Function(String path)? assetLoader,
+      FileSystem? fs}) async {
+    img.Image image = img.Image(width: width, height: height, numChannels: 4);
+
+    ImageRenderer renderer = ImageRenderer(image);
+
+    TriangleDiamondTiles diamondTiles = TriangleDiamondTiles.withRatio(
+        renderer,
+        palette,
+        Rect.xyWidthHeightRect(0, 0, width.toDouble(), height.toDouble()),
+        r,
+        addGradients);
+    diamondTiles.defaultLayout();
 
     if (annotate) {
       image = await _drawDims(width, height, image,
