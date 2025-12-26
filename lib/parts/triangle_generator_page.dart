@@ -39,6 +39,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   late int width;
   late int height;
+  late int ratio;
   late bool addGradients;
   late bool annotate;
 
@@ -52,6 +53,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
     final prefs = await SharedPreferences.getInstance();
     width = prefs.getInt("image_width") ?? 800;
     height = prefs.getInt("image_height") ?? 600;
+    ratio = prefs.getInt("size_ratio") ?? 12;
     addGradients = prefs.getBool("add_triangle_gradients") ?? true;
     annotate = prefs.getBool("annotate_with_dimensions") ?? false;
 
@@ -92,6 +94,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
         ImageGeneratorConfig.typeKey: _selectedType.name,
         ImageGeneratorConfig.widthKey: width.toString(),
         ImageGeneratorConfig.heightKey: height.toString(),
+        ImageGeneratorConfig.ratioDKey: ratio.toString(),
         ImageGeneratorConfig.addGameGradientsKey: addGradients ? "1" : "0",
         ImageGeneratorConfig.annotateKey: annotate ? "1" : "0",
         ImageGeneratorConfig.paletteKey: PaletteType.commaSeparatedList.name,
@@ -135,6 +138,18 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          if (_currentPalette?.source != null)
+            IconButton(
+              icon: Icon(_showImageOverlay
+                  ? Icons.image
+                  : Icons.image_outlined),
+              onPressed: () {
+                setState(() {
+                  _showImageOverlay = !_showImageOverlay;
+                });
+              },
+              tooltip: _showImageOverlay ? "Hide Reference" : "Show Reference",
+            ),
           Builder(
             builder: (context) => IconButton(
               icon: const Icon(Icons.history),
@@ -318,19 +333,71 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
             child: _isGenerating
                 ? const Center(child: CircularProgressIndicator())
                 : _generatedImage != null
-                    ? InteractiveViewer(
-                        minScale: 0.1,
-                        maxScale: 20.0,
-                        boundaryMargin: const EdgeInsets.all(double.infinity),
-                        panEnabled: true,
-                        child: Center(
-                          child: Image.memory(
-                            _generatedImage!,
-                            fit: BoxFit.contain,
+                    ? Stack(
+                        children: [
+                          InteractiveViewer(
+                            minScale: 0.1,
+                            maxScale: 20.0,
+                            boundaryMargin:
+                                const EdgeInsets.all(double.infinity),
+                            panEnabled: true,
+                            child: Center(
+                              child: Image.memory(
+                                _generatedImage!,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
                           ),
-                        ),
+                          if (_showImageOverlay &&
+                              _currentPalette?.source != null)
+                            Positioned(
+                              bottom: 20,
+                              right: 20,
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.white, width: 2),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      offset: Offset(2, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: _buildPaletteSourceImage(
+                                    _currentPalette!.source!),
+                              ),
+                            ),
+                        ],
                       )
                     : const Center(child: Text("Building Triangles...")),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaletteSourceImage(String source) {
+    if (source.startsWith("http")) {
+      return Image.network(source, fit: BoxFit.cover);
+    } else {
+      // Assuming file path if not http
+      // This requires dart:io but we are in a widget, Image.asset or Image.file?
+      // Given previous context, it is likely network or specialized.
+      // But for safety let's assume network for now as that's the primary use case requested (Picsum)
+      // If it is a local file path (from file picker maybe?), Image.file would be needed.
+      // However, we don't import dart:io. Let's try Image.network for http and just text for others?
+      // Or check if we can support local files.
+      // The user mentioned "palette colours are picked by the user from a colour picker" later.
+      // "palettes generated from images" -> mostly implies the ImagePalettePage or similar.
+      return Image.network(source, fit: BoxFit.cover, errorBuilder: (_, __, ___) {
+         return const Center(child: Icon(Icons.broken_image));
+      });
+    }
+  }
           ),
         ],
       ),

@@ -18,12 +18,13 @@ class ImagePalettePage extends StatelessWidget {
     return TriangleGeneratorPage(
       title: "Image Palette",
       paletteProvider: (width, height) async {
+        final String url = "https://picsum.photos/$width/$height";
         final image = await ImageHelper.fetchAndDecodeImage(
-          "https://picsum.photos/$width/$height",
+          url,
           width: width,
           height: height,
         );
-        return ImagePixelPalette(image);
+        return ImagePixelPalette(image, source: url);
       },
     );
   }

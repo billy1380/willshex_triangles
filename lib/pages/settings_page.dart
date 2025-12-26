@@ -35,10 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       _widthController.text = (prefs.getInt("image_width") ?? 800).toString();
       _heightController.text = (prefs.getInt("image_height") ?? 600).toString();
-      _sizeRatioController.text =
-          (prefs.getDouble("size_ratio") ?? 1.0).toString();
-      _countRatioController.text =
-          (prefs.getDouble("count_ratio") ?? 1.0).toString();
+      _sizeRatioController.text = (prefs.getInt("size_ratio") ?? 12).toString();
       _addTriangleGradients = prefs.getBool("add_triangle_gradients") ?? true;
       _annotateWithDimensions =
           prefs.getBool("annotate_with_dimensions") ?? false;
@@ -51,10 +48,8 @@ class _SettingsPageState extends State<SettingsPage> {
         "image_width", int.tryParse(_widthController.text) ?? 800);
     await prefs.setInt(
         "image_height", int.tryParse(_heightController.text) ?? 600);
-    await prefs.setDouble(
-        "size_ratio", double.tryParse(_sizeRatioController.text) ?? 1.0);
-    await prefs.setDouble(
-        "count_ratio", double.tryParse(_countRatioController.text) ?? 1.0);
+    await prefs.setInt(
+        "size_ratio", int.tryParse(_sizeRatioController.text) ?? 12);
     await prefs.setBool("add_triangle_gradients", _addTriangleGradients);
     await prefs.setBool("annotate_with_dimensions", _annotateWithDimensions);
     if (mounted) {
@@ -89,9 +84,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             const SizedBox(height: 16),
-            _buildTextField("Size Ratio", _sizeRatioController),
-            const SizedBox(height: 16),
-            _buildTextField("Count Ratio", _countRatioController),
+            _buildTextField("Scale Factor", _sizeRatioController,
+                keyboardType: TextInputType.number),
             const SizedBox(height: 16),
             SwitchListTile(
               contentPadding: const EdgeInsets.all(0),

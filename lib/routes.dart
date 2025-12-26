@@ -5,7 +5,9 @@ import "package:willshex_triangles/pages/colour_lovers_page.dart";
 import "package:willshex_triangles/pages/image_palette_page.dart";
 import "package:willshex_triangles/pages/image_sampler_palette_page.dart";
 import "package:willshex_triangles/pages/settings_page.dart";
+import "package:willshex_triangles/pages/settings_page.dart";
 import "package:willshex_triangles/pages/about_page.dart";
+import "package:willshex_triangles/pages/palette_picker_page.dart";
 
 final GoRouter router = GoRouter(
   initialLocation: WelcomePage.routePath,
@@ -14,6 +16,11 @@ final GoRouter router = GoRouter(
       name: "WelcomePage",
       path: WelcomePage.routePath,
       builder: WelcomePage.builder,
+    ),
+    GoRoute(
+      name: "PalettePickerPage",
+      path: PalettePickerPage.routePath,
+      builder: PalettePickerPage.builder,
     ),
     GoRoute(
       name: "HtmlColourPage",

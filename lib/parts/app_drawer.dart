@@ -4,6 +4,7 @@ import "package:willshex_triangles/pages/about_page.dart";
 import "package:willshex_triangles/pages/colour_lovers_page.dart";
 import "package:willshex_triangles/pages/html_colour_page.dart";
 import "package:willshex_triangles/pages/image_palette_page.dart";
+import "package:willshex_triangles/pages/palette_picker_page.dart";
 import "package:willshex_triangles/pages/image_sampler_palette_page.dart";
 import "package:willshex_triangles/pages/settings_page.dart";
 import "package:willshex_triangles/pages/welcome_page.dart";
@@ -59,6 +60,11 @@ class AppDrawer extends StatelessWidget {
           ),
         ),
         const NavigationDrawerDestination(
+          icon: Icon(Icons.colorize_outlined),
+          selectedIcon: Icon(Icons.colorize),
+          label: Text("Palette Picker"),
+        ),
+        const NavigationDrawerDestination(
           icon: Icon(Icons.code_outlined),
           selectedIcon: Icon(Icons.code),
           label: Text("HTML Colour"),
@@ -98,12 +104,13 @@ class AppDrawer extends StatelessWidget {
 
   int _getSelectedIndex(String location) {
     if (location.startsWith(WelcomePage.routePath)) return 0;
-    if (location.startsWith(HtmlColourPage.routePath)) return 1;
-    if (location.startsWith(ColourLoversPage.routePath)) return 2;
-    if (location.startsWith(ImagePalettePage.routePath)) return 3;
-    if (location.startsWith(ImageSamplerPalettePage.routePath)) return 4;
-    if (location.startsWith(SettingsPage.routePath)) return 5;
-    if (location.startsWith(AboutPage.routePath)) return 6;
+    if (location.startsWith(PalettePickerPage.routePath)) return 1;
+    if (location.startsWith(HtmlColourPage.routePath)) return 2;
+    if (location.startsWith(ColourLoversPage.routePath)) return 3;
+    if (location.startsWith(ImagePalettePage.routePath)) return 4;
+    if (location.startsWith(ImageSamplerPalettePage.routePath)) return 5;
+    if (location.startsWith(SettingsPage.routePath)) return 6;
+    if (location.startsWith(AboutPage.routePath)) return 7;
     return 0; // Default
   }
 
@@ -112,16 +119,18 @@ class AppDrawer extends StatelessWidget {
       case 0:
         return WelcomePage.routePath;
       case 1:
-        return HtmlColourPage.routePath;
+        return PalettePickerPage.routePath;
       case 2:
-        return ColourLoversPage.routePath;
+        return HtmlColourPage.routePath;
       case 3:
-        return ImagePalettePage.routePath;
+        return ColourLoversPage.routePath;
       case 4:
-        return ImageSamplerPalettePage.routePath;
+        return ImagePalettePage.routePath;
       case 5:
-        return SettingsPage.routePath;
+        return ImageSamplerPalettePage.routePath;
       case 6:
+        return SettingsPage.routePath;
+      case 7:
         return AboutPage.routePath;
       default:
         return WelcomePage.routePath;

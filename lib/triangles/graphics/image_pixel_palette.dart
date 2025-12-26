@@ -9,10 +9,11 @@ class ImagePixelPalette extends Palette {
   final int _width;
   final int _height;
 
-  ImagePixelPalette(this._image)
+  ImagePixelPalette(this._image, {String? source})
       : _width = _image.width,
         _height = _image.height {
     name = "Image Palette";
+    this.source = source;
 
     // Pre-populate with a sample of colors from the image for compatibility
     // Sample every Nth pixel to get a representative palette
