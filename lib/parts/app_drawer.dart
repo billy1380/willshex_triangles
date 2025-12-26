@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:willshex_triangles/pages/about_page.dart";
-import "package:willshex_triangles/pages/colour_lovers_page.dart";
+import "package:willshex_triangles/pages/random_palette_page.dart";
 import "package:willshex_triangles/pages/html_colour_page.dart";
 import "package:willshex_triangles/pages/image_palette_page.dart";
 import "package:willshex_triangles/pages/palette_picker_page.dart";
@@ -70,9 +70,9 @@ class AppDrawer extends StatelessWidget {
           label: Text("HTML Colour"),
         ),
         const NavigationDrawerDestination(
-          icon: Icon(Icons.favorite_border),
-          selectedIcon: Icon(Icons.favorite),
-          label: Text("COLOUR Lovers"),
+          icon: Icon(Icons.shuffle_outlined),
+          selectedIcon: Icon(Icons.shuffle),
+          label: Text("Random Palette"),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.image_outlined),
@@ -106,7 +106,7 @@ class AppDrawer extends StatelessWidget {
     if (location.startsWith(WelcomePage.routePath)) return 0;
     if (location.startsWith(PalettePickerPage.routePath)) return 1;
     if (location.startsWith(HtmlColourPage.routePath)) return 2;
-    if (location.startsWith(ColourLoversPage.routePath)) return 3;
+    if (location.startsWith(RandomPalettePage.routePath)) return 3;
     if (location.startsWith(ImagePalettePage.routePath)) return 4;
     if (location.startsWith(ImageSamplerPalettePage.routePath)) return 5;
     if (location.startsWith(SettingsPage.routePath)) return 6;
@@ -123,7 +123,7 @@ class AppDrawer extends StatelessWidget {
       case 2:
         return HtmlColourPage.routePath;
       case 3:
-        return ColourLoversPage.routePath;
+        return RandomPalettePage.routePath;
       case 4:
         return ImagePalettePage.routePath;
       case 5:

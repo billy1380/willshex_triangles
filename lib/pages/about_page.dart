@@ -34,8 +34,6 @@ class AboutPage extends StatelessWidget {
             const Text(
                 "Triangles is built with Flutter and made possible by many open source libraries:"),
             _buildLink(context, "Flutter", "https://flutter.dev/"),
-            _buildLink(
-                context, "COLOURlovers API", "http://www.colourlovers.com/api"),
             _buildLink(context, "Romain Guy's blend modes",
                 "http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/"),
             const SizedBox(height: 16),

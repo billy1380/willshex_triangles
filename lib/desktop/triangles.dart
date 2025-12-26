@@ -8,7 +8,7 @@ import "package:willshex_draw/willshex_draw.dart";
 
 import "../triangles/image_generator.dart";
 import "../triangles/store.dart";
-import "../triangles/colourlovers/colour_lovers_client_palette.dart";
+import "../triangles/graphics/random_color_palette.dart";
 import "store/file_store.dart";
 
 /// Main desktop application for triangle generation
@@ -117,8 +117,8 @@ class Triangles {
 
   /// Create a new palette from COLOURlovers
   static Future<Palette> _newPalette() async {
-    final palette = ColourLoversClientPalette();
-    await palette.fetchColors("random", 0, 1);
+    final palette = RandomColorPalette();
+    palette.generateRandomColors();
     return palette;
   }
 }

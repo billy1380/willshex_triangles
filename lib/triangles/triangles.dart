@@ -29,5 +29,5 @@ export "image_renderer.dart";
 // Desktop components
 export "../desktop/triangles.dart";
 export "../desktop/store/file_store.dart";
-export "colourlovers/colour_lovers_client_palette.dart";
+export "graphics/random_color_palette.dart";
 export "triangle_factory.dart";
