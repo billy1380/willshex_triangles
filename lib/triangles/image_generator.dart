@@ -189,7 +189,7 @@ class ImageGenerator {
     bool addGradients, {
     Future<Uint8List?> Function(String path)? assetLoader,
     FileSystem? fs,
-  }) async {
+  }) {
     try {
       switch (type) {
         case TrianglesType.diamondTiles:
@@ -220,7 +220,8 @@ class ImageGenerator {
     } catch (e) {
       _log.warning("Error creating image", e);
     }
-    return null;
+
+    return Future.value(null);
   }
 
   static Future<Uint8List> _drawRibbon(
