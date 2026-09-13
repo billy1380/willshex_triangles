@@ -52,21 +52,22 @@ class TriangleSquareTiles {
             Point middle2 = Point.xyPoint(
                 (p2.x + p3.x + p4.x) / 3.0, (p2.y + p3.y + p4.y) / 3.0);
 
-            // final image = (_palette as ImagePixelPalette).source;
             int ix1 = (middle1.x - _bounds.x).floor();
             int iy1 = (middle1.y - _bounds.y).floor();
             int ix2 = (middle2.x - _bounds.x).floor();
             int iy2 = (middle2.y - _bounds.y).floor();
 
-            int index1 = ix1 + (_bounds.width.toInt() * iy1);
-            int index2 = ix2 + (_bounds.width.toInt() * iy2);
+            final bw = _bounds.width.toInt();
+            final bh = _bounds.height.toInt();
+            final color1 = _palette.colorAtCoordinate(ix1, iy1, bw, bh);
+            final color2 = _palette.colorAtCoordinate(ix2, iy2, bw, bh);
 
             if (_useGradient && _renderer is ImageRenderer) {
-              _renderer.renderTriangle(_palette[index1], p1, p4, p2, true);
-              _renderer.renderTriangle(_palette[index2], p2, p3, p4, true);
+              _renderer.renderTriangle(color1, p1, p4, p2, true);
+              _renderer.renderTriangle(color2, p2, p3, p4, true);
             } else {
-              _renderer.renderTriangle(_palette[index1], p1, p4, p2);
-              _renderer.renderTriangle(_palette[index2], p2, p3, p4);
+              _renderer.renderTriangle(color1, p1, p4, p2);
+              _renderer.renderTriangle(color2, p2, p3, p4);
             }
           } else {
             if (_useGradient && _renderer is ImageRenderer) {
@@ -84,21 +85,22 @@ class TriangleSquareTiles {
             Point middle2 = Point.xyPoint(
                 (p1.x + p4.x + p3.x) / 3.0, (p1.y + p4.y + p3.y) / 3.0);
 
-            // final image = (_palette as ImagePixelPalette).source;
             int ix1 = (middle1.x - _bounds.x).floor();
             int iy1 = (middle1.y - _bounds.y).floor();
             int ix2 = (middle2.x - _bounds.x).floor();
             int iy2 = (middle2.y - _bounds.y).floor();
 
-            int index1 = ix1 + (_bounds.width.toInt() * iy1);
-            int index2 = ix2 + (_bounds.width.toInt() * iy2);
+            final bw = _bounds.width.toInt();
+            final bh = _bounds.height.toInt();
+            final color1 = _palette.colorAtCoordinate(ix1, iy1, bw, bh);
+            final color2 = _palette.colorAtCoordinate(ix2, iy2, bw, bh);
 
             if (_useGradient && _renderer is ImageRenderer) {
-              _renderer.renderTriangle(_palette[index1], p1, p2, p3, true);
-              _renderer.renderTriangle(_palette[index2], p1, p4, p3, true);
+              _renderer.renderTriangle(color1, p1, p2, p3, true);
+              _renderer.renderTriangle(color2, p1, p4, p3, true);
             } else {
-              _renderer.renderTriangle(_palette[index1], p1, p2, p3);
-              _renderer.renderTriangle(_palette[index2], p1, p4, p3);
+              _renderer.renderTriangle(color1, p1, p2, p3);
+              _renderer.renderTriangle(color2, p1, p4, p3);
             }
           } else {
             if (_useGradient && _renderer is ImageRenderer) {

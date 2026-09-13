@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:url_launcher/url_launcher_string.dart";
+import "package:client_common/client_common.dart";
 import "package:client_flutter/parts/app_drawer.dart";
 
 class AboutPage extends StatelessWidget {
@@ -17,7 +18,7 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: const Text("About"),
+        title: const Text(AppStrings.navAbout),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -27,31 +28,36 @@ class AboutPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Project", style: Theme.of(context).textTheme.titleLarge),
-                const Text(
-                    "Triangles is written and maintained by WillShex Limited for fun and because we like triangles (in case you have not noticed)."),
+                Text(AppStrings.aboutProjectTitle,
+                    style: Theme.of(context).textTheme.titleLarge),
+                const Text(AppStrings.aboutProjectDescription),
                 const SizedBox(height: 16),
-                Text("Software", style: Theme.of(context).textTheme.titleLarge),
-                const Text(
-                    "Triangles is built with Flutter and made possible by many open source libraries:"),
-                _buildLink(context, "Flutter", "https://flutter.dev/"),
-                _buildLink(context, "Romain Guy's blend modes",
-                    "http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/",
-                    isDead: true),
-                const SizedBox(height: 16),
-                Text("Images", style: Theme.of(context).textTheme.titleLarge),
-                const Text("Sample images and backgrounds are provided by:"),
+                Text(AppStrings.aboutSoftwareTitle,
+                    style: Theme.of(context).textTheme.titleLarge),
+                const Text(AppStrings.aboutSoftwareDescription),
+                _buildLink(context, AppStrings.aboutFlutterLink,
+                    AppStrings.aboutFlutterUrl),
                 _buildLink(
                   context,
-                  "Lorem Picsum",
-                  "https://picsum.photos/",
+                  AppStrings.aboutRomainGuyLink,
+                  AppStrings.aboutRomainGuyUrl,
+                  isDead: true,
                 ),
-                _buildLink(context, "Subtle Patterns",
-                    "https://www.toptal.com/designers/subtlepatterns/"),
                 const SizedBox(height: 16),
-                Text("Legal", style: Theme.of(context).textTheme.titleLarge),
-                const Text(
-                    "You can use any of the images you generate/download for free for all commercial and non-commercial projects. We would love to hear from you about how you are using the images and for what projects. If you feel like giving us a mention we would really appreciate that too."),
+                Text(AppStrings.aboutImagesTitle,
+                    style: Theme.of(context).textTheme.titleLarge),
+                const Text(AppStrings.aboutImagesDescription),
+                _buildLink(
+                  context,
+                  AppStrings.aboutLoremPicsumLink,
+                  AppStrings.aboutLoremPicsumUrl,
+                ),
+                _buildLink(context, AppStrings.aboutSubtlePatternsLink,
+                    AppStrings.aboutSubtlePatternsUrl),
+                const SizedBox(height: 16),
+                Text(AppStrings.aboutLegalTitle,
+                    style: Theme.of(context).textTheme.titleLarge),
+                const Text(AppStrings.aboutLegalDescription),
               ],
             ),
           ),
@@ -69,8 +75,20 @@ class AboutPage extends StatelessWidget {
     String url, {
     bool isDead = false,
   }) {
+    if (isDead) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
+    }
     return InkWell(
-      onTap: () => isDead ? null : launchUrlString(url),
+      onTap: () => launchUrlString(url),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Text(

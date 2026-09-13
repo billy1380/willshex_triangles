@@ -47,8 +47,8 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                 children: [
                   Text(
                     widget.initialPalette != null
-                        ? "Edit Palette"
-                        : "Create Custom Palette",
+                        ? AppStrings.editPalette
+                        : AppStrings.createCustomPalette,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 16),
@@ -56,7 +56,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                     controller: _nameController,
                     onChanged: _cubit.setName,
                     decoration:
-                        const InputDecoration(labelText: "Palette Name"),
+                        const InputDecoration(labelText: AppStrings.paletteName),
                   ),
                   const SizedBox(height: 20),
                   Expanded(
@@ -124,7 +124,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Edit Color",
+                          AppStrings.editColor,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Container(
@@ -142,7 +142,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                       value: currentColor.red * 255,
                       min: 0,
                       max: 255,
-                      label: "R",
+                      label: AppStrings.labelR,
                       activeColor: Colors.red,
                       onChanged: (v) => _cubit.updateSelectedColor(
                         ws.Color.rgbaColor(
@@ -157,7 +157,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                       value: currentColor.green * 255,
                       min: 0,
                       max: 255,
-                      label: "G",
+                      label: AppStrings.labelG,
                       activeColor: Colors.green,
                       onChanged: (v) => _cubit.updateSelectedColor(
                         ws.Color.rgbaColor(
@@ -172,7 +172,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                       value: currentColor.blue * 255,
                       min: 0,
                       max: 255,
-                      label: "B",
+                      label: AppStrings.labelB,
                       activeColor: Colors.blue,
                       onChanged: (v) => _cubit.updateSelectedColor(
                         ws.Color.rgbaColor(
@@ -186,7 +186,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                   ] else
                     const SizedBox(
                       height: 150,
-                      child: Center(child: Text("Select a color to edit")),
+                      child: Center(child: Text(AppStrings.selectColorPrompt)),
                     ),
                   const SizedBox(height: 16),
                   Row(
@@ -194,7 +194,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text("Cancel"),
+                        child: const Text(AppStrings.cancel),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
@@ -202,7 +202,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                             ? null
                             : () => Navigator.of(context)
                                 .pop(_cubit.buildPalette()),
-                        child: const Text("Select"),
+                        child: const Text(AppStrings.select),
                       ),
                     ],
                   ),

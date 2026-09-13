@@ -10,7 +10,7 @@ class SettingsScreen extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return const AppLayout(
-      title: "Settings",
+      title: AppStrings.navSettings,
       child: _SettingsContent(),
     );
   }
@@ -35,13 +35,13 @@ class _SettingsContent extends StatelessComponent {
             div(classes: "card p-4 shadow-sm border-0 bg-opacity-50", [
               const h4(classes: "mb-4 fw-bold text-primary", [
                 i(classes: "bi bi-sliders me-2", []),
-                Component.text("Image Configuration"),
+                Component.text(AppStrings.imageConfiguration),
               ]),
               div(classes: "row g-3 mb-3", [
                 div(classes: "col-sm-6", [
                   const label(
                     classes: "form-label text-secondary small fw-bold",
-                    [Component.text("Image Width (px)")],
+                    [Component.text(AppStrings.imageWidth)],
                   ),
                   input(
                     type: InputType.number,
@@ -59,7 +59,7 @@ class _SettingsContent extends StatelessComponent {
                 div(classes: "col-sm-6", [
                   const label(
                     classes: "form-label text-secondary small fw-bold",
-                    [Component.text("Image Height (px)")],
+                    [Component.text(AppStrings.imageHeight)],
                   ),
                   input(
                     type: InputType.number,
@@ -78,7 +78,7 @@ class _SettingsContent extends StatelessComponent {
               div(classes: "mb-4", [
                 const label(
                   classes: "form-label text-secondary small fw-bold",
-                  [Component.text("Scale Factor (Triangle Size Ratio)")],
+                  [Component.text(AppStrings.scaleFactor)],
                 ),
                 input(
                   type: InputType.number,
@@ -111,7 +111,7 @@ class _SettingsContent extends StatelessComponent {
                 const label(
                   classes: "form-check-label ms-2 fw-medium",
                   attributes: {"for": "checkGradients"},
-                  [Component.text("Add triangle gradients")],
+                  [Component.text(AppStrings.addTriangleGradients)],
                 ),
               ]),
               div(classes: "form-check form-switch my-3", [
@@ -130,7 +130,7 @@ class _SettingsContent extends StatelessComponent {
                 const label(
                   classes: "form-check-label ms-2 fw-medium",
                   attributes: {"for": "checkAnnotate"},
-                  [Component.text("Annotate with dimensions")],
+                  [Component.text(AppStrings.annotateWithDimensions)],
                 ),
               ]),
             ]),

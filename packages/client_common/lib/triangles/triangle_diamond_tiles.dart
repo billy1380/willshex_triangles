@@ -52,23 +52,22 @@ class TriangleDiamondTiles {
             Point middle2 = Point.xyPoint((top.x + left.x + bottom.x) / 3.0,
                 (top.y + left.y + bottom.y) / 3.0);
 
-            // final image = (_palette as ImagePixelPalette).source;
             int ix1 = (middle1.x - _bounds.x).floor();
             int iy1 = (middle1.y - _bounds.y).floor();
             int ix2 = (middle2.x - _bounds.x).floor();
             int iy2 = (middle2.y - _bounds.y).floor();
 
-            int index1 = ix1 + (_bounds.width.toInt() * iy1);
-            int index2 = ix2 + (_bounds.width.toInt() * iy2);
+            final bw = _bounds.width.toInt();
+            final bh = _bounds.height.toInt();
+            final color1 = _palette.colorAtCoordinate(ix1, iy1, bw, bh);
+            final color2 = _palette.colorAtCoordinate(ix2, iy2, bw, bh);
 
             if (_useGradient && _renderer is ImageRenderer) {
-              _renderer.renderTriangle(
-                  _palette[index1], top, right, bottom, true);
-              _renderer.renderTriangle(
-                  _palette[index2], top, left, bottom, true);
+              _renderer.renderTriangle(color1, top, right, bottom, true);
+              _renderer.renderTriangle(color2, top, left, bottom, true);
             } else {
-              _renderer.renderTriangle(_palette[index1], top, right, bottom);
-              _renderer.renderTriangle(_palette[index2], top, left, bottom);
+              _renderer.renderTriangle(color1, top, right, bottom);
+              _renderer.renderTriangle(color2, top, left, bottom);
             }
           } else {
             if (_useGradient && _renderer is ImageRenderer) {
@@ -95,17 +94,17 @@ class TriangleDiamondTiles {
             int ix2 = (middle2.x - _bounds.x).floor();
             int iy2 = (middle2.y - _bounds.y).floor();
 
-            int index1 = ix1 + (_bounds.width.toInt() * iy1);
-            int index2 = ix2 + (_bounds.width.toInt() * iy2);
+            final bw = _bounds.width.toInt();
+            final bh = _bounds.height.toInt();
+            final color1 = _palette.colorAtCoordinate(ix1, iy1, bw, bh);
+            final color2 = _palette.colorAtCoordinate(ix2, iy2, bw, bh);
 
             if (_useGradient && _renderer is ImageRenderer) {
-              _renderer.renderTriangle(
-                  _palette[index1], top, right, left, true);
-              _renderer.renderTriangle(
-                  _palette[index2], right, bottom, left, true);
+              _renderer.renderTriangle(color1, top, right, left, true);
+              _renderer.renderTriangle(color2, right, bottom, left, true);
             } else {
-              _renderer.renderTriangle(_palette[index1], top, right, left);
-              _renderer.renderTriangle(_palette[index2], right, bottom, left);
+              _renderer.renderTriangle(color1, top, right, left);
+              _renderer.renderTriangle(color2, right, bottom, left);
             }
           } else {
             if (_useGradient && _renderer is ImageRenderer) {

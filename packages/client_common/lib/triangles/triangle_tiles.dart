@@ -61,12 +61,17 @@ class TriangleTiles {
           int ix = (middle.x - _bounds.x).floor();
           int iy = (middle.y - _bounds.y).floor();
 
-          int index = ix + (_bounds.width.toInt() * iy);
+          final color = _palette.colorAtCoordinate(
+            ix,
+            iy,
+            _bounds.width.toInt(),
+            _bounds.height.toInt(),
+          );
 
           if (_useGradient && _renderer is ImageRenderer) {
-            _renderer.renderTriangle(_palette[index], p1, p2, p3, true);
+            _renderer.renderTriangle(color, p1, p2, p3, true);
           } else {
-            _renderer.renderTriangle(_palette[index], p1, p2, p3);
+            _renderer.renderTriangle(color, p1, p2, p3);
           }
         } else {
           if (_useGradient && _renderer is ImageRenderer) {

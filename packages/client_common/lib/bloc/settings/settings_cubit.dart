@@ -4,12 +4,16 @@ import "package:client_common/models/generator_settings.dart";
 
 abstract class SettingsStorage {
   Future<GeneratorSettings> loadSettings();
+  GeneratorSettings? loadSettingsSync() => null;
   Future<void> saveSettings(GeneratorSettings settings);
 }
 
 class InMemorySettingsStorage implements SettingsStorage {
   GeneratorSettings _settings;
   InMemorySettingsStorage([this._settings = const GeneratorSettings()]);
+
+  @override
+  GeneratorSettings? loadSettingsSync() => _settings;
 
   @override
   Future<GeneratorSettings> loadSettings() async => _settings;
@@ -25,8 +29,18 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   SettingsCubit([SettingsStorage? storage])
       : _storage = storage ?? InMemorySettingsStorage(),
-        super(const SettingsState()) {
-    loadSettings();
+        super(_initialState(storage ?? InMemorySettingsStorage())) {
+    if (!state.isLoaded) {
+      loadSettings();
+    }
+  }
+
+  static SettingsState _initialState(SettingsStorage storage) {
+    final syncSettings = storage.loadSettingsSync();
+    if (syncSettings != null) {
+      return SettingsState(settings: syncSettings, isLoaded: true);
+    }
+    return const SettingsState();
   }
 
   Future<void> loadSettings() async {
@@ -50,11 +64,15 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> updateScaleFactor(double scaleFactor) async {
+    var s = scaleFactor;
+    if (s >= 1.0) {
+      s = 1.0 / s;
+    }
     const rn = 10000;
-    var rd = (scaleFactor * 10000).toInt();
+    var rd = (s * 10000).toInt();
     if (rd == 0) rd = 1;
     final newSettings = state.settings.copyWith(
-      scaleFactor: scaleFactor,
+      scaleFactor: s,
       ratioN: rn,
       ratioD: rd,
     );

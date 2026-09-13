@@ -1,5 +1,6 @@
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
+import "package:client_common/client_common.dart";
 import "package:client_web/ui/layout.dart";
 
 class AboutScreen extends StatelessComponent {
@@ -8,7 +9,7 @@ class AboutScreen extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return const AppLayout(
-      title: "About",
+      title: AppStrings.navAbout,
       child: _AboutContent(),
     );
   }
@@ -45,58 +46,49 @@ class _AboutContent extends StatelessComponent {
         div(classes: "card p-4 p-md-5 shadow-sm border-0 bg-opacity-50", [
           const section(classes: "mb-4", [
             h4(classes: "fw-bold text-primary mb-2", [
-              Component.text("Project"),
+              Component.text(AppStrings.aboutProjectTitle),
             ]),
             p(classes: "text-secondary", [
-              Component.text(
-                "Triangles is written and maintained by WillShex Limited for fun "
-                "and because we like triangles (in case you have not noticed).",
-              ),
+              Component.text(AppStrings.aboutProjectDescription),
             ]),
           ]),
           const hr(),
           section(classes: "my-4", [
             const h4(classes: "fw-bold text-primary mb-2", [
-              Component.text("Software"),
+              Component.text(AppStrings.aboutSoftwareTitle),
             ]),
             const p(classes: "text-secondary mb-3", [
-              Component.text(
-                "Triangles is built with Dart, Jaspr, and Flutter, and made possible by open source libraries:",
-              ),
+              Component.text(AppStrings.aboutSoftwareDescription),
             ]),
-            _link("Jaspr (Web Framework)", "https://docs.jaspr.site/"),
-            _link("Flutter", "https://flutter.dev/"),
+            _link(AppStrings.aboutJasprLink, AppStrings.aboutJasprUrl),
+            _link(AppStrings.aboutFlutterLink, AppStrings.aboutFlutterUrl),
             _link(
-              "Romain Guy's blend modes",
-              "http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/",
+              AppStrings.aboutRomainGuyLink,
+              AppStrings.aboutRomainGuyUrl,
               isDead: true,
             ),
           ]),
           const hr(),
           section(classes: "my-4", [
             const h4(classes: "fw-bold text-primary mb-2", [
-              Component.text("Images"),
+              Component.text(AppStrings.aboutImagesTitle),
             ]),
             const p(classes: "text-secondary mb-3", [
-              Component.text("Sample images and backgrounds are provided by:"),
+              Component.text(AppStrings.aboutImagesDescription),
             ]),
-            _link("Lorem Picsum", "https://picsum.photos/"),
+            _link(AppStrings.aboutLoremPicsumLink, AppStrings.aboutLoremPicsumUrl),
             _link(
-              "Subtle Patterns",
-              "https://www.toptal.com/designers/subtlepatterns/",
+              AppStrings.aboutSubtlePatternsLink,
+              AppStrings.aboutSubtlePatternsUrl,
             ),
           ]),
           const hr(),
           const section(classes: "mt-4", [
             h4(classes: "fw-bold text-primary mb-2", [
-              Component.text("Legal"),
+              Component.text(AppStrings.aboutLegalTitle),
             ]),
             p(classes: "text-secondary mb-0", [
-              Component.text(
-                "You can use any of the images you generate/download for free for all commercial "
-                "and non-commercial projects. We would love to hear from you about how you are using the images "
-                "and for what projects. If you feel like giving us a mention we would really appreciate that too.",
-              ),
+              Component.text(AppStrings.aboutLegalDescription),
             ]),
           ]),
         ]),

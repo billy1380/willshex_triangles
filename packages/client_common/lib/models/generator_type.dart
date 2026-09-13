@@ -1,30 +1,31 @@
 import "package:willshex_draw/willshex_draw.dart" as ws;
+import "package:client_common/constants/app_strings.dart";
 import "package:client_common/models/generator_settings.dart";
 import "package:client_common/triangles/triangles.dart";
 
 enum GeneratorType {
   palettePicker(
-    title: "Palette Picker",
+    title: AppStrings.navPalettePicker,
     routePath: "/palettepicker",
   ),
   htmlColour(
-    title: "HTML Colour",
+    title: AppStrings.navHtmlColour,
     routePath: "/htmlcolour",
   ),
   randomPalette(
-    title: "Random Palette",
+    title: AppStrings.navRandomPalette,
     routePath: "/random-palette",
   ),
   randomGrayscale(
-    title: "Random Grayscale",
+    title: AppStrings.navRandomGrayscale,
     routePath: "/random-grayscale-palette",
   ),
   imagePalette(
-    title: "Image",
+    title: AppStrings.imagePalette,
     routePath: "/imagepalette",
   ),
   imageSampler(
-    title: "Image Sampler",
+    title: AppStrings.imageSamplerPalette,
     routePath: "/imagesamplerpalette",
   );
 
@@ -46,9 +47,10 @@ enum GeneratorType {
   PaletteProvider createProvider({
     Future<ws.Palette?> Function()? pickerCallback,
     GeneratorSettings? settings,
+    GeneratorSettings Function()? getSettings,
   }) {
-    final w = settings?.width ?? ImageGeneratorConfig.defaultWidth;
-    final h = settings?.height ?? ImageGeneratorConfig.defaultHeight;
+    GeneratorSettings currentSettings() =>
+        getSettings?.call() ?? settings ?? const GeneratorSettings();
 
     switch (this) {
       case GeneratorType.palettePicker:
@@ -66,6 +68,9 @@ enum GeneratorType {
         return RandomGrayscalePaletteProvider();
       case GeneratorType.imagePalette:
         return GeneratorPaletteProvider(() async {
+          final s = currentSettings();
+          final w = s.width;
+          final h = s.height;
           final url = "https://picsum.photos/$w/$h";
           final image = await ImageHelper.fetchAndDecodeImage(
             url,
@@ -76,6 +81,9 @@ enum GeneratorType {
         });
       case GeneratorType.imageSampler:
         return GeneratorPaletteProvider(() async {
+          final s = currentSettings();
+          final w = s.width;
+          final h = s.height;
           final url = "https://picsum.photos/$w/$h";
           final image = await ImageHelper.fetchAndDecodeImage(
             url,

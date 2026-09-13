@@ -47,15 +47,19 @@ class TriangleHTiles extends TriangleTiles {
             (p1.x + p2.x + p3.x) / 3.0,
             (p1.y + p2.y + p3.y) / 3.0,
           );
-          // final image = (palette as ImagePixelPalette).source;
           int ix = (middle.x - bounds.x).floor();
           int iy = (middle.y - bounds.y).floor();
-          int index = ix + (bounds.width.toInt() * iy);
+          final color = (palette as ImagePixelPalette).colorAtCoordinate(
+            ix,
+            iy,
+            bounds.width.toInt(),
+            bounds.height.toInt(),
+          );
           if (useGradient && renderer is ImageRenderer) {
             (renderer as ImageRenderer)
-                .renderTriangle(palette[index], p1, p2, p3, true);
+                .renderTriangle(color, p1, p2, p3, true);
           } else {
-            renderer.renderTriangle(palette[index], p1, p2, p3);
+            renderer.renderTriangle(color, p1, p2, p3);
           }
         } else {
           if (useGradient && renderer is ImageRenderer) {

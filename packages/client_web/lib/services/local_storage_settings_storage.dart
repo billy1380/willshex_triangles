@@ -3,14 +3,16 @@ import "package:web/web.dart" as web;
 
 class LocalStorageSettingsStorage implements SettingsStorage {
   @override
-  Future<GeneratorSettings> loadSettings() async {
+  GeneratorSettings? loadSettingsSync() {
     try {
       final storage = web.window.localStorage;
-      final widthStr = storage.getItem("image_width");
-      final heightStr = storage.getItem("image_height");
-      final ratioStr = storage.getItem("size_ratio");
-      final gradientsStr = storage.getItem("add_triangle_gradients");
-      final annotateStr = storage.getItem("annotate_with_dimensions");
+      final widthStr = storage.getItem(GeneratorSettings.keyWidth);
+      final heightStr = storage.getItem(GeneratorSettings.keyHeight);
+      final ratioStr = storage.getItem(GeneratorSettings.keyScaleFactor);
+      final gradientsStr =
+          storage.getItem(GeneratorSettings.keyAddTriangleGradients);
+      final annotateStr =
+          storage.getItem(GeneratorSettings.keyAnnotateWithDimensions);
 
       final width = int.tryParse(widthStr ?? "");
       final height = int.tryParse(heightStr ?? "");
@@ -31,15 +33,21 @@ class LocalStorageSettingsStorage implements SettingsStorage {
   }
 
   @override
+  Future<GeneratorSettings> loadSettings() async {
+    return loadSettingsSync() ?? const GeneratorSettings();
+  }
+
+  @override
   Future<void> saveSettings(GeneratorSettings settings) async {
     try {
       final storage = web.window.localStorage;
-      storage.setItem("image_width", settings.width.toString());
-      storage.setItem("image_height", settings.height.toString());
-      storage.setItem("size_ratio", settings.scaleFactor.toString());
+      storage.setItem(GeneratorSettings.keyWidth, settings.width.toString());
+      storage.setItem(GeneratorSettings.keyHeight, settings.height.toString());
       storage.setItem(
-          "add_triangle_gradients", settings.addTriangleGradients.toString());
-      storage.setItem("annotate_with_dimensions",
+          GeneratorSettings.keyScaleFactor, settings.scaleFactor.toString());
+      storage.setItem(GeneratorSettings.keyAddTriangleGradients,
+          settings.addTriangleGradients.toString());
+      storage.setItem(GeneratorSettings.keyAnnotateWithDimensions,
           settings.annotateWithDimensions.toString());
     } catch (_) {}
   }

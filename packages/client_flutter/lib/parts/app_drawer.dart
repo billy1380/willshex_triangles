@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:client_common/client_common.dart";
 import "package:client_flutter/pages/about_page.dart";
 import "package:client_flutter/pages/random_palette_page.dart";
 import "package:client_flutter/pages/random_grayscale_palette_page.dart";
@@ -39,14 +40,14 @@ class AppDrawer extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
           child: Text(
-            "Triangles",
+            AppStrings.appName,
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.home_outlined),
           selectedIcon: Icon(Icons.home),
-          label: Text("Welcome"),
+          label: Text(AppStrings.navWelcome),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
@@ -55,39 +56,39 @@ class AppDrawer extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
           child: Text(
-            "Types",
+            AppStrings.navTypes,
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.colorize_outlined),
           selectedIcon: Icon(Icons.colorize),
-          label: Text("Palette Picker"),
+          label: Text(AppStrings.navPalettePicker),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.code_outlined),
           selectedIcon: Icon(Icons.code),
-          label: Text("HTML Colour"),
+          label: Text(AppStrings.navHtmlColour),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.shuffle_outlined),
           selectedIcon: Icon(Icons.shuffle),
-          label: Text("Random Palette"),
+          label: Text(AppStrings.navRandomPalette),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.contrast_outlined),
           selectedIcon: Icon(Icons.contrast),
-          label: Text("Random Grayscale"),
+          label: Text(AppStrings.navRandomGrayscale),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.image_outlined),
           selectedIcon: Icon(Icons.image),
-          label: Text("Image"),
+          label: Text(AppStrings.imagePalette),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.palette_outlined),
           selectedIcon: Icon(Icons.palette),
-          label: Text("Image Sampler"),
+          label: Text(AppStrings.imageSamplerPalette),
         ),
         const Padding(
           padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
@@ -96,12 +97,12 @@ class AppDrawer extends StatelessWidget {
         const NavigationDrawerDestination(
           icon: Icon(Icons.settings_outlined),
           selectedIcon: Icon(Icons.settings),
-          label: Text("Settings"),
+          label: Text(AppStrings.navSettings),
         ),
         const NavigationDrawerDestination(
           icon: Icon(Icons.info_outline_rounded),
           selectedIcon: Icon(Icons.info_rounded),
-          label: Text("About"),
+          label: Text(AppStrings.navAbout),
         ),
       ],
     );

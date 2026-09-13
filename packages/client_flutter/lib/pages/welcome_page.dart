@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:client_common/client_common.dart";
 import "package:client_flutter/parts/app_drawer.dart";
 
 class WelcomePage extends StatelessWidget {
@@ -16,7 +17,7 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: const Text("Welcome"),
+        title: const Text(AppStrings.navWelcome),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(32.0),
@@ -26,11 +27,10 @@ class WelcomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Our triangles wallpaper project!",
+                Text(AppStrings.welcomeHeadline,
                     style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 16),
-                const Text(
-                    "You can generate many variations of images with different colours and textures. Check out some of the samples below to get an idea."),
+                const Text(AppStrings.welcomeSubtitle),
                 const SizedBox(height: 24),
                 Center(
                   child: Wrap(
@@ -47,10 +47,9 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                    "To begin, just select a pattern from the types menu and get generating. Make changes by refreshing the palette or refreshing the positions of the triangles and colours."),
+                const Text(AppStrings.welcomeInstructions),
                 const SizedBox(height: 16),
-                const Text("Enjoy!"),
+                const Text(AppStrings.welcomeEnjoy),
               ],
             ),
           ),

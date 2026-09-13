@@ -58,6 +58,23 @@ class ImagePixelPalette extends Palette implements FromSource<img.Image> {
     );
   }
 
+  /// Samples color at relative coordinates within the rendering bounds,
+  /// ensuring correct scaling regardless of canvas vs image dimensions.
+  Color colorAtCoordinate(int x, int y, int boundsWidth, int boundsHeight) {
+    if (boundsWidth <= 0 || boundsHeight <= 0) {
+      return this[0];
+    }
+    final imgX = ((x / boundsWidth) * _width).floor().clamp(0, _width - 1);
+    final imgY = ((y / boundsHeight) * _height).floor().clamp(0, _height - 1);
+    final pixel = _image.getPixel(imgX, imgY);
+    return Color.rgbaColor(
+      pixel.r / 255.0,
+      pixel.g / 255.0,
+      pixel.b / 255.0,
+      pixel.a / 255.0,
+    );
+  }
+
   @override
   img.Image get source => _image;
 }

@@ -17,7 +17,7 @@ class PalettePickerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
-      title: "Palette Picker",
+      title: AppStrings.navPalettePicker,
       paletteProvider: GeneratorPaletteProvider(() async => null),
       customPalettePicker: (context) => showDialog<ws.Palette>(
         context: context,

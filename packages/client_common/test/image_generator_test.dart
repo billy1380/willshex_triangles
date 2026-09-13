@@ -141,4 +141,38 @@ void main() {
       await tempFile.delete();
     }
   });
+
+  test("ImageGenerator generates using ImagePixelPalette with mismatched dimensions", () async {
+    final properties = {
+      ImageGeneratorConfig.widthKey: "120",
+      ImageGeneratorConfig.heightKey: "80",
+      ImageGeneratorConfig.typeKey: "Tiles",
+      ImageGeneratorConfig.formatKey: "png",
+    };
+
+    final tempFile = File("test_output_ipp_mismatch.png");
+    final sink = tempFile.openWrite();
+
+    final img.Image sourceImage = img.Image(width: 30, height: 30);
+    img.fill(sourceImage, color: img.ColorRgb8(0, 0, 255));
+    final palette = ImagePixelPalette(sourceImage);
+
+    final format = await ImageGenerator.generate(
+      properties,
+      GeneratorPaletteProvider(() async => palette),
+      sink,
+      null,
+    );
+
+    await sink.flush();
+    await sink.close();
+
+    expect(format, equals("png"));
+    expect(await tempFile.exists(), isTrue);
+    expect(await tempFile.length(), greaterThan(0));
+
+    if (await tempFile.exists()) {
+      await tempFile.delete();
+    }
+  });
 }

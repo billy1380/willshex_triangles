@@ -2,6 +2,7 @@ import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:jaspr_router/jaspr_router.dart";
 import "package:web/web.dart" as web;
+import "package:client_common/client_common.dart";
 
 class AppLayout extends StatefulComponent {
   final String title;
@@ -81,7 +82,7 @@ class _AppLayoutState extends State<AppLayout> {
           div(classes: "app-sidebar-header", [
             const h1(classes: "brand-title", [
               i(classes: "bi bi-triangle-half text-primary", []),
-              Component.text("Triangles"),
+              Component.text(AppStrings.appName),
             ]),
             button(
               classes: "btn btn-sm btn-link d-lg-none text-secondary",
@@ -91,61 +92,61 @@ class _AppLayoutState extends State<AppLayout> {
           ]),
           nav(classes: "sidebar-nav", [
             _navLink(
-              label: "Welcome",
+              label: AppStrings.navWelcome,
               route: "/welcome",
               icon: "bi-house",
               currentPath: currentPath,
             ),
             const div(classes: "nav-section-title mt-3", [
-              Component.text("Types"),
+              Component.text(AppStrings.navTypes),
             ]),
             _navLink(
-              label: "Palette Picker",
+              label: AppStrings.navPalettePicker,
               route: "/palettepicker",
               icon: "bi-eyedropper",
               currentPath: currentPath,
             ),
             _navLink(
-              label: "HTML Colour",
+              label: AppStrings.navHtmlColour,
               route: "/htmlcolour",
               icon: "bi-palette2",
               currentPath: currentPath,
             ),
             _navLink(
-              label: "Random Palette",
+              label: AppStrings.navRandomPalette,
               route: "/random-palette",
               icon: "bi-shuffle",
               currentPath: currentPath,
             ),
             _navLink(
-              label: "Random Grayscale",
+              label: AppStrings.navRandomGrayscale,
               route: "/random-grayscale-palette",
               icon: "bi-circle-half",
               currentPath: currentPath,
             ),
             _navLink(
-              label: "Image",
+              label: AppStrings.imagePalette,
               route: "/imagepalette",
               icon: "bi-image",
               currentPath: currentPath,
             ),
             _navLink(
-              label: "Image Sampler",
+              label: AppStrings.imageSamplerPalette,
               route: "/imagesamplerpalette",
               icon: "bi-grid-3x3",
               currentPath: currentPath,
             ),
             const div(classes: "nav-section-title mt-3", [
-              Component.text("Preferences"),
+              Component.text(AppStrings.navPreferences),
             ]),
             _navLink(
-              label: "Settings",
+              label: AppStrings.navSettings,
               route: "/settings",
               icon: "bi-gear",
               currentPath: currentPath,
             ),
             _navLink(
-              label: "About",
+              label: AppStrings.navAbout,
               route: "/about",
               icon: "bi-info-circle",
               currentPath: currentPath,
@@ -161,7 +162,7 @@ class _AppLayoutState extends State<AppLayout> {
                       "bi ${_isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-2",
                   const [],
                 ),
-                Component.text(_isDark ? "Light Mode" : "Dark Mode"),
+                Component.text(_isDark ? AppStrings.lightMode : AppStrings.darkMode),
               ],
             ),
           ]),

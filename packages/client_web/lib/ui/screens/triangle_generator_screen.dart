@@ -48,6 +48,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
           return null;
         },
         settings: settingsState.settings,
+        getSettings: () => BlocProvider.of<SettingsCubit>(context).state.settings,
       ),
       assetLoader: _loadWebAsset,
     );
@@ -95,8 +96,8 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                     "btn btn-sm ${state.showImageOverlay ? 'btn-primary' : 'btn-outline-secondary'}",
                 attributes: {
                   "title": state.showImageOverlay
-                      ? "Hide Reference"
-                      : "Show Reference",
+                      ? AppStrings.hideReference
+                      : AppStrings.showReference,
                 },
                 events: {"click": (e) => _cubit.toggleImageOverlay()},
                 [
@@ -110,7 +111,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
             button(
               classes:
                   "btn btn-sm ${_historyDrawerOpen ? 'btn-primary' : 'btn-outline-secondary'}",
-              attributes: const {"title": "Show History"},
+              attributes: const {"title": AppStrings.showHistory},
               events: {
                 "click": (e) =>
                     setState(() => _historyDrawerOpen = !_historyDrawerOpen),
@@ -118,7 +119,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
               const [
                 i(classes: "bi bi-clock-history me-1", []),
                 span(classes: "d-none d-sm-inline", [
-                  Component.text("History"),
+                  Component.text(AppStrings.history),
                 ]),
               ],
             ),
@@ -133,7 +134,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                 // Top controls bar
                 div(classes: "generator-controls", [
                   div(classes: "generator-control-group", [
-                    const label([Component.text("Pattern Type")]),
+                    const label([Component.text(AppStrings.type)]),
                     select(
                       classes: "form-select form-select-sm",
                       events: {
@@ -157,7 +158,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                     ),
                   ]),
                   div(classes: "generator-control-group", [
-                    const label([Component.text("Texture Pattern")]),
+                    const label([Component.text(AppStrings.texture)]),
                     select(
                       classes: "form-select form-select-sm",
                       events: {
@@ -177,7 +178,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         option(
                           value: "none",
                           selected: state.selectedImage == null,
-                          const [Component.text("None")],
+                          const [Component.text(AppStrings.textureNone)],
                         ),
                         for (final imgItem in TilableImage.values)
                           option(
@@ -189,7 +190,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                     ),
                   ]),
                   div(classes: "generator-control-group", [
-                    const label([Component.text("Blend Mode")]),
+                    const label([Component.text(AppStrings.blendMode)]),
                     select(
                       classes: "form-select form-select-sm",
                       disabled: state.selectedImage == null,
@@ -225,7 +226,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         [],
                       ),
                       p(classes: "text-secondary fw-medium", [
-                        Component.text("Generating triangles..."),
+                        Component.text(AppStrings.buildingTriangles),
                       ]),
                     ])
                   else if (state.generatedImage != null) ...[
@@ -234,7 +235,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         classes: "generated-image",
                         src:
                             "data:image/png;base64,${base64Encode(state.generatedImage!)}",
-                        alt: "Generated Triangles",
+                        alt: AppStrings.generatedTriangles,
                       ),
                     ]),
                     if (state.showImageOverlay && state.paletteSource != null)
@@ -242,7 +243,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         img(
                           src:
                               "data:image/png;base64,${base64Encode(image_lib.encodePng(state.paletteSource!))}",
-                          alt: "Reference Palette Source",
+                          alt: AppStrings.referencePaletteSource,
                         ),
                       ]),
                     button(
@@ -252,14 +253,14 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                       },
                       const [
                         i(classes: "bi bi-download", []),
-                        Component.text("Download Image"),
+                        Component.text(AppStrings.downloadImage),
                       ],
                     ),
                   ] else
                     div(classes: "text-center text-secondary", [
                       const i(classes: "bi bi-triangle fs-1 mb-3 d-block", []),
                       Component.text(
-                          state.errorMessage ?? "Building Triangles..."),
+                          state.errorMessage ?? AppStrings.buildingTriangles),
                       if (component.generatorType ==
                               GeneratorType.palettePicker &&
                           state.currentPalette == null)
@@ -269,7 +270,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                             events: {"click": (e) => _cubit.generatePalette()},
                             const [
                               i(classes: "bi bi-palette me-2", []),
-                              Component.text("Create Palette"),
+                              Component.text(AppStrings.createPalette),
                             ],
                           ),
                         ]),
@@ -282,13 +283,13 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                   [
                     div(classes: "history-drawer-header", [
                       const h5(classes: "m-0 fw-bold", [
-                        Component.text("History"),
+                        Component.text(AppStrings.history),
                       ]),
                       div(classes: "d-flex gap-2", [
                         button(
                           classes: "btn btn-sm btn-outline-primary",
                           attributes: const {
-                            "title": "Generate New Palette",
+                            "title": AppStrings.newPalette,
                           },
                           events: {
                             "click": (e) => _cubit.generatePalette(),
@@ -297,7 +298,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         ),
                         button(
                           classes: "btn btn-sm btn-outline-danger",
-                          attributes: const {"title": "Clear History"},
+                          attributes: const {"title": AppStrings.clearHistory},
                           events: {"click": (e) => _cubit.clearHistory()},
                           const [i(classes: "bi bi-trash", [])],
                         ),

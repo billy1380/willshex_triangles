@@ -48,8 +48,8 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
             div(classes: "modal-header-custom", [
               h5(classes: "modal-title m-0 fw-bold", [
                 Component.text(component.initialPalette != null
-                    ? "Edit Palette"
-                    : "Create Custom Palette"),
+                    ? AppStrings.editPalette
+                    : AppStrings.createCustomPalette),
               ]),
               button(
                 classes: "btn-close",
@@ -61,7 +61,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
               div(classes: "mb-3", [
                 const label(
                   classes: "form-label text-secondary small fw-bold",
-                  [Component.text("Palette Name")],
+                  [Component.text(AppStrings.paletteName)],
                 ),
                 input(
                   type: InputType.text,
@@ -80,7 +80,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                   _buildSwatch(state.colors[i], i, i == state.selectedIndex),
                 div(
                   classes: "swatch-add-card",
-                  attributes: const {"title": "Add Color"},
+                  attributes: const {"title": AppStrings.addColor},
                   events: {"click": (e) => _cubit.addColor()},
                   const [i(classes: "bi bi-plus-lg", [])],
                 ),
@@ -92,7 +92,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                       "d-flex align-items-center justify-content-between mb-3",
                   [
                     const span(classes: "fw-bold small", [
-                      Component.text("Edit Color"),
+                      Component.text(AppStrings.editColor),
                     ]),
                     div(
                       attributes: {
@@ -104,7 +104,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                   ],
                 ),
                 _buildSlider(
-                  label: "Red",
+                  label: AppStrings.red,
                   color: "text-danger",
                   value: (currentColor.red * 255).round(),
                   onChanged: (val) => _cubit.updateSelectedColor(
@@ -117,7 +117,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                   ),
                 ),
                 _buildSlider(
-                  label: "Green",
+                  label: AppStrings.green,
                   color: "text-success",
                   value: (currentColor.green * 255).round(),
                   onChanged: (val) => _cubit.updateSelectedColor(
@@ -130,7 +130,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                   ),
                 ),
                 _buildSlider(
-                  label: "Blue",
+                  label: AppStrings.blue,
                   color: "text-primary",
                   value: (currentColor.blue * 255).round(),
                   onChanged: (val) => _cubit.updateSelectedColor(
@@ -144,14 +144,14 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                 ),
               ] else
                 const div(classes: "text-center text-secondary py-3", [
-                  Component.text("Select a color swatch to adjust RGB sliders"),
+                  Component.text(AppStrings.selectColorPrompt),
                 ]),
             ]),
             div(classes: "modal-footer-custom", [
               button(
                 classes: "btn btn-outline-secondary",
                 events: {"click": (e) => component.onCancel()},
-                const [Component.text("Cancel")],
+                const [Component.text(AppStrings.cancel)],
               ),
               button(
                 classes: "btn btn-primary",
@@ -163,7 +163,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                     }
                   },
                 },
-                const [Component.text("Select Palette")],
+                const [Component.text(AppStrings.select)],
               ),
             ]),
           ]),
@@ -184,7 +184,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
       [
         button(
           classes: "swatch-remove-btn",
-          attributes: const {"title": "Remove Color"},
+          attributes: const {"title": AppStrings.removeColor},
           events: {
             "click": (e) {
               _cubit.removeColor(index);

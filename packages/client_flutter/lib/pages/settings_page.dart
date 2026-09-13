@@ -3,7 +3,6 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:client_common/client_common.dart";
 import "package:client_flutter/parts/app_drawer.dart";
-import "package:client_flutter/services/preferences_settings_storage.dart";
 
 class SettingsPage extends StatefulWidget {
   static const String routePath = "/settings";
@@ -25,14 +24,14 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _sizeRatioController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _cubit = SettingsCubit(PreferencesSettingsStorage());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _cubit = context.read<SettingsCubit>();
+    _syncControllers(_cubit.state.settings);
   }
 
   @override
   void dispose() {
-    _cubit.close();
     _widthController.dispose();
     _heightController.dispose();
     _sizeRatioController.dispose();
@@ -66,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
         return Scaffold(
           drawer: const AppDrawer(),
           appBar: AppBar(
-            title: const Text("Settings"),
+            title: const Text(AppStrings.navSettings),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -76,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                       child: _buildTextField(
-                        "Width",
+                        AppStrings.imageWidth,
                         _widthController,
                         keyboardType: TextInputType.number,
                         onChanged: (val) {
@@ -88,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildTextField(
-                        "Height",
+                        AppStrings.imageHeight,
                         _heightController,
                         keyboardType: TextInputType.number,
                         onChanged: (val) {
@@ -101,7 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  "Scale Factor",
+                  AppStrings.scaleFactor,
                   _sizeRatioController,
                   keyboardType: TextInputType.number,
                   onChanged: (val) {
@@ -112,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 16),
                 SwitchListTile(
                   contentPadding: const EdgeInsets.all(0),
-                  title: const Text("Add triangle gradients"),
+                  title: const Text(AppStrings.addTriangleGradients),
                   value: state.settings.addTriangleGradients,
                   onChanged: (bool value) {
                     _cubit.updateAddTriangleGradients(value);
@@ -121,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 16),
                 SwitchListTile(
                   contentPadding: const EdgeInsets.all(0),
-                  title: const Text("Annotate with dimensions"),
+                  title: const Text(AppStrings.annotateWithDimensions),
                   value: state.settings.annotateWithDimensions,
                   onChanged: (bool value) {
                     _cubit.updateAnnotateWithDimensions(value);

@@ -1,7 +1,7 @@
+import "package:client_common/client_common.dart";
+import "package:client_flutter/extensions/color_ex.dart";
 import "package:flutter/material.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_flutter/extensions/color_ex.dart";
-import "package:client_common/triangles/graphics/from_source.dart";
 
 /// A widget that displays a list of palettes history.
 /// Each palette is shown with its name and a row of circular color previews.
@@ -37,7 +37,7 @@ class PaletteHistory extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Text(
-            "No history yet",
+            AppStrings.noHistoryYet,
             style: TextStyle(color: Colors.grey),
           ),
         ),
@@ -62,7 +62,7 @@ class PaletteHistory extends StatelessWidget {
             selected: isSelected,
             selectedColor: colorScheme.onSecondaryContainer,
             title: Text(
-              palette.name ?? "Untitled Palette",
+              palette.name ?? AppStrings.untitledPalette,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: isSelected ? FontWeight.bold : null,
                     color: isSelected ? colorScheme.onSecondaryContainer : null,
@@ -93,7 +93,7 @@ class PaletteHistory extends StatelessWidget {
                           color: isSelected
                               ? colorScheme.onSecondaryContainer
                               : null,
-                          tooltip: "Edit Palette",
+                          tooltip: AppStrings.editPalette,
                         ),
                       if (onDelete != null)
                         IconButton(
@@ -102,7 +102,7 @@ class PaletteHistory extends StatelessWidget {
                           color: isSelected
                               ? colorScheme.onSecondaryContainer
                               : null,
-                          tooltip: "Delete Palette",
+                          tooltip: AppStrings.deletePalette,
                         ),
                     ],
                   )

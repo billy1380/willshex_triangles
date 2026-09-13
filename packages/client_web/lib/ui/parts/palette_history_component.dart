@@ -28,7 +28,7 @@ class PaletteHistoryComponent extends StatelessComponent {
           classes: "bi bi-clock-history fs-1 mb-2 d-block opacity-50",
           [],
         ),
-        Component.text("No history yet"),
+        Component.text(AppStrings.noHistoryYet),
       ]);
     }
 
@@ -56,13 +56,13 @@ class PaletteHistoryComponent extends StatelessComponent {
       [
         div(classes: "history-item-header", [
           span(classes: "history-item-name", [
-            Component.text(palette.name ?? "Untitled Palette"),
+            Component.text(palette.name ?? AppStrings.untitledPalette),
           ]),
           div(classes: "d-flex gap-1", [
             if (canEdit)
               button(
                 classes: "btn btn-sm btn-link text-secondary p-0 px-1",
-                attributes: const {"title": "Edit Palette"},
+                attributes: const {"title": AppStrings.editPalette},
                 events: {
                   "click": (e) {
                     onEdit!(palette);
@@ -73,7 +73,7 @@ class PaletteHistoryComponent extends StatelessComponent {
             if (onDelete != null)
               button(
                 classes: "btn btn-sm btn-link text-danger p-0 px-1",
-                attributes: const {"title": "Delete Palette"},
+                attributes: const {"title": AppStrings.deletePalette},
                 events: {
                   "click": (e) {
                     onDelete!(palette);

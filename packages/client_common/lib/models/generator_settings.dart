@@ -2,6 +2,21 @@ import "package:equatable/equatable.dart";
 import "package:client_common/triangles/image_generator_config.dart";
 
 class GeneratorSettings extends Equatable {
+  static const String keyWidth = "image_width";
+  static const String keyHeight = "image_height";
+  static const String keyScaleFactor = "size_ratio";
+  static const String keyAddTriangleGradients = "add_triangle_gradients";
+  static const String keyAnnotateWithDimensions = "annotate_with_dimensions";
+
+  static const int defaultWidth = ImageGeneratorConfig.defaultWidth;
+  static const int defaultHeight = ImageGeneratorConfig.defaultHeight;
+  static const double defaultScaleFactor =
+      ImageGeneratorConfig.defaultRatioN / ImageGeneratorConfig.defaultRatioD;
+  static const int defaultRatioN = 10000;
+  static const int defaultRatioD = 833;
+  static const bool defaultAddTriangleGradients = true;
+  static const bool defaultAnnotateWithDimensions = false;
+
   final int width;
   final int height;
   final double scaleFactor;
@@ -11,13 +26,13 @@ class GeneratorSettings extends Equatable {
   final bool annotateWithDimensions;
 
   const GeneratorSettings({
-    this.width = ImageGeneratorConfig.defaultWidth,
-    this.height = ImageGeneratorConfig.defaultHeight,
-    this.scaleFactor = 11.0 / 69.0,
-    this.ratioN = 10000,
-    this.ratioD = 1594,
-    this.addTriangleGradients = true,
-    this.annotateWithDimensions = false,
+    this.width = defaultWidth,
+    this.height = defaultHeight,
+    this.scaleFactor = defaultScaleFactor,
+    this.ratioN = defaultRatioN,
+    this.ratioD = defaultRatioD,
+    this.addTriangleGradients = defaultAddTriangleGradients,
+    this.annotateWithDimensions = defaultAnnotateWithDimensions,
   });
 
   GeneratorSettings copyWith({
@@ -48,11 +63,12 @@ class GeneratorSettings extends Equatable {
     bool? addTriangleGradients,
     bool? annotateWithDimensions,
   }) {
-    final w = width ?? ImageGeneratorConfig.defaultWidth;
-    final h = height ?? ImageGeneratorConfig.defaultHeight;
-    final s = scaleFactor ??
-        (ImageGeneratorConfig.defaultRatioN /
-            ImageGeneratorConfig.defaultRatioD);
+    final w = width ?? defaultWidth;
+    final h = height ?? defaultHeight;
+    var s = scaleFactor ?? defaultScaleFactor;
+    if (s >= 1.0) {
+      s = 1.0 / s;
+    }
     const rn = 10000;
     var rd = (s * 10000).toInt();
     if (rd == 0) rd = 1;
@@ -63,8 +79,9 @@ class GeneratorSettings extends Equatable {
       scaleFactor: s,
       ratioN: rn,
       ratioD: rd,
-      addTriangleGradients: addTriangleGradients ?? true,
-      annotateWithDimensions: annotateWithDimensions ?? false,
+      addTriangleGradients: addTriangleGradients ?? defaultAddTriangleGradients,
+      annotateWithDimensions:
+          annotateWithDimensions ?? defaultAnnotateWithDimensions,
     );
   }
 
