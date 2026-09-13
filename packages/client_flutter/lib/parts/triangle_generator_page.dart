@@ -15,11 +15,13 @@ import "package:client_flutter/parts/palette_picker_dialog.dart";
 class TriangleGeneratorPage extends StatefulWidget {
   final String title;
   final PaletteProvider paletteProvider;
+  final Future<ws.Palette?> Function(BuildContext context)? customPalettePicker;
 
   const TriangleGeneratorPage({
     super.key,
     required this.title,
     required this.paletteProvider,
+    this.customPalettePicker,
   });
 
   @override
@@ -28,18 +30,39 @@ class TriangleGeneratorPage extends StatefulWidget {
 
 class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   late final TriangleGeneratorCubit _cubit;
+  bool _isPickerOpen = false;
 
   @override
   void initState() {
     super.initState();
     _cubit = TriangleGeneratorCubit(
       title: widget.title,
-      paletteProvider: widget.paletteProvider,
+      paletteProvider: widget.customPalettePicker != null
+          ? GeneratorPaletteProvider(() async {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _openCustomPalettePicker();
+              });
+              return null;
+            })
+          : widget.paletteProvider,
       assetLoader: (path) async {
         return (await rootBundle.load(path)).buffer.asUint8List();
       },
     );
     _loadSettings();
+  }
+
+  Future<void> _openCustomPalettePicker() async {
+    if (!mounted || widget.customPalettePicker == null || _isPickerOpen) return;
+    _isPickerOpen = true;
+    try {
+      final palette = await widget.customPalettePicker!(context);
+      if (palette != null && mounted) {
+        _cubit.selectPalette(palette);
+      }
+    } finally {
+      _isPickerOpen = false;
+    }
   }
 
   Future<void> _loadSettings() async {
@@ -333,8 +356,29 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                             ],
                           )
                         : Center(
-                            child: Text(
-                                state.errorMessage ?? "Building Triangles...")),
+                            child: widget.customPalettePicker != null &&
+                                    state.currentPalette == null
+                                ? Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        state.errorMessage ??
+                                            "No palette selected",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ElevatedButton.icon(
+                                        onPressed: _openCustomPalettePicker,
+                                        icon: const Icon(Icons.colorize),
+                                        label: const Text("Create Palette"),
+                                      ),
+                                    ],
+                                  )
+                                : Text(state.errorMessage ??
+                                    "Building Triangles..."),
+                          ),
               ),
             ],
           ),

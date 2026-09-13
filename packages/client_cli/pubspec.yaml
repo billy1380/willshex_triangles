@@ -1,0 +1,21 @@
+name: client_cli
+description: Command-line interface for willshex_triangles.
+version: 1.0.0
+publish_to: "none"
+resolution: workspace
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  client_common:
+    path: ../client_common
+  willshex_draw:
+    path: ../willshex_draw
+  willshex:
+    path: ../../../willshex-dart
+  fs_shim: ^2.4.0+1
+  logging: ^1.2.0
+
+dev_dependencies:
+  lints: ^2.0.0

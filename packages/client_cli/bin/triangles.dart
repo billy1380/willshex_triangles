@@ -5,17 +5,16 @@ import "package:fs_shim/fs_io.dart";
 import "package:logging/logging.dart";
 import "package:willshex/willshex.dart";
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/desktop/store/file_store.dart";
-import "package:client_common/extensions/string_ex.dart";
-import "package:client_common/triangles/triangles.dart";
+import "package:client_common/client_common.dart";
+import "package:client_cli/client_cli.dart";
 
-/// Main desktop application for triangle generation
+/// Main desktop CLI application for triangle generation
 class Triangles {
   // ignore: unused_field
   static final Logger _log = Logger("Triangles");
   static final Store _store = FileStore();
 
-  /// Main entry point for the desktop application
+  /// Main entry point for the desktop CLI application
   static Future<void> main(List<String> args) async {
     final FileSystem fs = fileSystemIo;
     String? command;
@@ -35,7 +34,6 @@ class Triangles {
 
     do {
       if (command == null || command.isEmpty) {
-        // We still need dart:io for stdin in CLI
         command = io.stdin.readLineSync();
       }
 
@@ -96,12 +94,10 @@ class Triangles {
     _log.info("Bye!");
   }
 
-  /// Check if command is empty (same as previous)
   static bool _isSame(String command) {
     return command.isEmpty;
   }
 
-  /// Convert command string to map
   static Map<String, String> _toMap(String command) {
     final Map<String, String> result = <String, String>{};
     final List<String> pairs = command.split("&");
@@ -116,7 +112,6 @@ class Triangles {
     return result;
   }
 
-  /// Create a new random palette
   static Future<Palette> _newPalette() async {
     final palette = RandomColorPalette();
     palette.generateRandomColors();
@@ -128,7 +123,9 @@ class Triangles {
 Future<void> main(List<String> args) async {
   setupLogging();
 
-  await Triangles.main([
-    "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1"
-  ]);
+  await Triangles.main(args.isNotEmpty
+      ? args
+      : [
+          "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1"
+        ]);
 }

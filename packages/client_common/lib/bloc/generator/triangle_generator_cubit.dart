@@ -132,7 +132,14 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
   }
 
   void selectPalette(ws.Palette palette) {
-    emit(state.copyWith(currentPalette: () => palette));
+    final history = state.history.contains(palette)
+        ? state.history
+        : [palette, ...state.history];
+    emit(state.copyWith(
+      currentPalette: () => palette,
+      history: history,
+      errorMessage: () => null,
+    ));
     generateImage();
   }
 
@@ -171,7 +178,11 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
   }
 
   void clearHistory() {
-    emit(state.copyWith(history: const []));
+    emit(state.copyWith(
+      history: const [],
+      currentPalette: () => null,
+      generatedImage: () => null,
+    ));
     generatePalette();
   }
 

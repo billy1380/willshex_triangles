@@ -259,6 +259,19 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                       const i(classes: "bi bi-triangle fs-1 mb-3 d-block", []),
                       Component.text(
                           state.errorMessage ?? "Building Triangles..."),
+                      if (component.generatorType ==
+                              GeneratorType.palettePicker &&
+                          state.currentPalette == null)
+                        div(classes: "mt-3", [
+                          button(
+                            classes: "btn btn-outline-primary",
+                            events: {"click": (e) => _cubit.generatePalette()},
+                            const [
+                              i(classes: "bi bi-palette me-2", []),
+                              Component.text("Create Palette"),
+                            ],
+                          ),
+                        ]),
                     ]),
                 ]),
 

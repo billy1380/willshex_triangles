@@ -1,37 +1,29 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
-import "package:willshex_draw/willshex_draw.dart";
+import "package:willshex_draw/willshex_draw.dart" as ws;
+import "package:client_common/client_common.dart";
 import "package:client_flutter/parts/palette_picker_dialog.dart";
 import "package:client_flutter/parts/triangle_generator_page.dart";
-import "package:client_common/triangles/graphics/palette_provider/generator_palette_provider.dart";
 
-class PalettePickerPage extends StatefulWidget {
+class PalettePickerPage extends StatelessWidget {
   static const String routePath = "/palettepicker";
 
   static Widget builder(BuildContext context, GoRouterState state) {
-    return const PalettePickerPage();
+    return const PalettePickerPage._();
   }
 
-  const PalettePickerPage({super.key});
+  const PalettePickerPage._();
 
-  @override
-  State<PalettePickerPage> createState() => _PalettePickerPageState();
-}
-
-class _PalettePickerPageState extends State<PalettePickerPage> {
   @override
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: "Palette Picker",
-      paletteProvider: GeneratorPaletteProvider(() async {
-        final Palette? palette = await showDialog<Palette>(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => const PalettePickerDialog(),
-        );
-
-        return palette;
-      }),
+      paletteProvider: GeneratorPaletteProvider(() async => null),
+      customPalettePicker: (context) => showDialog<ws.Palette>(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) => const PalettePickerDialog(),
+      ),
     );
   }
 }

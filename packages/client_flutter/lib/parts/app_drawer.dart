@@ -30,10 +30,9 @@ class AppDrawer extends StatelessWidget {
       selectedIndex: _getSelectedIndex(location),
       onDestinationSelected: (int index) {
         final String destination = _getRouteByIndex(index);
+        Navigator.pop(context);
         if (location != destination) {
           context.go(destination);
-        } else {
-          Navigator.pop(context); // Close drawer if already on page
         }
       },
       children: [

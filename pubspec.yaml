@@ -3,6 +3,7 @@ environment:
   sdk: ">=3.5.0 <4.0.0"
 
 workspace:
+  - packages/client_cli
   - packages/client_common
   - packages/client_flutter
   - packages/client_web

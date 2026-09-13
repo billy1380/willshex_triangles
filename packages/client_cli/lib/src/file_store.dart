@@ -1,6 +1,6 @@
 import "dart:io";
 import "package:logging/logging.dart";
-import "../../triangles/store.dart";
+import "package:client_common/client_common.dart";
 
 /// File-based implementation of the Store interface
 class FileStore implements Store {
