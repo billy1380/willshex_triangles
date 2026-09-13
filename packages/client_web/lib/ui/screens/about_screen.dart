@@ -20,7 +20,7 @@ class _AboutContent extends StatelessComponent {
   Component _link(String title, String href, {bool isDead = false}) {
     return div(classes: "mb-2", [
       if (isDead)
-        span(classes: "text-secondary text-decoration-line-through me-2", [
+        span(classes: "text-primary fw-medium me-2", [
           Component.text(title),
         ])
       else
