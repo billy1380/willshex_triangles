@@ -1,0 +1,40 @@
+name: client_web
+description: Jaspr web client for willshex_triangles.
+publish_to: "none"
+version: 1.0.0+1
+resolution: workspace
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  client_common:
+    path: ../client_common
+  willshex_draw:
+    path: ../willshex_draw
+  subtle_backgrounds:
+    path: ../subtle_backgrounds
+  blend_composites:
+    path: ../../../blend_composites
+
+  # Jaspr
+  jaspr: ^0.23.4
+  jaspr_router: ^0.9.0
+
+  # Utilities & State
+  bloc: ^9.2.1
+  logging: ^1.2.0
+  web: ^1.1.1
+  http: ^1.2.0
+
+  image: any
+dev_dependencies:
+  jaspr_builder: ^0.23.4
+  jaspr_cli: ^0.23.4
+  build_runner: ^2.15.1
+  build_web_compilers: ^4.8.5
+  lints: ^2.0.0
+
+jaspr:
+  uses-ssr: false
+  mode: client

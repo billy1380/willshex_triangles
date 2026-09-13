@@ -1,0 +1,30 @@
+name: client_common
+description: Shared models, triangle engine, and Blocs for willshex_triangles.
+publish_to: "none"
+version: 1.0.0
+resolution: workspace
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  bloc: ^9.2.1
+  equatable: ^2.1.0
+  logging: ^1.2.0
+  http: ^1.2.0
+  image: ^4.1.3
+  fs_shim: ^2.4.0+1
+  blend_composites:
+    path: ../../../blend_composites
+  image_blend_composites:
+    path: ../../../image_blend_composites
+  willshex:
+    path: ../../../willshex-dart
+  willshex_draw:
+    path: ../willshex_draw
+  subtle_backgrounds:
+    path: ../subtle_backgrounds
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0

@@ -1,0 +1,49 @@
+name: client_flutter
+description: Flutter client for willshex_triangles.
+publish_to: "none"
+version: 1.0.0+1
+resolution: workspace
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  client_common:
+    path: ../client_common
+  willshex_draw:
+    path: ../willshex_draw
+  subtle_backgrounds:
+    path: ../subtle_backgrounds
+  willshex:
+    path: ../../../willshex-dart
+  blend_composites:
+    path: ../../../blend_composites
+  image_blend_composites:
+    path: ../../../image_blend_composites
+
+  bloc: ^9.2.1
+  flutter_bloc: ^9.1.1
+  equatable: ^2.1.0
+  go_router: ^11.1.4
+  shared_preferences: ^2.2.2
+  logging: ^1.2.0
+  http: ^1.2.0
+  image: ^4.1.3
+  url_launcher: ^6.3.2
+  google_fonts: ^6.3.3
+  fs_shim: ^2.4.0+1
+  file_saver: ^0.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fonts/monaco/
+    - assets/samples/
