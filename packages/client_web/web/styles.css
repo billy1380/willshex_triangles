@@ -483,3 +483,67 @@ h1, h2, h3, h4, h5, h6, .brand-title {
 .sample-card:hover img {
   transform: scale(1.05);
 }
+
+/* Palette Picker Colored Range Sliders (matching Flutter activeColor) */
+.form-range-colored {
+  accent-color: var(--slider-color);
+}
+
+.form-range-red {
+  --slider-color: #f44336;
+  --slider-inactive: rgba(244, 67, 54, 0.25);
+}
+
+.form-range-green {
+  --slider-color: #4caf50;
+  --slider-inactive: rgba(76, 175, 80, 0.25);
+}
+
+.form-range-blue {
+  --slider-color: #2196f3;
+  --slider-inactive: rgba(33, 150, 243, 0.25);
+}
+
+.form-range-colored::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--slider-color) 0%,
+    var(--slider-color) var(--slider-pct, 50%),
+    var(--slider-inactive) var(--slider-pct, 50%),
+    var(--slider-inactive) 100%
+  ) !important;
+  border-radius: 1rem;
+  height: 0.5rem;
+}
+
+.form-range-colored::-moz-range-track {
+  background: var(--slider-inactive) !important;
+  border-radius: 1rem;
+  height: 0.5rem;
+}
+
+.form-range-colored::-moz-range-progress {
+  background-color: var(--slider-color) !important;
+  border-radius: 1rem;
+  height: 0.5rem;
+}
+
+.form-range-colored::-webkit-slider-thumb {
+  background-color: var(--slider-color) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+}
+
+.form-range-colored::-moz-range-thumb {
+  background-color: var(--slider-color) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+}
+
+.form-range-colored:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem var(--slider-inactive) !important;
+}
+
+.form-range-colored:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem var(--slider-inactive) !important;
+}

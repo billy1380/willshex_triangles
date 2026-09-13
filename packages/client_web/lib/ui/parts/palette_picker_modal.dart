@@ -106,6 +106,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                 _buildSlider(
                   label: AppStrings.red,
                   color: "text-danger",
+                  sliderClass: "form-range-red",
                   value: (currentColor.red * 255).round(),
                   onChanged: (val) => _cubit.updateSelectedColor(
                     ws.Color.rgbaColor(
@@ -119,6 +120,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                 _buildSlider(
                   label: AppStrings.green,
                   color: "text-success",
+                  sliderClass: "form-range-green",
                   value: (currentColor.green * 255).round(),
                   onChanged: (val) => _cubit.updateSelectedColor(
                     ws.Color.rgbaColor(
@@ -132,6 +134,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                 _buildSlider(
                   label: AppStrings.blue,
                   color: "text-primary",
+                  sliderClass: "form-range-blue",
                   value: (currentColor.blue * 255).round(),
                   onChanged: (val) => _cubit.updateSelectedColor(
                     ws.Color.rgbaColor(
@@ -199,9 +202,12 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
   Component _buildSlider({
     required String label,
     required String color,
+    required String sliderClass,
     required int value,
     required ValueChanged<int> onChanged,
   }) {
+    final pct = (value / 255.0 * 100).toStringAsFixed(1);
+
     return div(classes: "mb-2", [
       div(classes: "d-flex justify-content-between small text-secondary mb-1", [
         span(classes: color, [Component.text(label)]),
@@ -209,13 +215,22 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
       ]),
       input(
         type: InputType.range,
-        classes: "form-range",
+        classes: "form-range form-range-colored $sliderClass",
         value: "$value",
-        attributes: const {"min": "0", "max": "255"},
+        attributes: {
+          "min": "0",
+          "max": "255",
+          "style": "--slider-pct: $pct%;",
+        },
         events: {
           "input": (e) {
-            final val = int.tryParse((e.target as dynamic).value as String);
-            if (val != null) onChanged(val);
+            final target = e.target as dynamic;
+            final val = int.tryParse(target.value as String);
+            if (val != null) {
+              final newPct = (val / 255.0 * 100).toStringAsFixed(1);
+              target.style.setProperty("--slider-pct", "$newPct%");
+              onChanged(val);
+            }
           },
         },
       ),
