@@ -103,7 +103,7 @@ class _SettingsContent extends StatelessComponent {
                   checked: s.addTriangleGradients,
                   events: {
                     "change": (e) {
-                      final val = (e.target as dynamic).checked as bool;
+                      final val = (e.target as dynamic).checked == true;
                       cubit.updateAddTriangleGradients(val);
                     },
                   },
@@ -122,7 +122,7 @@ class _SettingsContent extends StatelessComponent {
                   checked: s.annotateWithDimensions,
                   events: {
                     "change": (e) {
-                      final val = (e.target as dynamic).checked as bool;
+                      final val = (e.target as dynamic).checked == true;
                       cubit.updateAnnotateWithDimensions(val);
                     },
                   },

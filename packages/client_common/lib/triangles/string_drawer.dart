@@ -18,6 +18,9 @@ class StringDrawer {
 
   img.Image? _texture;
 
+  /// Whether the font texture has been loaded
+  bool get hasTexture => _texture != null;
+
   /// Constructor with font name and size
   StringDrawer(this._fontName, this._fontSize);
 

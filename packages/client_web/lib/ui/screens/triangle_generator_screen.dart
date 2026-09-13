@@ -55,7 +55,8 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
 
   static Future<Uint8List?> _loadWebAsset(String path) async {
     try {
-      final uri = Uri.base.resolve(path);
+      final cleanPath = path.startsWith("/") ? path : "/$path";
+      final uri = Uri.base.resolve(cleanPath);
       final response = await http.get(uri);
       if (response.statusCode == 200) {
         return response.bodyBytes;

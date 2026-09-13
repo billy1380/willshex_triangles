@@ -571,10 +571,14 @@ class ImageGenerator {
       targetSize = 100;
     }
 
-    if (!_fontCache.containsKey(targetSize)) {
+    if (!_fontCache.containsKey(targetSize) ||
+        _fontCache[targetSize]?.hasTexture != true) {
       final drawer = StringDrawer("monaco", targetSize);
       await drawer.load(assetLoader: assetLoader, fs: fs);
-      _fontCache[targetSize] = drawer;
+      if (drawer.hasTexture) {
+        _fontCache[targetSize] = drawer;
+      }
+      return drawer;
     }
 
     return _fontCache[targetSize]!;
