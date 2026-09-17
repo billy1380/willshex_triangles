@@ -552,9 +552,9 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                 child: FloatingActionButton(
                   onPressed: () async {
                     await FileSaver.instance.saveFile(
-                      name: "triangles",
+                      name: AppStrings.defaultImageFilename,
                       bytes: state.generatedImage!,
-                      fileExtension: "png",
+                      fileExtension: AppStrings.fileExtensionPng,
                       mimeType: MimeType.png,
                     );
                   },

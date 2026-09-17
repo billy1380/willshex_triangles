@@ -9,6 +9,7 @@ import "package:image_blend_composites/blend_composite.dart";
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
 import "package:client_common/triangles/triangles.dart";
+import "package:client_common/constants/app_strings.dart";
 
 /// Image generator for creating triangle-based images
 class ImageGenerator {
@@ -132,7 +133,7 @@ class ImageGenerator {
       final Palette? palette = await paletteProvider();
 
       if (palette == null) {
-        _log.warning("Palette provider returned null palette");
+        _log.warning(AppStrings.errorPaletteProviderNull);
         return null;
       }
 
@@ -154,7 +155,7 @@ class ImageGenerator {
       generated.format = format;
 
       if (generated.content == null) {
-        _log.warning("Looks like image was not generated");
+        _log.warning(AppStrings.errorImageNotGenerated);
         return null;
       } else {
         if (store != null && name != null) {
@@ -217,7 +218,7 @@ class ImageGenerator {
               assetLoader: assetLoader, fs: fs);
       }
     } catch (e) {
-      _log.warning("Error creating image", e);
+      _log.warning(AppStrings.errorCreatingImage, e);
     }
 
     return Future.value(null);

@@ -73,6 +73,38 @@ class AppStrings {
   static const String labelB = "B";
   static const String cancel = "Cancel";
   static const String select = "Select";
+  static const String close = "Close";
+  static const String defaultCustomPaletteName = "My Custom Palette";
+
+  // Navigation & Drawer Controls
+  static const String closeSidebar = "Close sidebar";
+  static const String toggleMenu = "Toggle menu";
+
+  // File & Download Defaults
+  static const String defaultImageFilename = "triangles";
+  static const String fileExtensionPng = "png";
+  static const String defaultDownloadFilename = "triangles.png";
+  static const String sampleImagePrefix = "Sample";
+
+  // Status & Error Messages
+  static const String noPaletteProvided = "No palette provided";
+  static const String errorGeneratingPalette = "Error generating palette";
+  static const String errorGeneratingImage = "Error generating image";
+  static const String errorCreatingImage = "Error creating image";
+  static const String errorPaletteProviderNull = "Palette provider returned null palette";
+  static const String errorImageNotGenerated = "Looks like image was not generated";
+  static const String errorFailedToDecodeImage = "Failed to decode image";
+
+  // Palette Names & Providers
+  static const String paletteRandomColors = "Random Colors";
+  static const String paletteRandomWarmColors = "Random Warm Colors";
+  static const String paletteRandomCoolColors = "Random Cool Colors";
+  static const String paletteRandomComplementaryColors = "Random Complementary Colors";
+  static const String paletteRandomAnalogousColors = "Random Analogous Colors";
+  static const String paletteNamedColors = "Named Colors";
+  static const String paletteFixed = "Fixed";
+  static const String paletteCommaSeparated = "Comma Separated";
+  static const String paletteImageSample = "Image Sample Palette";
 
   // Settings Page & Screen
   static const String imageConfiguration = "Image Configuration";

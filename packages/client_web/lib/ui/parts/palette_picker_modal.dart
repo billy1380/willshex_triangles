@@ -53,6 +53,10 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
               ]),
               button(
                 classes: "btn-close",
+                attributes: const {
+                  "title": AppStrings.close,
+                  "aria-label": AppStrings.close,
+                },
                 events: {"click": (e) => component.onCancel()},
                 const [],
               ),

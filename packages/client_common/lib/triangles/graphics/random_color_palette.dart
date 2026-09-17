@@ -1,10 +1,11 @@
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
+import "package:client_common/constants/app_strings.dart";
 
 class RandomColorPalette extends Palette {
   static final Logger _log = Logger("RandomColorPalette");
 
-  RandomColorPalette([super.name = "Random Colors", super.externalId]);
+  RandomColorPalette([super.name = AppStrings.paletteRandomColors, super.externalId]);
 
   /// Generate random colors locally as fallback
   void generateRandomColors([int? count]) {
@@ -38,7 +39,7 @@ class RandomColorPalette extends Palette {
 
   /// Generate warm color palette (reds, oranges, yellows)
   void generateWarmPalette(int count, List<Color> colors) {
-    name = "Random Warm Colors";
+    name = AppStrings.paletteRandomWarmColors;
     for (int i = 0; i < count; i++) {
       final double r = 0.5 + RandomHelper.random.nextDouble() * 0.5; // 0.5-1.0
       final double g = RandomHelper.random.nextDouble() * 0.6; // 0.0-0.6
@@ -49,7 +50,7 @@ class RandomColorPalette extends Palette {
 
   /// Generate cool color palette (blues, greens, purples)
   void generateCoolPalette(int count, List<Color> colors) {
-    name = "Random Cool Colors";
+    name = AppStrings.paletteRandomCoolColors;
     for (int i = 0; i < count; i++) {
       final double r = RandomHelper.random.nextDouble() * 0.4; // 0.0-0.4
       final double g = RandomHelper.random.nextDouble() * 0.7; // 0.0-0.7
@@ -60,7 +61,7 @@ class RandomColorPalette extends Palette {
 
   /// Generate complementary color palette
   void generateComplementaryPalette(int count, List<Color> colors) {
-    name = "Random Complementary Colors";
+    name = AppStrings.paletteRandomComplementaryColors;
     final double baseHue = RandomHelper.random.nextDouble();
 
     for (int i = 0; i < count; i++) {
@@ -77,7 +78,7 @@ class RandomColorPalette extends Palette {
 
   /// Generate analogous color palette
   void generateAnalogousPalette(int count, List<Color> colors) {
-    name = "Random Analogous Colors";
+    name = AppStrings.paletteRandomAnalogousColors;
     final double baseHue = RandomHelper.random.nextDouble();
 
     for (int i = 0; i < count; i++) {

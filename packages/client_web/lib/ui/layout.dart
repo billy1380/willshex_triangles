@@ -93,6 +93,10 @@ class _AppLayoutState extends State<AppLayout> {
             ]),
             button(
               classes: "btn btn-sm btn-link d-lg-none text-secondary",
+              attributes: const {
+                "title": AppStrings.closeSidebar,
+                "aria-label": AppStrings.closeSidebar,
+              },
               events: {"click": (e) => _toggleSidebar()},
               const [i(classes: "bi bi-x-lg", [])],
             ),
@@ -162,6 +166,10 @@ class _AppLayoutState extends State<AppLayout> {
           div(classes: "sidebar-footer", [
             button(
               classes: "btn btn-outline-secondary btn-sm w-100",
+              attributes: const {
+                "title": AppStrings.toggleTheme,
+                "aria-label": AppStrings.toggleTheme,
+              },
               events: {"click": (e) => _toggleTheme()},
               [
                 i(
@@ -180,6 +188,10 @@ class _AppLayoutState extends State<AppLayout> {
           div(classes: "d-flex align-items-center gap-3", [
             button(
               classes: "btn btn-sm btn-outline-secondary d-lg-none",
+              attributes: const {
+                "title": AppStrings.toggleMenu,
+                "aria-label": AppStrings.toggleMenu,
+              },
               events: {"click": (e) => _toggleSidebar()},
               const [i(classes: "bi bi-list fs-5", [])],
             ),

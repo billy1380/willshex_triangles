@@ -2,6 +2,7 @@ import "dart:typed_data";
 
 import "package:http/http.dart" as http;
 import "package:image/image.dart" as img;
+import "package:client_common/constants/app_strings.dart";
 
 /// Helper functions for fetching and decoding images
 class ImageHelper {
@@ -29,7 +30,7 @@ class ImageHelper {
     final decodedImage =
         img.decodeImage(Uint8List.fromList(response.bodyBytes));
     if (decodedImage == null) {
-      throw Exception("Failed to decode image");
+      throw Exception(AppStrings.errorFailedToDecodeImage);
     }
 
     return decodedImage;

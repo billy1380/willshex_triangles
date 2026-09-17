@@ -1,11 +1,12 @@
 import "package:bloc/bloc.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:client_common/bloc/palette/palette_picker_state.dart";
+import "package:client_common/constants/app_strings.dart";
 
 class PalettePickerCubit extends Cubit<PalettePickerState> {
   PalettePickerCubit({ws.Palette? initialPalette})
       : super(PalettePickerState(
-          name: initialPalette?.name ?? "My Custom Palette",
+          name: initialPalette?.name ?? AppStrings.defaultCustomPaletteName,
           colors: initialPalette != null
               ? List<ws.Color>.from(initialPalette.colors)
               : const [],

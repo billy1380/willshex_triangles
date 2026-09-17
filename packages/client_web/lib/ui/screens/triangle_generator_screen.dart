@@ -116,7 +116,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
     final base64Data = base64Encode(bytes);
     final link = web.document.createElement("a") as web.HTMLAnchorElement;
     link.href = "data:image/png;base64,$base64Data";
-    link.download = "triangles.png";
+    link.download = AppStrings.defaultDownloadFilename;
     link.click();
   }
 
@@ -382,6 +382,10 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         ),
                         button(
                           classes: "btn btn-sm btn-link text-secondary",
+                          attributes: const {
+                            "title": AppStrings.close,
+                            "aria-label": AppStrings.close,
+                          },
                           events: {
                             "click": (e) =>
                                 setState(() => _historyDrawerOpen = false),

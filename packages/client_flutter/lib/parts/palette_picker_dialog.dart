@@ -72,17 +72,20 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                         itemCount: state.colors.length + 1,
                         itemBuilder: (context, index) {
                           if (index == state.colors.length) {
-                            return InkWell(
-                              onTap: () => _cubit.addColor(),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
-                                  borderRadius: BorderRadius.circular(8),
+                            return Tooltip(
+                              message: AppStrings.addColor,
+                              child: InkWell(
+                                onTap: () => _cubit.addColor(),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(Icons.add),
                                 ),
-                                child: const Icon(Icons.add),
                               ),
                             );
                           }
@@ -113,6 +116,7 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                                 child: IconButton(
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
+                                  tooltip: AppStrings.removeColor,
                                   icon: const Icon(Icons.close,
                                       size: 16, color: Colors.white),
                                   onPressed: () => _cubit.removeColor(index),

@@ -43,7 +43,7 @@ class WelcomeView extends StatelessComponent {
     return div(classes: "sample-card", [
       img(
         src: "$assetPathPrefix$filename",
-        alt: "Sample $filename",
+        alt: "${AppStrings.sampleImagePrefix} $filename",
         loading: MediaLoading.lazy,
       ),
     ]);

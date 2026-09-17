@@ -1,6 +1,7 @@
 import "dart:math";
 
 import "package:willshex_draw/willshex_draw.dart";
+import "package:client_common/constants/app_strings.dart";
 
 /// A palette that generates 3-6 random named colors
 class NamedColorPalette extends Palette {
@@ -11,7 +12,7 @@ class NamedColorPalette extends Palette {
   static const double _minDistance = 0.4;
   static const int _maxRetries = 3;
 
-  NamedColorPalette() : super("Named Colors", "named-colors") {
+  NamedColorPalette() : super(AppStrings.paletteNamedColors, "named-colors") {
     // Generate between 1 and 6 colors (inclusive)
     final int count = 1 + RandomHelper.random.nextInt(6);
 

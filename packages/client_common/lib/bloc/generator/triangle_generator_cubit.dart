@@ -11,6 +11,7 @@ import "package:client_common/triangles/graphics/palette_provider/palette_provid
 import "package:client_common/triangles/image_generator.dart";
 import "package:client_common/triangles/image_generator_config.dart";
 import "package:client_common/triangles/triangles_type.dart";
+import "package:client_common/constants/app_strings.dart";
 
 typedef AssetLoader = Future<Uint8List?> Function(String path);
 
@@ -51,12 +52,12 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
       } else {
         if (state.history.isEmpty) {
           emit(state.copyWith(
-            errorMessage: () => "No palette provided",
+            errorMessage: () => AppStrings.noPaletteProvided,
           ));
         }
       }
     } catch (e, stack) {
-      _log.severe("Error generating palette", e, stack);
+      _log.severe(AppStrings.errorGeneratingPalette, e, stack);
       emit(state.copyWith(errorMessage: () => e.toString()));
     }
   }
@@ -104,7 +105,7 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
         emit(state.copyWith(isGenerating: false));
       }
     } catch (e, stack) {
-      _log.severe("Error generating image", e, stack);
+      _log.severe(AppStrings.errorGeneratingImage, e, stack);
       emit(state.copyWith(
         isGenerating: false,
         errorMessage: () => e.toString(),

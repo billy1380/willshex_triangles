@@ -1,5 +1,6 @@
 import "package:willshex_draw/willshex_draw.dart";
 import "package:client_common/triangles/graphics/from_source.dart";
+import "package:client_common/constants/app_strings.dart";
 
 import "color_cut_quantizer.dart";
 import "color_utils.dart";
@@ -70,7 +71,7 @@ class CanvasSamplePalette<T> extends Palette implements FromSource<T> {
     T? source,
   })  : _populations = populations,
         _source = source {
-    name = "Image Sample Palette";
+    name = AppStrings.paletteImageSample;
 
     // Add colors to the parent palette
     addColors(colors);
