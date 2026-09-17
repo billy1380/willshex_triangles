@@ -386,10 +386,13 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                       boundaryMargin:
                                           const EdgeInsets.all(double.infinity),
                                       panEnabled: true,
-                                      child: Center(
-                                        child: Image.memory(
-                                          state.generatedImage!,
-                                          fit: BoxFit.contain,
+                                      child: GestureDetector(
+                                        onDoubleTap: _resetZoom,
+                                        child: Center(
+                                          child: Image.memory(
+                                            state.generatedImage!,
+                                            fit: BoxFit.contain,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -424,11 +427,13 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                       right: 16,
                                       child: Material(
                                         color: Theme.of(context).cardColor,
-                                        elevation: 3,
+                                        elevation: 1,
                                         borderRadius: BorderRadius.circular(8),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 4, vertical: 2),
+                                            horizontal: 4,
+                                            vertical: 2,
+                                          ),
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(8),
@@ -449,28 +454,32 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         minWidth: 32,
                                                         minHeight: 32),
                                                 padding: EdgeInsets.zero,
-                                                tooltip: "Zoom out (-20%)",
-                                                onPressed: () => _zoomBy(
-                                                    0.8, viewportSize),
+                                                tooltip: AppStrings.zoomOut,
+                                                onPressed: () =>
+                                                    _zoomBy(0.8, viewportSize),
                                               ),
-                                              InkWell(
-                                                onTap: _resetZoom,
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 4),
-                                                  child: Text(
-                                                    "${(_currentScale * 100).round()}%",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .labelSmall
-                                                        ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                              Tooltip(
+                                                message:
+                                                    AppStrings.resetZoomAndPosition,
+                                                child: InkWell(
+                                                  onTap: _resetZoom,
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 4),
+                                                    child: Text(
+                                                      "${(_currentScale * 100).round()}%",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelSmall
+                                                          ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -482,9 +491,9 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         minWidth: 32,
                                                         minHeight: 32),
                                                 padding: EdgeInsets.zero,
-                                                tooltip: "Zoom in (+25%)",
-                                                onPressed: () => _zoomBy(
-                                                    1.25, viewportSize),
+                                                tooltip: AppStrings.zoomIn,
+                                                onPressed: () =>
+                                                    _zoomBy(1.25, viewportSize),
                                               ),
                                               IconButton(
                                                 icon: const Icon(
@@ -495,7 +504,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         minWidth: 32,
                                                         minHeight: 32),
                                                 padding: EdgeInsets.zero,
-                                                tooltip: "Reset zoom and pan",
+                                                tooltip:
+                                                    AppStrings.resetZoomAndPosition,
                                                 onPressed: _resetZoom,
                                               ),
                                             ],
@@ -668,7 +678,9 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
           builder: (context) {
             final viewState = _viewKey.currentState;
             final cubit = viewState?.cubit;
-            if (viewState == null || cubit == null) return const SizedBox.shrink();
+            if (viewState == null || cubit == null) {
+              return const SizedBox.shrink();
+            }
 
             return BlocBuilder<TriangleGeneratorCubit, TriangleGeneratorState>(
               bloc: cubit,

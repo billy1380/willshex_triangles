@@ -44,6 +44,11 @@ class AppStrings {
   static const String hideReference = "Hide Reference";
   static const String showHistory = "Show History";
 
+  // Zoom & Pan Controls
+  static const String zoomIn = "Zoom in (+25%)";
+  static const String zoomOut = "Zoom out (-20%)";
+  static const String resetZoomAndPosition = "Reset zoom and position";
+
   // History Drawer
   static const String history = "History";
   static const String newPalette = "New Palette";
