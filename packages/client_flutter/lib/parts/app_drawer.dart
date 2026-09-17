@@ -1,15 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:client_common/client_common.dart";
-import "package:client_flutter/pages/about_page.dart";
-import "package:client_flutter/pages/random_palette_page.dart";
-import "package:client_flutter/pages/random_grayscale_palette_page.dart";
-import "package:client_flutter/pages/html_colour_page.dart";
-import "package:client_flutter/pages/image_palette_page.dart";
-import "package:client_flutter/pages/palette_picker_page.dart";
-import "package:client_flutter/pages/image_sampler_palette_page.dart";
-import "package:client_flutter/pages/settings_page.dart";
-import "package:client_flutter/pages/welcome_page.dart";
 
 extension GoRouterLocation on GoRouter {
   String get location => (routerDelegate.currentConfiguration.last
@@ -22,7 +13,16 @@ extension GoRouterLocation on GoRouter {
 }
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  final TrianglesRoutePaths paths;
+
+  AppDrawer({
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
 
   @override
   Widget build(BuildContext context) {
@@ -109,40 +109,69 @@ class AppDrawer extends StatelessWidget {
   }
 
   int _getSelectedIndex(String location) {
-    if (location.startsWith(WelcomePage.routePath)) return 0;
-    if (location.startsWith(PalettePickerPage.routePath)) return 1;
-    if (location.startsWith(HtmlColourPage.routePath)) return 2;
-    if (location.startsWith(RandomPalettePage.routePath)) return 3;
-    if (location.startsWith(RandomGrayscalePalettePage.routePath)) return 4;
-    if (location.startsWith(ImagePalettePage.routePath)) return 5;
-    if (location.startsWith(ImageSamplerPalettePage.routePath)) return 6;
-    if (location.startsWith(SettingsPage.routePath)) return 7;
-    if (location.startsWith(AboutPage.routePath)) return 8;
+    if (location == paths.welcome ||
+        location.startsWith("${paths.welcome}/") ||
+        (paths.welcome == TrianglesRoutePaths.defaultWelcome &&
+            (location == "/" || location.isEmpty))) {
+      return 0;
+    }
+    if (location == paths.palettePicker ||
+        location.startsWith("${paths.palettePicker}/")) {
+      return 1;
+    }
+    if (location == paths.htmlColour ||
+        location.startsWith("${paths.htmlColour}/")) {
+      return 2;
+    }
+    if (location == paths.randomPalette ||
+        location.startsWith("${paths.randomPalette}/")) {
+      return 3;
+    }
+    if (location == paths.randomGrayscale ||
+        location.startsWith("${paths.randomGrayscale}/")) {
+      return 4;
+    }
+    if (location == paths.imagePalette ||
+        location.startsWith("${paths.imagePalette}/")) {
+      return 5;
+    }
+    if (location == paths.imageSampler ||
+        location.startsWith("${paths.imageSampler}/")) {
+      return 6;
+    }
+    if (location == paths.settings ||
+        location.startsWith("${paths.settings}/")) {
+      return 7;
+    }
+    if (location == paths.about ||
+        location.startsWith("${paths.about}/")) {
+      return 8;
+    }
     return 0; // Default
   }
 
   String _getRouteByIndex(int index) {
     switch (index) {
       case 0:
-        return WelcomePage.routePath;
+        return paths.welcome;
       case 1:
-        return PalettePickerPage.routePath;
+        return paths.palettePicker;
       case 2:
-        return HtmlColourPage.routePath;
+        return paths.htmlColour;
       case 3:
-        return RandomPalettePage.routePath;
+        return paths.randomPalette;
       case 4:
-        return RandomGrayscalePalettePage.routePath;
+        return paths.randomGrayscale;
       case 5:
-        return ImagePalettePage.routePath;
+        return paths.imagePalette;
       case 6:
-        return ImageSamplerPalettePage.routePath;
+        return paths.imageSampler;
       case 7:
-        return SettingsPage.routePath;
+        return paths.settings;
       case 8:
-        return AboutPage.routePath;
+        return paths.about;
       default:
-        return WelcomePage.routePath;
+        return paths.welcome;
     }
   }
 }

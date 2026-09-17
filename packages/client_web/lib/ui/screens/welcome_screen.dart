@@ -4,24 +4,45 @@ import "package:client_common/client_common.dart";
 import "package:client_web/ui/layout.dart";
 
 class WelcomeScreen extends StatelessComponent {
-  const WelcomeScreen({super.key});
+  final bool useLayout;
+  final TrianglesRoutePaths paths;
+
+  WelcomeScreen({
+    this.useLayout = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
 
   @override
   Component build(BuildContext context) {
-    return const AppLayout(
+    if (!useLayout) {
+      return const WelcomeView();
+    }
+    return AppLayout(
       title: AppStrings.navWelcome,
-      child: _WelcomeContent(),
+      paths: paths,
+      child: const WelcomeView(),
     );
   }
 }
 
-class _WelcomeContent extends StatelessComponent {
-  const _WelcomeContent();
+/// Pure embeddable view for Welcome in web.
+class WelcomeView extends StatelessComponent {
+  final String assetPathPrefix;
+
+  const WelcomeView({
+    this.assetPathPrefix = "assets/samples/",
+    super.key,
+  });
 
   Component _sampleCard(String filename) {
     return div(classes: "sample-card", [
       img(
-        src: "assets/samples/$filename",
+        src: "$assetPathPrefix$filename",
         alt: "Sample $filename",
         loading: MediaLoading.lazy,
       ),

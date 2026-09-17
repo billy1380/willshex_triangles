@@ -2,6 +2,7 @@ library client_common;
 
 export "models/generator_settings.dart";
 export "models/generator_type.dart";
+export "models/triangles_route_paths.dart";
 
 export "bloc/settings/settings_state.dart";
 export "bloc/settings/settings_cubit.dart";

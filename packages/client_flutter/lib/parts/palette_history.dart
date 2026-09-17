@@ -33,12 +33,12 @@ class PaletteHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (palettes.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Text(
             AppStrings.noHistoryYet,
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
           ),
         ),
       );
@@ -76,7 +76,7 @@ class PaletteHistory extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: palette.colors
-                        .map((c) => _buildColorCircle(c))
+                        .map((c) => _buildColorCircle(context, c))
                         .toList(),
                   ),
                 ),
@@ -114,7 +114,7 @@ class PaletteHistory extends StatelessWidget {
     );
   }
 
-  Widget _buildColorCircle(ws.Color c) {
+  Widget _buildColorCircle(BuildContext context, ws.Color c) {
     return Container(
       margin: const EdgeInsets.only(right: 4),
       width: 24,
@@ -123,7 +123,7 @@ class PaletteHistory extends StatelessWidget {
         color: c.toColor(),
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.black12,
+          color: Theme.of(context).colorScheme.outlineVariant,
           width: 0.5,
         ),
       ),

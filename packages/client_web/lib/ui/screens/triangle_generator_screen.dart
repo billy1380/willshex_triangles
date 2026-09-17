@@ -12,16 +12,45 @@ import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:client_common/client_common.dart";
 import "package:client_web/ui/bloc_provider.dart";
 import "package:client_web/ui/layout.dart";
+import "package:client_web/ui/parts/interactive_viewer.dart";
 import "package:client_web/ui/parts/palette_history_component.dart";
 import "package:client_web/ui/parts/palette_picker_modal.dart";
 
-class TriangleGeneratorScreen extends StatefulComponent {
+import "package:client_web/services/local_storage_settings_storage.dart";
+
+/// Pure embeddable view for triangle generator in web.
+class TriangleGeneratorView extends StatelessComponent {
   final GeneratorType generatorType;
 
-  const TriangleGeneratorScreen({
+  const TriangleGeneratorView({
     required this.generatorType,
     super.key,
   });
+
+  @override
+  Component build(BuildContext context) {
+    return TriangleGeneratorScreen(
+      generatorType: generatorType,
+      useLayout: false,
+    );
+  }
+}
+
+class TriangleGeneratorScreen extends StatefulComponent {
+  final GeneratorType generatorType;
+  final bool useLayout;
+  final TrianglesRoutePaths paths;
+
+  TriangleGeneratorScreen({
+    required this.generatorType,
+    this.useLayout = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
 
   @override
   State<TriangleGeneratorScreen> createState() =>
@@ -30,6 +59,8 @@ class TriangleGeneratorScreen extends StatefulComponent {
 
 class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   late final TriangleGeneratorCubit _cubit;
+  SettingsCubit? _localSettingsCubit;
+  late final SettingsCubit _settingsCubit;
   bool _historyDrawerOpen = false;
   ws.Palette? _editingPalette;
   bool _showCustomPaletteModal = false;
@@ -37,7 +68,15 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   @override
   void initState() {
     super.initState();
-    final settingsState = BlocProvider.of<SettingsCubit>(context).state;
+    final cubitFromContext = BlocProvider.maybeOf<SettingsCubit>(context);
+    if (cubitFromContext == null) {
+      _localSettingsCubit = SettingsCubit(LocalStorageSettingsStorage());
+      _settingsCubit = _localSettingsCubit!;
+    } else {
+      _settingsCubit = cubitFromContext;
+    }
+
+    final settingsState = _settingsCubit.state;
 
     _cubit = TriangleGeneratorCubit(
       title: component.generatorType.title,
@@ -48,7 +87,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
           return null;
         },
         settings: settingsState.settings,
-        getSettings: () => BlocProvider.of<SettingsCubit>(context).state.settings,
+        getSettings: () => _settingsCubit.state.settings,
       ),
       assetLoader: _loadWebAsset,
     );
@@ -69,6 +108,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   @override
   void dispose() {
     _cubit.close();
+    _localSettingsCubit?.close();
     super.dispose();
   }
 
@@ -83,6 +123,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   @override
   Component build(BuildContext context) {
     return BlocListener<SettingsCubit, SettingsState>(
+      bloc: _settingsCubit,
       listener: (context, settingsState) {
         _cubit.updateSettings(settingsState.settings);
       },
@@ -125,11 +166,8 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
             ),
           ];
 
-          return AppLayout(
-            title: component.generatorType.title,
-            actions: topbarActions,
-            child: div(
-              classes: "d-flex flex-column flex-grow-1 position-relative",
+          final content = div(
+            classes: "d-flex flex-column flex-grow-1 position-relative",
               [
                 // Top controls bar
                 div(classes: "generator-controls", [
@@ -214,6 +252,41 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                       ],
                     ),
                   ]),
+                  if (!component.useLayout) ...[
+                    if (state.paletteSource != null)
+                      button(
+                        classes:
+                            "btn btn-sm ${state.showImageOverlay ? 'btn-primary' : 'btn-outline-secondary'} ms-auto",
+                        attributes: {
+                          "title": state.showImageOverlay
+                              ? AppStrings.hideReference
+                              : AppStrings.showReference,
+                        },
+                        events: {"click": (e) => _cubit.toggleImageOverlay()},
+                        [
+                          i(
+                            classes:
+                                "bi ${state.showImageOverlay ? 'bi-image-fill' : 'bi-image'}",
+                            const [],
+                          ),
+                        ],
+                      ),
+                    button(
+                      classes:
+                          "btn btn-sm ${_historyDrawerOpen ? 'btn-primary' : 'btn-outline-secondary'} ${state.paletteSource == null ? 'ms-auto' : ''}",
+                      attributes: const {"title": AppStrings.showHistory},
+                      events: {
+                        "click": (e) => setState(
+                            () => _historyDrawerOpen = !_historyDrawerOpen),
+                      },
+                      const [
+                        i(classes: "bi bi-clock-history me-1", []),
+                        span(classes: "d-none d-sm-inline", [
+                          Component.text(AppStrings.history),
+                        ]),
+                      ],
+                    ),
+                  ],
                 ]),
 
                 // Canvas viewport
@@ -230,14 +303,16 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                       ]),
                     ])
                   else if (state.generatedImage != null) ...[
-                    div(classes: "generated-image-container", [
-                      img(
-                        classes: "generated-image",
-                        src:
-                            "data:image/png;base64,${base64Encode(state.generatedImage!)}",
-                        alt: AppStrings.generatedTriangles,
-                      ),
-                    ]),
+                    InteractiveViewer(
+                      child: div(classes: "generated-image-container", [
+                        img(
+                          classes: "generated-image",
+                          src:
+                              "data:image/png;base64,${base64Encode(state.generatedImage!)}",
+                          alt: AppStrings.generatedTriangles,
+                        ),
+                      ]),
+                    ),
                     if (state.showImageOverlay && state.paletteSource != null)
                       div(classes: "reference-overlay", [
                         img(
@@ -248,12 +323,15 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                       ]),
                     button(
                       classes: "btn btn-primary btn-fab-download",
+                      attributes: const {
+                        "title": AppStrings.downloadImage,
+                        "aria-label": AppStrings.downloadImage,
+                      },
                       events: {
                         "click": (e) => _downloadImage(state.generatedImage!),
                       },
                       const [
                         i(classes: "bi bi-download", []),
-                        Component.text(AppStrings.downloadImage),
                       ],
                     ),
                   ] else
@@ -346,10 +424,20 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         setState(() => _showCustomPaletteModal = false),
                   ),
               ],
-            ),
-          );
-        },
-      ),
-    );
-  }
+            );
+
+            if (!component.useLayout) {
+              return content;
+            }
+
+            return AppLayout(
+              title: component.generatorType.title,
+              actions: topbarActions,
+              paths: component.paths,
+              child: content,
+            );
+          },
+        ),
+      );
+    }
 }

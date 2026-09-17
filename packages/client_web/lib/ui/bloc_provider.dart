@@ -21,6 +21,12 @@ class BlocProvider<T extends BlocBase<Object?>> extends InheritedComponent {
     }
     return provider.bloc;
   }
+
+  static T? maybeOf<T extends BlocBase<Object?>>(BuildContext context) {
+    final provider =
+        context.dependOnInheritedComponentOfExactType<BlocProvider<T>>();
+    return provider?.bloc;
+  }
 }
 
 class BlocListener<B extends BlocBase<S>, S> extends StatefulComponent {

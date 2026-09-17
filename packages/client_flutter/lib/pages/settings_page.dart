@@ -4,29 +4,37 @@ import "package:go_router/go_router.dart";
 import "package:client_common/client_common.dart";
 import "package:client_flutter/parts/app_drawer.dart";
 
-class SettingsPage extends StatefulWidget {
-  static const String routePath = "/settings";
+/// Pure embeddable view for Settings, decoupled from Scaffold, AppBar, and AppDrawer.
+class SettingsView extends StatefulWidget {
+  final SettingsCubit? settingsCubit;
 
-  static Widget builder(BuildContext context, GoRouterState state) {
-    return const SettingsPage._();
-  }
-
-  const SettingsPage._();
+  const SettingsView({this.settingsCubit, super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  State<SettingsView> createState() => _SettingsViewState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsViewState extends State<SettingsView> {
+  SettingsCubit? _localSettingsCubit;
   late final SettingsCubit _cubit;
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _sizeRatioController = TextEditingController();
 
+  SettingsCubit _resolveSettingsCubit() {
+    if (widget.settingsCubit != null) return widget.settingsCubit!;
+    try {
+      return BlocProvider.of<SettingsCubit>(context, listen: false);
+    } catch (_) {
+      _localSettingsCubit ??= SettingsCubit();
+      return _localSettingsCubit!;
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _cubit = context.read<SettingsCubit>();
+    _cubit = _resolveSettingsCubit();
     _syncControllers(_cubit.state.settings);
   }
 
@@ -35,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _widthController.dispose();
     _heightController.dispose();
     _sizeRatioController.dispose();
+    _localSettingsCubit?.close();
     super.dispose();
   }
 
@@ -62,72 +71,66 @@ class _SettingsPageState extends State<SettingsPage> {
           _syncControllers(state.settings);
         }
 
-        return Scaffold(
-          drawer: const AppDrawer(),
-          appBar: AppBar(
-            title: const Text(AppStrings.navSettings),
-          ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField(
-                        AppStrings.imageWidth,
-                        _widthController,
-                        keyboardType: TextInputType.number,
-                        onChanged: (val) {
-                          final parsed = int.tryParse(val);
-                          if (parsed != null) _cubit.updateWidth(parsed);
-                        },
-                      ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildTextField(
+                      AppStrings.imageWidth,
+                      _widthController,
+                      keyboardType: TextInputType.number,
+                      onChanged: (val) {
+                        final parsed = int.tryParse(val);
+                        if (parsed != null) _cubit.updateWidth(parsed);
+                      },
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildTextField(
-                        AppStrings.imageHeight,
-                        _heightController,
-                        keyboardType: TextInputType.number,
-                        onChanged: (val) {
-                          final parsed = int.tryParse(val);
-                          if (parsed != null) _cubit.updateHeight(parsed);
-                        },
-                      ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildTextField(
+                      AppStrings.imageHeight,
+                      _heightController,
+                      keyboardType: TextInputType.number,
+                      onChanged: (val) {
+                        final parsed = int.tryParse(val);
+                        if (parsed != null) _cubit.updateHeight(parsed);
+                      },
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  AppStrings.scaleFactor,
-                  _sizeRatioController,
-                  keyboardType: TextInputType.number,
-                  onChanged: (val) {
-                    final parsed = double.tryParse(val);
-                    if (parsed != null) _cubit.updateScaleFactor(parsed);
-                  },
-                ),
-                const SizedBox(height: 16),
-                SwitchListTile(
-                  contentPadding: const EdgeInsets.all(0),
-                  title: const Text(AppStrings.addTriangleGradients),
-                  value: state.settings.addTriangleGradients,
-                  onChanged: (bool value) {
-                    _cubit.updateAddTriangleGradients(value);
-                  },
-                ),
-                const SizedBox(height: 16),
-                SwitchListTile(
-                  contentPadding: const EdgeInsets.all(0),
-                  title: const Text(AppStrings.annotateWithDimensions),
-                  value: state.settings.annotateWithDimensions,
-                  onChanged: (bool value) {
-                    _cubit.updateAnnotateWithDimensions(value);
-                  },
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                AppStrings.scaleFactor,
+                _sizeRatioController,
+                keyboardType: TextInputType.number,
+                onChanged: (val) {
+                  final parsed = double.tryParse(val);
+                  if (parsed != null) _cubit.updateScaleFactor(parsed);
+                },
+              ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                contentPadding: const EdgeInsets.all(0),
+                title: const Text(AppStrings.addTriangleGradients),
+                value: state.settings.addTriangleGradients,
+                onChanged: (bool value) {
+                  _cubit.updateAddTriangleGradients(value);
+                },
+              ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                contentPadding: const EdgeInsets.all(0),
+                title: const Text(AppStrings.annotateWithDimensions),
+                value: state.settings.annotateWithDimensions,
+                onChanged: (bool value) {
+                  _cubit.updateAnnotateWithDimensions(value);
+                },
+              ),
+            ],
           ),
         );
       },
@@ -153,6 +156,50 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Full page wrapper for SettingsPage.
+class SettingsPage extends StatelessWidget {
+  static const String routePath = "/settings";
+
+  final bool showDrawer;
+  final bool showAppBar;
+  final TrianglesRoutePaths paths;
+  final SettingsCubit? settingsCubit;
+
+  SettingsPage({
+    this.showDrawer = true,
+    this.showAppBar = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    this.settingsCubit,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
+
+  static Widget builder(BuildContext context, GoRouterState state) {
+    return SettingsPage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final body = SettingsView(settingsCubit: settingsCubit);
+    if (!showAppBar && !showDrawer) {
+      return body;
+    }
+
+    return Scaffold(
+      drawer: showDrawer ? AppDrawer(paths: paths) : null,
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text(AppStrings.navSettings),
+            )
+          : null,
+      body: body,
     );
   }
 }

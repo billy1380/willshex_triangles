@@ -6,17 +6,33 @@ import "package:client_flutter/parts/triangle_generator_page.dart";
 class ImageSamplerPalettePage extends StatelessWidget {
   static const String routePath = "/imagesamplerpalette";
 
-  static Widget builder(BuildContext context, GoRouterState state) {
-    return const ImageSamplerPalettePage._();
-  }
+  final bool showDrawer;
+  final bool showAppBar;
+  final TrianglesRoutePaths paths;
 
-  const ImageSamplerPalettePage._();
+  ImageSamplerPalettePage({
+    this.showDrawer = true,
+    this.showAppBar = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
+
+  static Widget builder(BuildContext context, GoRouterState state) {
+    return ImageSamplerPalettePage();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const TriangleGeneratorPage(
+    return TriangleGeneratorPage(
       title: AppStrings.imageSamplerPalette,
       generatorType: GeneratorType.imageSampler,
+      showDrawer: showDrawer,
+      showAppBar: showAppBar,
+      paths: paths,
     );
   }
 }

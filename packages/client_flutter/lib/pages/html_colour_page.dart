@@ -6,17 +6,33 @@ import "package:go_router/go_router.dart";
 class HtmlColourPage extends StatelessWidget {
   static const String routePath = "/htmlcolour";
 
-  static Widget builder(BuildContext context, GoRouterState state) {
-    return const HtmlColourPage._();
-  }
+  final bool showDrawer;
+  final bool showAppBar;
+  final TrianglesRoutePaths paths;
 
-  const HtmlColourPage._();
+  HtmlColourPage({
+    this.showDrawer = true,
+    this.showAppBar = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
+
+  static Widget builder(BuildContext context, GoRouterState state) {
+    return HtmlColourPage();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: AppStrings.navHtmlColour,
       paletteProvider: RandomNamedPaletteProvider(),
+      showDrawer: showDrawer,
+      showAppBar: showAppBar,
+      paths: paths,
     );
   }
 }

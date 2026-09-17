@@ -6,17 +6,33 @@ import "package:go_router/go_router.dart";
 class RandomGrayscalePalettePage extends StatelessWidget {
   static const String routePath = "/random-grayscale-palette";
 
-  static Widget builder(BuildContext context, GoRouterState state) {
-    return const RandomGrayscalePalettePage._();
-  }
+  final bool showDrawer;
+  final bool showAppBar;
+  final TrianglesRoutePaths paths;
 
-  const RandomGrayscalePalettePage._();
+  RandomGrayscalePalettePage({
+    this.showDrawer = true,
+    this.showAppBar = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
+
+  static Widget builder(BuildContext context, GoRouterState state) {
+    return RandomGrayscalePalettePage();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TriangleGeneratorPage(
       title: AppStrings.navRandomGrayscale,
       paletteProvider: RandomGrayscalePaletteProvider(),
+      showDrawer: showDrawer,
+      showAppBar: showAppBar,
+      paths: paths,
     );
   }
 }

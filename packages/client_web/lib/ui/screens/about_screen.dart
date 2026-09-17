@@ -4,19 +4,35 @@ import "package:client_common/client_common.dart";
 import "package:client_web/ui/layout.dart";
 
 class AboutScreen extends StatelessComponent {
-  const AboutScreen({super.key});
+  final bool useLayout;
+  final TrianglesRoutePaths paths;
+
+  AboutScreen({
+    this.useLayout = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
 
   @override
   Component build(BuildContext context) {
-    return const AppLayout(
+    if (!useLayout) {
+      return const AboutView();
+    }
+    return AppLayout(
       title: AppStrings.navAbout,
-      child: _AboutContent(),
+      paths: paths,
+      child: const AboutView(),
     );
   }
 }
 
-class _AboutContent extends StatelessComponent {
-  const _AboutContent();
+/// Pure embeddable view for About in web.
+class AboutView extends StatelessComponent {
+  const AboutView({super.key});
 
   Component _link(String title, String href, {bool isDead = false}) {
     return div(classes: "mb-2", [

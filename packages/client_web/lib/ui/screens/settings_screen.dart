@@ -4,27 +4,75 @@ import "package:client_common/client_common.dart";
 import "package:client_web/ui/bloc_provider.dart";
 import "package:client_web/ui/layout.dart";
 
+import "package:client_web/services/local_storage_settings_storage.dart";
+
 class SettingsScreen extends StatelessComponent {
-  const SettingsScreen({super.key});
+  final bool useLayout;
+  final TrianglesRoutePaths paths;
+
+  SettingsScreen({
+    this.useLayout = true,
+    TrianglesRoutePaths? paths,
+    String? basePath,
+    super.key,
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
 
   @override
   Component build(BuildContext context) {
-    return const AppLayout(
+    if (!useLayout) {
+      return const SettingsView();
+    }
+    return AppLayout(
       title: AppStrings.navSettings,
-      child: _SettingsContent(),
+      paths: paths,
+      child: const SettingsView(),
     );
   }
 }
 
-class _SettingsContent extends StatelessComponent {
-  const _SettingsContent();
+/// Pure embeddable view for Settings in web.
+class SettingsView extends StatefulComponent {
+  final SettingsCubit? settingsCubit;
+
+  const SettingsView({this.settingsCubit, super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  SettingsCubit? _localSettingsCubit;
+  late final SettingsCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    if (component.settingsCubit != null) {
+      _cubit = component.settingsCubit!;
+    } else {
+      final fromContext = BlocProvider.maybeOf<SettingsCubit>(context);
+      if (fromContext != null) {
+        _cubit = fromContext;
+      } else {
+        _localSettingsCubit = SettingsCubit(LocalStorageSettingsStorage());
+        _cubit = _localSettingsCubit!;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _localSettingsCubit?.close();
+    super.dispose();
+  }
 
   @override
   Component build(BuildContext context) {
-    final cubit = BlocProvider.of<SettingsCubit>(context);
-
     return BlocBuilder<SettingsCubit, SettingsState>(
-      bloc: cubit,
+      bloc: _cubit,
       builder: (context, state) {
         final s = state.settings;
 
@@ -51,7 +99,7 @@ class _SettingsContent extends StatelessComponent {
                       "input": (e) {
                         final val =
                             int.tryParse((e.target as dynamic).value as String);
-                        if (val != null) cubit.updateWidth(val);
+                        if (val != null) _cubit.updateWidth(val);
                       },
                     },
                   ),
@@ -69,7 +117,7 @@ class _SettingsContent extends StatelessComponent {
                       "input": (e) {
                         final val =
                             int.tryParse((e.target as dynamic).value as String);
-                        if (val != null) cubit.updateHeight(val);
+                        if (val != null) _cubit.updateHeight(val);
                       },
                     },
                   ),
@@ -89,7 +137,7 @@ class _SettingsContent extends StatelessComponent {
                     "input": (e) {
                       final val = double.tryParse(
                           (e.target as dynamic).value as String);
-                      if (val != null) cubit.updateScaleFactor(val);
+                      if (val != null) _cubit.updateScaleFactor(val);
                     },
                   },
                 ),
@@ -104,7 +152,7 @@ class _SettingsContent extends StatelessComponent {
                   events: {
                     "change": (e) {
                       final val = (e.target as dynamic).checked == true;
-                      cubit.updateAddTriangleGradients(val);
+                      _cubit.updateAddTriangleGradients(val);
                     },
                   },
                 ),
@@ -123,7 +171,7 @@ class _SettingsContent extends StatelessComponent {
                   events: {
                     "change": (e) {
                       final val = (e.target as dynamic).checked == true;
-                      cubit.updateAnnotateWithDimensions(val);
+                      _cubit.updateAnnotateWithDimensions(val);
                     },
                   },
                 ),

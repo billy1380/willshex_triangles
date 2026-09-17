@@ -76,7 +76,10 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                               onTap: () => _cubit.addColor(),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
+                                  border: Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Icon(Icons.add),
@@ -100,7 +103,10 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                                             .primary,
                                         width: 3,
                                       )
-                                    : Border.all(color: Colors.black12),
+                                    : Border.all(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outlineVariant),
                               ),
                               child: Align(
                                 alignment: Alignment.topRight,
@@ -133,7 +139,10 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                           decoration: BoxDecoration(
                             color: currentColor.toColor(),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.black12),
+                            border: Border.all(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outlineVariant),
                           ),
                         ),
                       ],

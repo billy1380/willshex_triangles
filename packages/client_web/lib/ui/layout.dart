@@ -8,13 +8,19 @@ class AppLayout extends StatefulComponent {
   final String title;
   final List<Component> actions;
   final Component child;
+  final TrianglesRoutePaths paths;
 
-  const AppLayout({
+  AppLayout({
     required this.title,
     this.actions = const [],
     required this.child,
+    TrianglesRoutePaths? paths,
+    String? basePath,
     super.key,
-  });
+  }) : paths = paths ??
+            (basePath != null && basePath.isNotEmpty
+                ? TrianglesRoutePaths.withPrefix(basePath)
+                : const TrianglesRoutePaths());
 
   @override
   State<AppLayout> createState() => _AppLayoutState();
@@ -45,8 +51,9 @@ class _AppLayoutState extends State<AppLayout> {
     required String icon,
     required String currentPath,
   }) {
-    final isActive =
-        currentPath == route || (route == "/welcome" && currentPath == "/");
+    final isActive = currentPath == route ||
+        (route == component.paths.welcome &&
+            (currentPath == route || currentPath == "/" || currentPath.isEmpty));
 
     return a(
       href: route,
@@ -69,7 +76,7 @@ class _AppLayoutState extends State<AppLayout> {
   Component build(BuildContext context) {
     final currentPath = Router.of(context).matchList.uri.path;
 
-    return div(classes: "app-container", [
+    return div(classes: "app-container has-sidebar", [
       if (_sidebarOpen)
         div(
           classes: "sidebar-backdrop",
@@ -93,7 +100,7 @@ class _AppLayoutState extends State<AppLayout> {
           nav(classes: "sidebar-nav", [
             _navLink(
               label: AppStrings.navWelcome,
-              route: "/welcome",
+              route: component.paths.welcome,
               icon: "bi-house",
               currentPath: currentPath,
             ),
@@ -102,37 +109,37 @@ class _AppLayoutState extends State<AppLayout> {
             ]),
             _navLink(
               label: AppStrings.navPalettePicker,
-              route: "/palettepicker",
+              route: component.paths.palettePicker,
               icon: "bi-eyedropper",
               currentPath: currentPath,
             ),
             _navLink(
               label: AppStrings.navHtmlColour,
-              route: "/htmlcolour",
+              route: component.paths.htmlColour,
               icon: "bi-palette2",
               currentPath: currentPath,
             ),
             _navLink(
               label: AppStrings.navRandomPalette,
-              route: "/random-palette",
+              route: component.paths.randomPalette,
               icon: "bi-shuffle",
               currentPath: currentPath,
             ),
             _navLink(
               label: AppStrings.navRandomGrayscale,
-              route: "/random-grayscale-palette",
+              route: component.paths.randomGrayscale,
               icon: "bi-circle-half",
               currentPath: currentPath,
             ),
             _navLink(
               label: AppStrings.imagePalette,
-              route: "/imagepalette",
+              route: component.paths.imagePalette,
               icon: "bi-image",
               currentPath: currentPath,
             ),
             _navLink(
               label: AppStrings.imageSamplerPalette,
-              route: "/imagesamplerpalette",
+              route: component.paths.imageSampler,
               icon: "bi-grid-3x3",
               currentPath: currentPath,
             ),
@@ -141,13 +148,13 @@ class _AppLayoutState extends State<AppLayout> {
             ]),
             _navLink(
               label: AppStrings.navSettings,
-              route: "/settings",
+              route: component.paths.settings,
               icon: "bi-gear",
               currentPath: currentPath,
             ),
             _navLink(
               label: AppStrings.navAbout,
-              route: "/about",
+              route: component.paths.about,
               icon: "bi-info-circle",
               currentPath: currentPath,
             ),
