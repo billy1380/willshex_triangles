@@ -33,7 +33,7 @@ class PaletteHistoryComponent extends StatelessComponent {
     }
 
     return div(
-      classes: "history-list",
+      classes: "d-flex flex-column gap-2",
       [
         for (final palette in palettes)
           _buildPaletteItem(palette, palette == selectedPalette),
@@ -45,7 +45,9 @@ class PaletteHistoryComponent extends StatelessComponent {
     final canEdit = onEdit != null && palette is! FromSource;
 
     return div(
-      classes: "history-item ${isSelected ? 'selected' : ''}",
+      classes:
+          "card p-3 ${isSelected ? 'border-primary bg-primary-subtle' : ''}",
+      attributes: const {"style": "cursor: pointer;"},
       events: {
         "click": (e) {
           if (onSelected != null) {
@@ -54,8 +56,8 @@ class PaletteHistoryComponent extends StatelessComponent {
         },
       },
       [
-        div(classes: "history-item-header", [
-          span(classes: "history-item-name", [
+        div(classes: "d-flex align-items-center justify-content-between mb-2", [
+          span(classes: "fw-bold small text-truncate me-2", [
             Component.text(palette.name ?? AppStrings.untitledPalette),
           ]),
           div(classes: "d-flex gap-1", [
@@ -84,13 +86,14 @@ class PaletteHistoryComponent extends StatelessComponent {
           ]),
         ]),
         div(
-          classes: "palette-dots",
+          classes: "d-flex gap-1 overflow-x-auto pb-1",
           [
             for (final c in palette.colors)
               div(
-                classes: "palette-dot",
+                classes: "rounded-circle border flex-shrink-0",
                 attributes: {
-                  "style": "background-color: ${c.toCssRgba()};",
+                  "style":
+                      "width: 22px; height: 22px; background-color: ${c.toCssRgba()};",
                 },
                 const [],
               ),

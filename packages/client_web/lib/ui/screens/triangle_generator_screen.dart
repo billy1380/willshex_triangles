@@ -169,107 +169,132 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
           final content = div(
             classes: "d-flex flex-column flex-grow-1 position-relative",
             [
-              div(classes: "generator-controls", [
-                div(classes: "generator-control-group", [
-                  const label([Component.text(AppStrings.type)]),
-                  select(
-                    classes: "form-select form-select-sm",
-                    events: {
-                      "change": (e) {
-                        final val = (e.target as dynamic).value as String;
-                        final type = TrianglesType.values.firstWhere(
-                          (t) => t.name == val,
-                          orElse: () => TrianglesType.ribbons,
-                        );
-                        _cubit.selectType(type);
-                      },
-                    },
+              div(
+                classes:
+                    "p-3 bg-body-tertiary border-bottom d-flex flex-wrap gap-3 align-items-center",
+                [
+                  div(
+                    classes: "flex-fill",
+                    attributes: const {"style": "min-width: 180px;"},
                     [
-                      for (final type in TrianglesType.values)
-                        option(
-                          value: type.name,
-                          selected: type == state.selectedType,
-                          [Component.text(type.name)],
-                        ),
-                    ],
-                  ),
-                ]),
-                div(classes: "generator-control-group", [
-                  const label([Component.text(AppStrings.texture)]),
-                  select(
-                    classes: "form-select form-select-sm",
-                    events: {
-                      "change": (e) {
-                        final val = (e.target as dynamic).value as String;
-                        if (val == "none") {
-                          _cubit.selectTexture(null);
-                        } else {
-                          final match = TilableImage.values.firstWhere(
-                            (imgItem) => imgItem.name == val,
-                          );
-                          _cubit.selectTexture(match);
-                        }
-                      },
-                    },
-                    [
-                      option(
-                        value: "none",
-                        selected: state.selectedImage == null,
-                        const [Component.text(AppStrings.textureNone)],
+                      const label(
+                        classes: "form-label small fw-semibold text-secondary mb-1",
+                        [Component.text(AppStrings.type)],
                       ),
-                      for (final imgItem in TilableImage.values)
-                        option(
-                          value: imgItem.name,
-                          selected: state.selectedImage == imgItem,
-                          [Component.text(imgItem.name)],
-                        ),
+                      select(
+                        classes: "form-select form-select-sm",
+                        events: {
+                          "change": (e) {
+                            final val = (e.target as dynamic).value as String;
+                            final type = TrianglesType.values.firstWhere(
+                              (t) => t.name == val,
+                              orElse: () => TrianglesType.ribbons,
+                            );
+                            _cubit.selectType(type);
+                          },
+                        },
+                        [
+                          for (final type in TrianglesType.values)
+                            option(
+                              value: type.name,
+                              selected: type == state.selectedType,
+                              [Component.text(type.name)],
+                            ),
+                        ],
+                      ),
                     ],
                   ),
-                ]),
-                div(classes: "generator-control-group", [
-                  const label([Component.text(AppStrings.blendMode)]),
-                  select(
-                    classes: "form-select form-select-sm",
-                    disabled: state.selectedImage == null,
-                    events: {
-                      "change": (e) {
-                        final val = (e.target as dynamic).value as String;
-                        final mode = BlendingMode.values.firstWhere(
-                          (m) => m.name == val,
-                          orElse: () => BlendingMode.colorBurn,
-                        );
-                        _cubit.selectBlendMode(mode);
-                      },
-                    },
+                  div(
+                    classes: "flex-fill",
+                    attributes: const {"style": "min-width: 180px;"},
                     [
-                      for (final mode in state.sortedBlendModes)
-                        option(
-                          value: mode.name,
-                          selected: mode == state.selectedBlendMode,
-                          [Component.text(mode.name)],
-                        ),
+                      const label(
+                        classes: "form-label small fw-semibold text-secondary mb-1",
+                        [Component.text(AppStrings.texture)],
+                      ),
+                      select(
+                        classes: "form-select form-select-sm",
+                        events: {
+                          "change": (e) {
+                            final val = (e.target as dynamic).value as String;
+                            if (val == "none") {
+                              _cubit.selectTexture(null);
+                            } else {
+                              final match = TilableImage.values.firstWhere(
+                                (imgItem) => imgItem.name == val,
+                              );
+                              _cubit.selectTexture(match);
+                            }
+                          },
+                        },
+                        [
+                          option(
+                            value: "none",
+                            selected: state.selectedImage == null,
+                            const [Component.text(AppStrings.textureNone)],
+                          ),
+                          for (final imgItem in TilableImage.values)
+                            option(
+                              value: imgItem.name,
+                              selected: state.selectedImage == imgItem,
+                              [Component.text(imgItem.name)],
+                            ),
+                        ],
+                      ),
                     ],
                   ),
-                ]),
-                if (!component.useLayout) ...[
-                  if (state.paletteSource != null)
-                    button(
-                      classes:
-                          "btn btn-sm ${state.showImageOverlay ? 'btn-primary' : 'btn-outline-secondary'} ms-auto",
-                      attributes: {
-                        "title": state.showImageOverlay
-                            ? AppStrings.hideReference
-                            : AppStrings.showReference,
-                      },
-                      events: {"click": (e) => _cubit.toggleImageOverlay()},
-                      [
-                        i(
-                          classes:
-                              "bi ${state.showImageOverlay ? 'bi-image-fill' : 'bi-image'}",
-                          const [],
-                        ),
-                      ],
-                    ),
+                  div(
+                    classes: "flex-fill",
+                    attributes: const {"style": "min-width: 180px;"},
+                    [
+                      const label(
+                        classes: "form-label small fw-semibold text-secondary mb-1",
+                        [Component.text(AppStrings.blendMode)],
+                      ),
+                      select(
+                        classes: "form-select form-select-sm",
+                        disabled: state.selectedImage == null,
+                        events: {
+                          "change": (e) {
+                            final val = (e.target as dynamic).value as String;
+                            final mode = BlendingMode.values.firstWhere(
+                              (m) => m.name == val,
+                              orElse: () => BlendingMode.colorBurn,
+                            );
+                            _cubit.selectBlendMode(mode);
+                          },
+                        },
+                        [
+                          for (final mode in state.sortedBlendModes)
+                            option(
+                              value: mode.name,
+                              selected: mode == state.selectedBlendMode,
+                              [Component.text(mode.name)],
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (!component.useLayout) ...[
+                    if (state.paletteSource != null)
+                      button(
+                        classes:
+                            "btn btn-sm ${state.showImageOverlay ? 'btn-primary' : 'btn-outline-secondary'} ms-auto",
+                        attributes: {
+                          "title": state.showImageOverlay
+                              ? AppStrings.hideReference
+                              : AppStrings.showReference,
+                        },
+                        events: {"click": (e) => _cubit.toggleImageOverlay()},
+                        [
+                          i(
+                            classes:
+                                "bi ${state.showImageOverlay ? 'bi-image-fill' : 'bi-image'}",
+                            const [],
+                          ),
+                        ],
+                      ),
+
                   button(
                     classes:
                         "btn btn-sm ${_historyDrawerOpen ? 'btn-primary' : 'btn-outline-secondary'} ${state.paletteSource == null ? 'ms-auto' : ''}",
@@ -355,13 +380,18 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
               ]),
 
               aside(
-                classes: "history-drawer ${_historyDrawerOpen ? 'open' : ''}",
+                classes:
+                    "offcanvas offcanvas-end ${_historyDrawerOpen ? 'show' : ''}",
+                attributes: {
+                  "tabindex": "-1",
+                  "style": _historyDrawerOpen ? "visibility: visible;" : "",
+                },
                 [
-                  div(classes: "history-drawer-header", [
-                    const h5(classes: "m-0 fw-bold", [
+                  div(classes: "offcanvas-header border-bottom", [
+                    const h5(classes: "offcanvas-title fw-bold m-0", [
                       Component.text(AppStrings.history),
                     ]),
-                    div(classes: "d-flex gap-2", [
+                    div(classes: "d-flex align-items-center gap-2", [
                       button(
                         classes: "btn btn-sm btn-outline-primary",
                         attributes: const {
@@ -379,7 +409,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         const [i(classes: "bi bi-trash", [])],
                       ),
                       button(
-                        classes: "btn btn-sm btn-link text-secondary",
+                        classes: "btn-close",
                         attributes: const {
                           "title": AppStrings.close,
                           "aria-label": AppStrings.close,
@@ -388,22 +418,32 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                           "click": (e) =>
                               setState(() => _historyDrawerOpen = false),
                         },
-                        const [i(classes: "bi bi-x-lg", [])],
+                        const [],
                       ),
                     ]),
                   ]),
-                  PaletteHistoryComponent(
-                    palettes: state.history,
-                    selectedPalette: state.currentPalette,
-                    onSelected: (palette) => _cubit.selectPalette(palette),
-                    onEdit: (palette) =>
-                        setState(() => _editingPalette = palette),
-                    onDelete: state.history.length <= 1
-                        ? null
-                        : (palette) => _cubit.deletePalette(palette),
-                  ),
+                  div(classes: "offcanvas-body p-3", [
+                    PaletteHistoryComponent(
+                      palettes: state.history,
+                      selectedPalette: state.currentPalette,
+                      onSelected: (palette) => _cubit.selectPalette(palette),
+                      onEdit: (palette) =>
+                          setState(() => _editingPalette = palette),
+                      onDelete: state.history.length <= 1
+                          ? null
+                          : (palette) => _cubit.deletePalette(palette),
+                    ),
+                  ]),
                 ],
               ),
+              if (_historyDrawerOpen)
+                div(
+                  classes: "offcanvas-backdrop fade show",
+                  events: {
+                    "click": (e) => setState(() => _historyDrawerOpen = false),
+                  },
+                  const [],
+                ),
 
               // Palette picker modal (edit or new custom palette)
               if (_editingPalette != null)

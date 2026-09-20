@@ -178,21 +178,25 @@ class _AppLayoutState extends State<AppLayout> {
         ],
       ),
       main_(classes: "app-main", [
-        header(classes: "app-topbar", [
-          div(classes: "d-flex align-items-center gap-3", [
-            button(
-              classes: "btn btn-sm btn-outline-secondary d-lg-none",
-              attributes: const {
-                "title": AppStrings.toggleMenu,
-                "aria-label": AppStrings.toggleMenu,
-              },
-              events: {"click": (e) => _toggleSidebar()},
-              const [i(classes: "bi bi-list fs-5", [])],
-            ),
-            h2(classes: "page-title", [Component.text(component.title)]),
-          ]),
-          div(classes: "app-topbar-actions", component.actions),
-        ]),
+        header(
+          classes:
+              "navbar border-bottom px-4 py-2 sticky-top bg-body d-flex justify-content-between align-items-center",
+          [
+            div(classes: "d-flex align-items-center gap-3", [
+              button(
+                classes: "btn btn-sm btn-outline-secondary d-lg-none",
+                attributes: const {
+                  "title": AppStrings.toggleMenu,
+                  "aria-label": AppStrings.toggleMenu,
+                },
+                events: {"click": (e) => _toggleSidebar()},
+                const [i(classes: "bi bi-list fs-5", [])],
+              ),
+              h2(classes: "h5 m-0 fw-bold", [Component.text(component.title)]),
+            ]),
+            div(classes: "d-flex align-items-center gap-2", component.actions),
+          ],
+        ),
         component.child,
       ]),
     ]);
