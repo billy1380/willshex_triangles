@@ -134,7 +134,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
     final cy = viewportSize.height / 2;
 
     final matrix = Matrix4.translationValues(cx, cy, 0.0)
-      ..multiply(Matrix4.diagonal3Values(actualFactor, actualFactor, 1.0))
+      ..multiply(
+          Matrix4.diagonal3Values(actualFactor, actualFactor, actualFactor))
       ..multiply(Matrix4.translationValues(-cx, -cy, 0.0))
       ..multiply(currentMatrix);
 
@@ -455,8 +456,10 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         minHeight: 32),
                                                 padding: EdgeInsets.zero,
                                                 tooltip: AppStrings.zoomOut,
-                                                onPressed: () =>
-                                                    _zoomBy(0.8, viewportSize),
+                                                onPressed: _currentScale <= 0.1
+                                                    ? null
+                                                    : () => _zoomBy(
+                                                        0.8, viewportSize),
                                               ),
                                               Tooltip(
                                                 message:
@@ -492,8 +495,10 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         minHeight: 32),
                                                 padding: EdgeInsets.zero,
                                                 tooltip: AppStrings.zoomIn,
-                                                onPressed: () =>
-                                                    _zoomBy(1.25, viewportSize),
+                                                onPressed: _currentScale >= 20.0
+                                                    ? null
+                                                    : () => _zoomBy(
+                                                        1.25, viewportSize),
                                               ),
                                               IconButton(
                                                 icon: const Icon(
