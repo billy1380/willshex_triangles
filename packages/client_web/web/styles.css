@@ -34,7 +34,13 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6, .brand-title {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.brand-title {
   font-family: var(--heading-font);
   font-weight: 600;
 }
@@ -145,12 +151,15 @@ h1, h2, h3, h4, h5, h6, .brand-title {
   .app-sidebar {
     transform: translateX(-100%);
   }
+
   .app-sidebar.open {
     transform: translateX(0);
   }
+
   .app-container.has-sidebar .app-main {
     margin-left: 0;
   }
+
   .sidebar-backdrop {
     position: fixed;
     inset: 0;
@@ -585,13 +594,11 @@ h1, h2, h3, h4, h5, h6, .brand-title {
 }
 
 .form-range-colored::-webkit-slider-runnable-track {
-  background: linear-gradient(
-    to right,
-    var(--slider-color) 0%,
-    var(--slider-color) var(--slider-pct, 50%),
-    var(--slider-inactive) var(--slider-pct, 50%),
-    var(--slider-inactive) 100%
-  ) !important;
+  background: linear-gradient(to right,
+      var(--slider-color) 0%,
+      var(--slider-color) var(--slider-pct, 50%),
+      var(--slider-inactive) var(--slider-pct, 50%),
+      var(--slider-inactive) 100%) !important;
   border-radius: 1rem;
   height: 0.5rem;
 }
