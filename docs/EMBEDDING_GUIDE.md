@@ -74,7 +74,6 @@ You can override any or all route paths individually using `TrianglesRoutePaths`
     welcome: '/intro',
     palettePicker: '/generator',
     settings: '/preferences',
-    about: '/info',
   ),
   showDrawer: false,
 )
@@ -138,10 +137,10 @@ class MyCustomHostScreen extends StatelessWidget {
 ```
 
 Available pure views in `client_flutter`:
-- `WelcomeView`: Introductory cards and sample gallery.
+- `WelcomeView`: Combined home view featuring introductory cards, sample gallery, project information, credits, and legal notice.
 - `TriangleGeneratorView`: Generator controls, canvas viewport, and history drawer/sheet.
 - `SettingsView`: Width, height, ratio, and gradient settings.
-- `AboutView`: Project information and credits.
+- `AboutView`: Embeddable card with project information, open-source credits, and legal notice (also included directly inside `WelcomeView`).
 
 ### 1.4 Custom Theming in Flutter
 
@@ -296,10 +295,10 @@ class MyHostComponent extends StatelessComponent {
 ```
 
 Available pure views in `client_web`:
-- `WelcomeView`
+- `WelcomeView`: Combined home view featuring intro headline, sample showcase, quick-start guide, project credits, and legal notice.
 - `TriangleGeneratorView`
 - `SettingsView`
-- `AboutView`
+- `AboutView`: Embeddable card with project information, open-source credits, and legal notice (also included directly inside `WelcomeView`).
 
 ### 2.5 Custom Theming in Web
 

@@ -1,11 +1,11 @@
 library client_web;
 
 // Embeddable pure views
-export "ui/screens/welcome_screen.dart" show WelcomeView, WelcomeScreen;
+export "ui/screens/welcome_screen.dart"
+    show WelcomeView, WelcomeScreen, AboutView;
 export "ui/screens/triangle_generator_screen.dart"
     show TriangleGeneratorView, TriangleGeneratorScreen;
 export "ui/screens/settings_screen.dart" show SettingsView, SettingsScreen;
-export "ui/screens/about_screen.dart" show AboutView, AboutScreen;
 
 // Layout
 export "ui/layout.dart" show AppLayout;

@@ -1,6 +1,5 @@
 import "package:jaspr_router/jaspr_router.dart";
 import "package:client_common/client_common.dart";
-import "package:client_web/ui/screens/about_screen.dart";
 import "package:client_web/ui/screens/settings_screen.dart";
 import "package:client_web/ui/screens/triangle_generator_screen.dart";
 import "package:client_web/ui/screens/welcome_screen.dart";
@@ -166,19 +165,25 @@ class TrianglesWebRoutes {
     );
   }
 
-  /// Creates a Jaspr [Route] for [AboutScreen].
+  /// Creates a Jaspr [Route] that redirects legacy `/about` visits to [paths.welcome].
   static Route aboutRoute({
     String? path,
     TrianglesRoutePaths? paths,
+    String? prefix,
+    bool relative = false,
     bool useLayout = true,
   }) {
     final effectivePaths = paths ?? const TrianglesRoutePaths();
+    final targetWelcome = formatRoutePath(
+      effectivePaths.welcome,
+      prefix: prefix,
+      relative: relative,
+    );
     return Route(
+      // ignore: deprecated_member_use
       path: path ?? effectivePaths.about,
-      builder: (context, state) => AboutScreen(
-        paths: effectivePaths,
-        useLayout: useLayout,
-      ),
+      redirect: (context, state) =>
+          targetWelcome.startsWith("/") ? targetWelcome : "/$targetWelcome",
     );
   }
 
@@ -263,8 +268,11 @@ class TrianglesWebRoutes {
         useLayout: useLayout,
       ),
       aboutRoute(
+        // ignore: deprecated_member_use
         path: formatRoutePath(effectivePaths.about, prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
+        prefix: effectivePrefix,
+        relative: relative,
         useLayout: useLayout,
       ),
     ];

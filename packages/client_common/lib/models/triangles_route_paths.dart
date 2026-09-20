@@ -11,6 +11,7 @@ class TrianglesRoutePaths {
   static const String defaultImagePalette = "/imagepalette";
   static const String defaultImageSampler = "/imagesamplerpalette";
   static const String defaultSettings = "/settings";
+  @Deprecated("About page has been merged into the welcome screen")
   static const String defaultAbout = "/about";
 
   final String welcome;
@@ -21,6 +22,7 @@ class TrianglesRoutePaths {
   final String imagePalette;
   final String imageSampler;
   final String settings;
+  @Deprecated("About page has been merged into the welcome screen")
   final String about;
 
   const TrianglesRoutePaths({

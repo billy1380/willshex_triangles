@@ -43,25 +43,32 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
       builder: (context, state) {
         final currentColor = state.currentColor;
 
-        return div(classes: "modal-backdrop-custom", [
-          div(classes: "modal-content-custom", [
-            div(classes: "modal-header-custom", [
-              h5(classes: "modal-title m-0 fw-bold", [
-                Component.text(component.initialPalette != null
-                    ? AppStrings.editPalette
-                    : AppStrings.createCustomPalette),
-              ]),
-              button(
-                classes: "btn-close",
-                attributes: const {
-                  "title": AppStrings.close,
-                  "aria-label": AppStrings.close,
-                },
-                events: {"click": (e) => component.onCancel()},
-                const [],
-              ),
-            ]),
-            div(classes: "modal-body-custom", [
+        return div(
+          classes: "modal d-block",
+          attributes: const {
+            "tabindex": "-1",
+            "style": "background-color: rgba(0, 0, 0, 0.5);",
+          },
+          [
+            div(classes: "modal-dialog modal-dialog-centered", [
+              div(classes: "modal-content shadow-lg border", [
+                div(classes: "modal-header", [
+                  h5(classes: "modal-title m-0 fw-bold", [
+                    Component.text(component.initialPalette != null
+                        ? AppStrings.editPalette
+                        : AppStrings.createCustomPalette),
+                  ]),
+                  button(
+                    classes: "btn-close",
+                    attributes: const {
+                      "title": AppStrings.close,
+                      "aria-label": AppStrings.close,
+                    },
+                    events: {"click": (e) => component.onCancel()},
+                    const [],
+                  ),
+                ]),
+                div(classes: "modal-body", [
               div(classes: "mb-3", [
                 const label(
                   classes: "form-label text-secondary small fw-bold",
@@ -154,27 +161,29 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                   Component.text(AppStrings.selectColorPrompt),
                 ]),
             ]),
-            div(classes: "modal-footer-custom", [
-              button(
-                classes: "btn btn-outline-secondary",
-                events: {"click": (e) => component.onCancel()},
-                const [Component.text(AppStrings.cancel)],
-              ),
-              button(
-                classes: "btn btn-primary",
-                disabled: state.colors.isEmpty,
-                events: {
-                  "click": (e) {
-                    if (state.colors.isNotEmpty) {
-                      component.onSelect(_cubit.buildPalette());
-                    }
-                  },
-                },
-                const [Component.text(AppStrings.select)],
-              ),
+                div(classes: "modal-footer", [
+                  button(
+                    classes: "btn btn-outline-secondary",
+                    events: {"click": (e) => component.onCancel()},
+                    const [Component.text(AppStrings.cancel)],
+                  ),
+                  button(
+                    classes: "btn btn-primary",
+                    disabled: state.colors.isEmpty,
+                    events: {
+                      "click": (e) {
+                        if (state.colors.isNotEmpty) {
+                          component.onSelect(_cubit.buildPalette());
+                        }
+                      },
+                    },
+                    const [Component.text(AppStrings.select)],
+                  ),
+                ]),
+              ]),
             ]),
-          ]),
-        ]);
+          ],
+        );
       },
     );
   }

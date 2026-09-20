@@ -31,6 +31,8 @@ class WelcomeScreen extends StatelessComponent {
 }
 
 /// Pure embeddable view for Welcome in web.
+/// Seamlessly integrates intro headline, sample showcase, quick-start guide,
+/// and project credits/legal information.
 class WelcomeView extends StatelessComponent {
   final String assetPathPrefix;
 
@@ -87,7 +89,91 @@ class WelcomeView extends StatelessComponent {
                 ]),
               ]),
             ]),
-        const p(classes: "text-muted fs-5", [Component.text(AppStrings.welcomeEnjoy)]),
+        const AboutView(),
+        const p(
+            classes: "text-primary fw-semibold fs-5 mt-4",
+            [Component.text(AppStrings.welcomeEnjoy)]),
+      ],
+    );
+  }
+}
+
+/// Pure embeddable view for About and Project Information in web.
+class AboutView extends StatelessComponent {
+  const AboutView({super.key});
+
+  Component _link(String title, String href, {bool isDead = false}) {
+    return div(classes: "mb-2", [
+      if (isDead)
+        span(classes: "text-primary fw-medium me-2", [
+          Component.text(title),
+        ])
+      else
+        a(
+          href: href,
+          target: Target.blank,
+          classes: "text-primary text-decoration-none fw-medium me-2",
+          [
+            Component.text(title),
+            const i(classes: "bi bi-box-arrow-up-right small ms-1", []),
+          ],
+        ),
+    ]);
+  }
+
+  @override
+  Component build(BuildContext context) {
+    return div(
+      classes: "mt-5",
+      [
+        const section(classes: "mb-4", [
+          h4(classes: "fw-bold text-primary mb-2", [
+            Component.text(AppStrings.aboutProjectTitle),
+          ]),
+          p(classes: "text-secondary", [
+            Component.text(AppStrings.aboutProjectDescription),
+          ]),
+        ]),
+        const hr(),
+        section(classes: "my-4", [
+          const h4(classes: "fw-bold text-primary mb-2", [
+            Component.text(AppStrings.aboutSoftwareTitle),
+          ]),
+          const p(classes: "text-secondary mb-3", [
+            Component.text(AppStrings.aboutSoftwareDescription),
+          ]),
+          _link(AppStrings.aboutJasprLink, AppStrings.aboutJasprUrl),
+          _link(AppStrings.aboutFlutterLink, AppStrings.aboutFlutterUrl),
+          _link(
+            AppStrings.aboutRomainGuyLink,
+            AppStrings.aboutRomainGuyUrl,
+            isDead: true,
+          ),
+        ]),
+        const hr(),
+        section(classes: "my-4", [
+          const h4(classes: "fw-bold text-primary mb-2", [
+            Component.text(AppStrings.aboutImagesTitle),
+          ]),
+          const p(classes: "text-secondary mb-3", [
+            Component.text(AppStrings.aboutImagesDescription),
+          ]),
+          _link(
+              AppStrings.aboutLoremPicsumLink, AppStrings.aboutLoremPicsumUrl),
+          _link(
+            AppStrings.aboutSubtlePatternsLink,
+            AppStrings.aboutSubtlePatternsUrl,
+          ),
+        ]),
+        const hr(),
+        const section(classes: "mt-4", [
+          h4(classes: "fw-bold text-primary mb-2", [
+            Component.text(AppStrings.aboutLegalTitle),
+          ]),
+          p(classes: "text-secondary mb-0", [
+            Component.text(AppStrings.aboutLegalDescription),
+          ]),
+        ]),
       ],
     );
   }

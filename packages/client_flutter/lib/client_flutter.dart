@@ -1,11 +1,10 @@
 library client_flutter;
 
 // Embeddable pure views
-export "pages/welcome_page.dart" show WelcomeView, WelcomePage;
+export "pages/welcome_page.dart" show WelcomeView, WelcomePage, AboutView;
 export "parts/triangle_generator_page.dart"
     show TriangleGeneratorView, TriangleGeneratorPage;
 export "pages/settings_page.dart" show SettingsView, SettingsPage;
-export "pages/about_page.dart" show AboutView, AboutPage;
 
 // Pages
 export "pages/html_colour_page.dart";

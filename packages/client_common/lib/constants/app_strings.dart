@@ -114,14 +114,15 @@ class AppStrings {
   static const String addTriangleGradients = "Add triangle gradients";
   static const String annotateWithDimensions = "Annotate with dimensions";
 
-  // About Page & Screen
+  // About Section & Info
+  static const String aboutTitle = "About";
   static const String aboutProjectTitle = "Project";
   static const String aboutProjectDescription =
       "Triangles is written and maintained by WillShex Limited for fun "
       "and because we like triangles (in case you have not noticed).";
   static const String aboutSoftwareTitle = "Software";
   static const String aboutSoftwareDescription =
-      "Triangles is built with Flutter and made possible by many open source libraries:";
+      "Triangles is built with Flutter and Jaspr, and made possible by many open source libraries:";
   static const String aboutJasprLink = "Jaspr (Web Framework)";
   static const String aboutJasprUrl = "https://docs.jaspr.site/";
   static const String aboutFlutterLink = "Flutter";

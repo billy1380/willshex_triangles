@@ -7,7 +7,6 @@ import "package:client_flutter/pages/random_grayscale_palette_page.dart";
 import "package:client_flutter/pages/image_palette_page.dart";
 import "package:client_flutter/pages/image_sampler_palette_page.dart";
 import "package:client_flutter/pages/settings_page.dart";
-import "package:client_flutter/pages/about_page.dart";
 import "package:client_flutter/pages/palette_picker_page.dart";
 
 /// Route definitions and helpers for Triangles in Flutter.
@@ -192,22 +191,27 @@ class TrianglesRoutes {
     );
   }
 
-  /// Creates a [GoRoute] for [AboutPage].
+  /// Creates a [GoRoute] that redirects legacy `/about` visits to [paths.welcome].
   static GoRoute aboutRoute({
     String? path,
     TrianglesRoutePaths? paths,
+    String? prefix,
+    bool relative = false,
     bool showDrawer = false,
     bool showAppBar = true,
   }) {
     final effectivePaths = paths ?? const TrianglesRoutePaths();
+    final targetWelcome = formatRoutePath(
+      effectivePaths.welcome,
+      prefix: prefix,
+      relative: relative,
+    );
     return GoRoute(
-      name: "AboutPage",
+      name: "AboutRedirect",
+      // ignore: deprecated_member_use
       path: path ?? effectivePaths.about,
-      builder: (context, state) => AboutPage(
-        paths: effectivePaths,
-        showDrawer: showDrawer,
-        showAppBar: showAppBar,
-      ),
+      redirect: (context, state) =>
+          targetWelcome.startsWith("/") ? targetWelcome : "/$targetWelcome",
     );
   }
 
@@ -285,10 +289,11 @@ class TrianglesRoutes {
         showAppBar: showAppBar,
       ),
       aboutRoute(
+        // ignore: deprecated_member_use
         path: formatRoutePath(effectivePaths.about, prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
-        showDrawer: showDrawer,
-        showAppBar: showAppBar,
+        prefix: effectivePrefix,
+        relative: relative,
       ),
     ];
   }

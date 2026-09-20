@@ -99,11 +99,6 @@ class AppDrawer extends StatelessWidget {
           selectedIcon: Icon(Icons.settings),
           label: Text(AppStrings.navSettings),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.info_outline_rounded),
-          selectedIcon: Icon(Icons.info_rounded),
-          label: Text(AppStrings.navAbout),
-        ),
       ],
     );
   }
@@ -143,10 +138,6 @@ class AppDrawer extends StatelessWidget {
         location.startsWith("${paths.settings}/")) {
       return 7;
     }
-    if (location == paths.about ||
-        location.startsWith("${paths.about}/")) {
-      return 8;
-    }
     return 0; // Default
   }
 
@@ -168,8 +159,6 @@ class AppDrawer extends StatelessWidget {
         return paths.imageSampler;
       case 7:
         return paths.settings;
-      case 8:
-        return paths.about;
       default:
         return paths.welcome;
     }

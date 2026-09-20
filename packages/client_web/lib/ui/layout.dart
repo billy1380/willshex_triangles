@@ -156,12 +156,6 @@ class _AppLayoutState extends State<AppLayout> {
               icon: "bi-gear",
               currentPath: currentPath,
             ),
-            _navLink(
-              label: AppStrings.navAbout,
-              route: component.paths.about,
-              icon: "bi-info-circle",
-              currentPath: currentPath,
-            ),
           ]),
           div(classes: "sidebar-footer", [
             button(
