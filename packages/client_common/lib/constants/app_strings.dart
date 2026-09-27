@@ -8,15 +8,28 @@ class AppStrings {
   // Navigation & Generator Titles
   static const String navWelcome = "Welcome";
   static const String navTypes = "Types";
+  static const String navPaletteTypes = "Palette Types";
   static const String navPalettePicker = "Palette Picker";
   static const String navHtmlColour = "HTML Colour";
+  static const String navHtmlColours = "HTML Colours";
   static const String navRandomPalette = "Random Palette";
   static const String navRandomGrayscale = "Random Grayscale";
   static const String imagePalette = "Image Palette";
+  static const String navImageSampler = "Image Sampler";
   static const String imageSamplerPalette = "Image Sampler Palette";
   static const String navPreferences = "Preferences";
   static const String navSettings = "Settings";
   static const String navAbout = "About";
+
+  // Contextual Actions & Toolbar
+  static const String actionGenerate = "Generate";
+  static const String actionPickPalette = "Pick Palette";
+  static const String actionSaveImage = "Save Image";
+  static const String actionResetZoom = "Reset Zoom";
+
+  // Named Navigation Areas
+  static const String areaTriangleHistory = "triangle_history";
+  static const String paletteHistory = "Palette History";
 
   // Welcome Screen
   static const String welcomeHeadline = "Our triangles wallpaper project!";
@@ -51,6 +64,7 @@ class AppStrings {
 
   // History Drawer
   static const String history = "History";
+  static const String palette = "Palette";
   static const String newPalette = "New Palette";
   static const String clearHistory = "Clear History";
   static const String noHistoryYet = "No history yet";

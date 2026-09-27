@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   client_common:
     path: ../client_common
+  willshex_embedding:
+    path: ../../../willshex_embedding
   willshex_draw:
     path: ../willshex_draw
   subtle_backgrounds:

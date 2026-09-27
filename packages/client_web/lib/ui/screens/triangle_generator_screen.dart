@@ -1,3 +1,4 @@
+import "package:willshex_embedding/willshex_embedding.dart";
 import "dart:convert";
 import "dart:typed_data";
 
@@ -21,9 +22,11 @@ import "package:client_web/services/local_storage_settings_storage.dart";
 /// Pure embeddable view for triangle generator in web.
 class TriangleGeneratorView extends StatelessComponent {
   final GeneratorType generatorType;
+  final PageSession? session;
 
   const TriangleGeneratorView({
     required this.generatorType,
+    this.session,
     super.key,
   });
 
@@ -31,6 +34,7 @@ class TriangleGeneratorView extends StatelessComponent {
   Component build(BuildContext context) {
     return TriangleGeneratorScreen(
       generatorType: generatorType,
+      session: session,
       useLayout: false,
     );
   }
@@ -40,10 +44,12 @@ class TriangleGeneratorScreen extends StatefulComponent {
   final GeneratorType generatorType;
   final bool useLayout;
   final TrianglesRoutePaths paths;
+  final PageSession? session;
 
   TriangleGeneratorScreen({
     required this.generatorType,
     this.useLayout = true,
+    this.session,
     TrianglesRoutePaths? paths,
     String? basePath,
     super.key,
@@ -91,6 +97,10 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
       ),
       assetLoader: _loadWebAsset,
     );
+    _syncSession();
+    _cubit.stream.listen((state) {
+      _syncSession(state);
+    });
   }
 
   static Future<Uint8List?> _loadWebAsset(String path) async {
@@ -110,6 +120,50 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
     _cubit.close();
     _localSettingsCubit?.close();
     super.dispose();
+  }
+
+  void _syncSession([TriangleGeneratorState? state]) {
+    final s = state ?? _cubit.state;
+    component.session?.setTitle(component.generatorType.title);
+    component.session?.setActions([
+      PageAction(
+        id: "generate",
+        label: AppStrings.actionGenerate,
+        variant: ActionVariant.primary,
+        icon: const EmbeddingIcon.named("refresh"),
+        order: 1,
+        onTrigger: _cubit.generateImage,
+      ),
+      PageAction(
+        id: "download",
+        label: AppStrings.actionSaveImage,
+        variant: ActionVariant.outline,
+        icon: const EmbeddingIcon.named("download"),
+        order: 2,
+        isEnabled: s.generatedImage != null,
+        onTrigger: () {
+          if (s.generatedImage != null) {
+            _downloadImage(s.generatedImage!);
+          }
+        },
+      ),
+    ]);
+
+    if (s.history.isNotEmpty) {
+      component.session?.setAreaItems(
+        AppStrings.areaTriangleHistory,
+        s.history.asMap().entries.map((entry) {
+          final p = entry.value;
+          final name = p.name ?? "${AppStrings.palette} ${entry.key + 1}";
+          return SecondaryNavItem(
+            id: "palette_${entry.key}",
+            area: AppStrings.areaTriangleHistory,
+            label: name,
+            onSelect: () => _cubit.selectPalette(p),
+          );
+        }).toList(),
+      );
+    }
   }
 
   void _downloadImage(Uint8List bytes) {
@@ -170,148 +224,150 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
             classes: "d-flex flex-column flex-grow-1 position-relative",
             [
               div(
-                classes:
-                    "p-3 bg-body-tertiary border-bottom d-flex flex-wrap gap-3 align-items-center",
-                [
-                  div(
-                    classes: "flex-fill",
-                    attributes: const {"style": "min-width: 180px;"},
-                    [
-                      const label(
-                        classes: "form-label small fw-semibold text-secondary mb-1",
-                        [Component.text(AppStrings.type)],
-                      ),
-                      select(
-                        classes: "form-select form-select-sm",
-                        events: {
-                          "change": (e) {
-                            final val = (e.target as dynamic).value as String;
-                            final type = TrianglesType.values.firstWhere(
-                              (t) => t.name == val,
-                              orElse: () => TrianglesType.ribbons,
-                            );
-                            _cubit.selectType(type);
-                          },
-                        },
-                        [
-                          for (final type in TrianglesType.values)
-                            option(
-                              value: type.name,
-                              selected: type == state.selectedType,
-                              [Component.text(type.name)],
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  div(
-                    classes: "flex-fill",
-                    attributes: const {"style": "min-width: 180px;"},
-                    [
-                      const label(
-                        classes: "form-label small fw-semibold text-secondary mb-1",
-                        [Component.text(AppStrings.texture)],
-                      ),
-                      select(
-                        classes: "form-select form-select-sm",
-                        events: {
-                          "change": (e) {
-                            final val = (e.target as dynamic).value as String;
-                            if (val == "none") {
-                              _cubit.selectTexture(null);
-                            } else {
-                              final match = TilableImage.values.firstWhere(
-                                (imgItem) => imgItem.name == val,
+                  classes:
+                      "p-3 bg-body-tertiary border-bottom d-flex flex-wrap gap-3 align-items-center",
+                  [
+                    div(
+                      classes: "flex-fill",
+                      attributes: const {"style": "min-width: 180px;"},
+                      [
+                        const label(
+                          classes:
+                              "form-label small fw-semibold text-secondary mb-1",
+                          [Component.text(AppStrings.type)],
+                        ),
+                        select(
+                          classes: "form-select form-select-sm",
+                          events: {
+                            "change": (e) {
+                              final val = (e.target as dynamic).value as String;
+                              final type = TrianglesType.values.firstWhere(
+                                (t) => t.name == val,
+                                orElse: () => TrianglesType.ribbons,
                               );
-                              _cubit.selectTexture(match);
-                            }
+                              _cubit.selectType(type);
+                            },
                           },
-                        },
-                        [
-                          option(
-                            value: "none",
-                            selected: state.selectedImage == null,
-                            const [Component.text(AppStrings.textureNone)],
-                          ),
-                          for (final imgItem in TilableImage.values)
-                            option(
-                              value: imgItem.name,
-                              selected: state.selectedImage == imgItem,
-                              [Component.text(imgItem.name)],
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  div(
-                    classes: "flex-fill",
-                    attributes: const {"style": "min-width: 180px;"},
-                    [
-                      const label(
-                        classes: "form-label small fw-semibold text-secondary mb-1",
-                        [Component.text(AppStrings.blendMode)],
-                      ),
-                      select(
-                        classes: "form-select form-select-sm",
-                        disabled: state.selectedImage == null,
-                        events: {
-                          "change": (e) {
-                            final val = (e.target as dynamic).value as String;
-                            final mode = BlendingMode.values.firstWhere(
-                              (m) => m.name == val,
-                              orElse: () => BlendingMode.colorBurn,
-                            );
-                            _cubit.selectBlendMode(mode);
+                          [
+                            for (final type in TrianglesType.values)
+                              option(
+                                value: type.name,
+                                selected: type == state.selectedType,
+                                [Component.text(type.name)],
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    div(
+                      classes: "flex-fill",
+                      attributes: const {"style": "min-width: 180px;"},
+                      [
+                        const label(
+                          classes:
+                              "form-label small fw-semibold text-secondary mb-1",
+                          [Component.text(AppStrings.texture)],
+                        ),
+                        select(
+                          classes: "form-select form-select-sm",
+                          events: {
+                            "change": (e) {
+                              final val = (e.target as dynamic).value as String;
+                              if (val == "none") {
+                                _cubit.selectTexture(null);
+                              } else {
+                                final match = TilableImage.values.firstWhere(
+                                  (imgItem) => imgItem.name == val,
+                                );
+                                _cubit.selectTexture(match);
+                              }
+                            },
                           },
-                        },
-                        [
-                          for (final mode in state.sortedBlendModes)
+                          [
                             option(
-                              value: mode.name,
-                              selected: mode == state.selectedBlendMode,
-                              [Component.text(mode.name)],
+                              value: "none",
+                              selected: state.selectedImage == null,
+                              const [Component.text(AppStrings.textureNone)],
                             ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  if (!component.useLayout) ...[
-                    if (state.paletteSource != null)
+                            for (final imgItem in TilableImage.values)
+                              option(
+                                value: imgItem.name,
+                                selected: state.selectedImage == imgItem,
+                                [Component.text(imgItem.name)],
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    div(
+                      classes: "flex-fill",
+                      attributes: const {"style": "min-width: 180px;"},
+                      [
+                        const label(
+                          classes:
+                              "form-label small fw-semibold text-secondary mb-1",
+                          [Component.text(AppStrings.blendMode)],
+                        ),
+                        select(
+                          classes: "form-select form-select-sm",
+                          disabled: state.selectedImage == null,
+                          events: {
+                            "change": (e) {
+                              final val = (e.target as dynamic).value as String;
+                              final mode = BlendingMode.values.firstWhere(
+                                (m) => m.name == val,
+                                orElse: () => BlendingMode.colorBurn,
+                              );
+                              _cubit.selectBlendMode(mode);
+                            },
+                          },
+                          [
+                            for (final mode in state.sortedBlendModes)
+                              option(
+                                value: mode.name,
+                                selected: mode == state.selectedBlendMode,
+                                [Component.text(mode.name)],
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    if (!component.useLayout) ...[
+                      if (state.paletteSource != null)
+                        button(
+                          classes:
+                              "btn btn-sm ${state.showImageOverlay ? 'btn-primary' : 'btn-outline-secondary'} ms-auto",
+                          attributes: {
+                            "title": state.showImageOverlay
+                                ? AppStrings.hideReference
+                                : AppStrings.showReference,
+                          },
+                          events: {"click": (e) => _cubit.toggleImageOverlay()},
+                          [
+                            i(
+                              classes:
+                                  "bi ${state.showImageOverlay ? 'bi-image-fill' : 'bi-image'}",
+                              const [],
+                            ),
+                          ],
+                        ),
                       button(
                         classes:
-                            "btn btn-sm ${state.showImageOverlay ? 'btn-primary' : 'btn-outline-secondary'} ms-auto",
-                        attributes: {
-                          "title": state.showImageOverlay
-                              ? AppStrings.hideReference
-                              : AppStrings.showReference,
+                            "btn btn-sm ${_historyDrawerOpen ? 'btn-primary' : 'btn-outline-secondary'} ${state.paletteSource == null ? 'ms-auto' : ''}",
+                        attributes: const {"title": AppStrings.showHistory},
+                        events: {
+                          "click": (e) => setState(
+                              () => _historyDrawerOpen = !_historyDrawerOpen),
                         },
-                        events: {"click": (e) => _cubit.toggleImageOverlay()},
-                        [
-                          i(
-                            classes:
-                                "bi ${state.showImageOverlay ? 'bi-image-fill' : 'bi-image'}",
-                            const [],
-                          ),
+                        const [
+                          i(classes: "bi bi-clock-history me-1", []),
+                          span(classes: "d-none d-sm-inline", [
+                            Component.text(AppStrings.history),
+                          ]),
                         ],
                       ),
-
-                  button(
-                    classes:
-                        "btn btn-sm ${_historyDrawerOpen ? 'btn-primary' : 'btn-outline-secondary'} ${state.paletteSource == null ? 'ms-auto' : ''}",
-                    attributes: const {"title": AppStrings.showHistory},
-                    events: {
-                      "click": (e) => setState(
-                          () => _historyDrawerOpen = !_historyDrawerOpen),
-                    },
-                    const [
-                      i(classes: "bi bi-clock-history me-1", []),
-                      span(classes: "d-none d-sm-inline", [
-                        Component.text(AppStrings.history),
-                      ]),
                     ],
-                  ),
-                ],
-              ]),
+                  ]),
 
               // Canvas viewport
               div(classes: "generator-canvas-area", [

@@ -1,3 +1,4 @@
+import "package:willshex_embedding/willshex_embedding.dart";
 import "dart:async";
 
 import "package:blend_composites/blend_composites.dart";
@@ -24,6 +25,7 @@ class TriangleGeneratorView extends StatefulWidget {
   final bool showDownloadFab;
   final bool showHistoryInControls;
   final bool showOverlayInControls;
+  final PageSession? session;
 
   const TriangleGeneratorView({
     super.key,
@@ -35,6 +37,7 @@ class TriangleGeneratorView extends StatefulWidget {
     this.showDownloadFab = true,
     this.showHistoryInControls = false,
     this.showOverlayInControls = false,
+    this.session,
   });
 
   @override
@@ -47,6 +50,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
   double _currentScale = 1.0;
   SettingsCubit? _localSettingsCubit;
   StreamSubscription<SettingsState>? _settingsSub;
+  StreamSubscription<TriangleGeneratorState>? _cubitSub;
   bool _isPickerOpen = false;
 
   TriangleGeneratorCubit get cubit => _cubit;
@@ -108,6 +112,81 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
         _cubit.updateSettings(settingsState.settings);
       }
     });
+
+    _syncSession();
+    _cubitSub = _cubit.stream.listen((state) {
+      if (mounted) {
+        _syncSession(state);
+      }
+    });
+  }
+
+  Future<void> saveGeneratedImage(Uint8List bytes) async {
+    await FileSaver.instance.saveFile(
+      name: AppStrings.defaultImageFilename,
+      bytes: bytes,
+      fileExtension: AppStrings.fileExtensionPng,
+      mimeType: MimeType.png,
+    );
+  }
+
+  void _syncSession([TriangleGeneratorState? state]) {
+    final s = state ?? _cubit.state;
+    widget.session?.setTitle(widget.title);
+    widget.session?.setActions([
+      PageAction(
+        id: "generate",
+        label: AppStrings.actionGenerate,
+        variant: ActionVariant.primary,
+        icon: const EmbeddingIcon.named("refresh"),
+        order: 1,
+        onTrigger: _cubit.generateImage,
+      ),
+      if (widget.customPalettePicker != null)
+        PageAction(
+          id: "pick_palette",
+          label: AppStrings.actionPickPalette,
+          variant: ActionVariant.standard,
+          icon: const EmbeddingIcon.named("palette"),
+          order: 2,
+          onTrigger: openCustomPalettePicker,
+        ),
+      PageAction(
+        id: "download",
+        label: AppStrings.actionSaveImage,
+        variant: ActionVariant.outline,
+        icon: const EmbeddingIcon.named("download"),
+        order: 3,
+        onTrigger: () {
+          if (s.generatedImage != null) {
+            saveGeneratedImage(s.generatedImage!);
+          }
+        },
+      ),
+      PageAction(
+        id: "reset_zoom",
+        label: AppStrings.actionResetZoom,
+        variant: ActionVariant.standard,
+        order: 4,
+        onTrigger: _resetZoom,
+      ),
+    ]);
+
+    if (s.history.isNotEmpty) {
+      widget.session?.setAreaItems(
+        AppStrings.areaTriangleHistory,
+        s.history.asMap().entries.map((entry) {
+          final p = entry.value;
+          final name = p.name ?? "${AppStrings.palette} ${entry.key + 1}";
+          return SecondaryNavItem(
+            id: "palette_${entry.key}",
+            area: AppStrings.areaTriangleHistory,
+            label: name,
+            onSelect: () => _cubit.selectPalette(p),
+          );
+        }).toList(),
+      );
+    }
   }
 
   void _onTransformationChanged() {
@@ -242,6 +321,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
     _transformationController.removeListener(_onTransformationChanged);
     _transformationController.dispose();
     _settingsSub?.cancel();
+    _cubitSub?.cancel();
     _cubit.close();
     _localSettingsCubit?.close();
     super.dispose();
@@ -462,8 +542,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         0.8, viewportSize),
                                               ),
                                               Tooltip(
-                                                message:
-                                                    AppStrings.resetZoomAndPosition,
+                                                message: AppStrings
+                                                    .resetZoomAndPosition,
                                                 child: InkWell(
                                                   onTap: _resetZoom,
                                                   borderRadius:
@@ -509,8 +589,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                                         minWidth: 32,
                                                         minHeight: 32),
                                                 padding: EdgeInsets.zero,
-                                                tooltip:
-                                                    AppStrings.resetZoomAndPosition,
+                                                tooltip: AppStrings
+                                                    .resetZoomAndPosition,
                                                 onPressed: _resetZoom,
                                               ),
                                             ],
@@ -592,6 +672,7 @@ class TriangleGeneratorPage extends StatefulWidget {
   final bool showAppBar;
   final TrianglesRoutePaths paths;
   final SettingsCubit? settingsCubit;
+  final PageSession? session;
 
   TriangleGeneratorPage({
     super.key,
@@ -599,6 +680,7 @@ class TriangleGeneratorPage extends StatefulWidget {
     this.paletteProvider,
     this.generatorType,
     this.customPalettePicker,
+    this.session,
     this.showDrawer = true,
     this.showAppBar = true,
     TrianglesRoutePaths? paths,
@@ -630,6 +712,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
         showDownloadFab: true,
         showHistoryInControls: true,
         showOverlayInControls: true,
+        session: widget.session,
       );
     }
 
@@ -714,6 +797,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
         showDownloadFab: true,
         showHistoryInControls: !widget.showAppBar,
         showOverlayInControls: !widget.showAppBar,
+        session: widget.session,
       ),
     );
   }

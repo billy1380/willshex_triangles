@@ -1,6 +1,6 @@
 # Triangles Embedding & Theming Guide
 
-This guide explains how to embed Triangles screens and views into another Flutter or Web (Jaspr) project with custom themes, custom layouts, and shared router integration (`go_router` for Flutter, `jaspr_router` for Web).
+This guide explains how to embed Triangles screens and views into another Flutter or Web (Jaspr) project with custom themes, custom layouts, and shared router integration (`go_router` for Flutter, `jaspr_router` for Web), as well as sub-tree embedding using the `willshex_embedding` framework.
 
 ---
 
@@ -116,6 +116,7 @@ If your host project already has its own tabs, bottom navigation, or page scaffo
 
 ```dart
 import 'package:flutter/material.dart';
+import 'package:client_common/client_common.dart';
 import 'package:client_flutter/client_flutter.dart';
 
 class MyCustomHostScreen extends StatelessWidget {
@@ -126,7 +127,7 @@ class MyCustomHostScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("My App")),
       body: const TriangleGeneratorView(
-        title: "Palette Picker",
+        title: AppStrings.navPalettePicker,
         generatorType: GeneratorType.palettePicker,
         showDownloadFab: true,
         showHistoryInControls: true, // History accessible directly inside controls bar
@@ -296,8 +297,8 @@ class MyHostComponent extends StatelessComponent {
 
 Available pure views in `client_web`:
 - `WelcomeView`: Combined home view featuring intro headline, sample showcase, quick-start guide, project credits, and legal notice.
-- `TriangleGeneratorView`
-- `SettingsView`
+- `TriangleGeneratorView`: Canvas viewport with reactive controls.
+- `SettingsView`: Generator dimensions, scaling, and gradient options.
 - `AboutView`: Embeddable card with project information, open-source credits, and legal notice (also included directly inside `WelcomeView`).
 
 ### 2.5 Custom Theming in Web
@@ -321,3 +322,155 @@ Triangles web styles integrate directly with Bootstrap 5 theme tokens and CSS cu
   --text-main: #f9fafb;
 }
 ```
+
+---
+
+## 3. Integration with `willshex_embedding` Framework
+
+When embedding `willshex_triangles` into a host orchestrated by the [`willshex_embedding`](https://github.com/billy1380/willshex_embedding) framework (such as `flutter-willshex`), visual chrome (sidebar navigation, top header, breadcrumbs, contextual action toolbars, and secondary panels) is completely delegated to the host shell.
+
+### 3.1 Sub-Tree Outline Mounting
+
+`packages/client_common` exposes `configureTrianglesOutline`, which registers the entire Triangles navigation outline onto an `EmbeddingHostController`.
+
+Titles are clean human-readable strings defined in [`AppStrings`](../packages/client_common/lib/constants/app_strings.dart) without numeric or index prefixes (coordinates are determined purely by `IndexKey`).
+
+Hosts can mount the Triangles sub-tree under any desired parent `IndexKey`:
+
+```dart
+import 'package:client_common/outline_setup.dart';
+import 'package:willshex_embedding/willshex_embedding.dart';
+
+void setupNavigation(EmbeddingHostController controller) {
+  // Mount Triangles outline under '1.2.5' (e.g. Software > Experiments > Triangles):
+  configureTrianglesOutline(
+    controller,
+    parentIndex: const IndexKey([1, 2, 5]),
+    paths: TrianglesRoutePaths.withPrefix('/experiments/triangles'),
+  );
+}
+```
+
+#### Resulting Navigation Hierarchy in Host:
+- `1` Software
+  - `1.2` Experiments
+    - `1.2.5` Triangles
+      - `1.2.5.0` **Welcome**
+      - `1.2.5.1` **Palette Types** (Category node)
+        - `1.2.5.1.1` **Palette Picker**
+        - `1.2.5.1.2` **HTML Colours**
+        - `1.2.5.1.3` **Random Palette**
+        - `1.2.5.1.4` **Random Grayscale**
+        - `1.2.5.1.5` **Image Palette**
+        - `1.2.5.1.6` **Image Sampler**
+      - `1.2.5.2` **Settings**
+
+### 3.2 Viewport Content Mapping & Page Sessions
+
+In the host's `EmbeddingViewport`, register the Triangles view builders. Pass the `session` parameter provided by the viewport to `TriangleGeneratorView` to connect the view to the host's outer chrome:
+
+#### In Flutter:
+```dart
+EmbeddingViewport(
+  pageSlots: {
+    paths.welcome: (context, session) => const WelcomeView(),
+    paths.palettePicker: (context, session) => TriangleGeneratorView(
+      title: AppStrings.navPalettePicker,
+      generatorType: GeneratorType.palettePicker,
+      showDownloadFab: false, // Actions promoted to host toolbar
+      session: session,
+    ),
+    paths.htmlColour: (context, session) => TriangleGeneratorView(
+      title: AppStrings.navHtmlColours,
+      generatorType: GeneratorType.htmlColour,
+      showDownloadFab: false,
+      session: session,
+    ),
+    paths.randomPalette: (context, session) => TriangleGeneratorView(
+      title: AppStrings.navRandomPalette,
+      generatorType: GeneratorType.randomPalette,
+      showDownloadFab: false,
+      session: session,
+    ),
+    paths.randomGrayscale: (context, session) => TriangleGeneratorView(
+      title: AppStrings.navRandomGrayscale,
+      generatorType: GeneratorType.randomGrayscale,
+      showDownloadFab: false,
+      session: session,
+    ),
+    paths.imagePalette: (context, session) => TriangleGeneratorView(
+      title: AppStrings.imagePalette,
+      generatorType: GeneratorType.imagePalette,
+      showDownloadFab: false,
+      session: session,
+    ),
+    paths.imageSampler: (context, session) => TriangleGeneratorView(
+      title: AppStrings.navImageSampler,
+      generatorType: GeneratorType.imageSampler,
+      showDownloadFab: false,
+      session: session,
+    ),
+    paths.settings: (context, session) => const SettingsView(),
+  },
+)
+```
+
+#### In Jaspr Web:
+```dart
+EmbeddingViewport(
+  pageSlots: {
+    paths.welcome: (context, session) => const WelcomeView(),
+    paths.palettePicker: (context, session) => TriangleGeneratorView(
+      generatorType: GeneratorType.palettePicker,
+      session: session,
+    ),
+    paths.htmlColour: (context, session) => TriangleGeneratorView(
+      generatorType: GeneratorType.htmlColour,
+      session: session,
+    ),
+    paths.randomPalette: (context, session) => TriangleGeneratorView(
+      generatorType: GeneratorType.randomPalette,
+      session: session,
+    ),
+    paths.randomGrayscale: (context, session) => TriangleGeneratorView(
+      generatorType: GeneratorType.randomGrayscale,
+      session: session,
+    ),
+    paths.imagePalette: (context, session) => TriangleGeneratorView(
+      generatorType: GeneratorType.imagePalette,
+      session: session,
+    ),
+    paths.imageSampler: (context, session) => TriangleGeneratorView(
+      generatorType: GeneratorType.imageSampler,
+      session: session,
+    ),
+    paths.settings: (context, session) => const SettingsView(),
+  },
+)
+```
+
+### 3.3 Contextual Action Promotion to Host Toolbar
+
+When `session` is supplied, `TriangleGeneratorView` publishes its generator controls directly to the active `PageSession` instead of rendering inline buttons:
+
+- **Generate** (`AppStrings.actionGenerate`, `ActionVariant.primary`, icon: `refresh`)
+- **Pick Palette** (`AppStrings.actionPickPalette`, `ActionVariant.standard`, icon: `palette`)
+- **Save Image** (`AppStrings.actionSaveImage`, `ActionVariant.outline`, icon: `download`)
+- **Reset Zoom** (`AppStrings.actionResetZoom`, `ActionVariant.standard`)
+
+The host shell renders these actions in its top `AppBar` (in Flutter) or header navbar (in Jaspr Web), matching host styling.
+
+### 3.4 Secondary Named Area (`triangle_history`)
+
+`TriangleGeneratorView` contributes generated palette history to the named area `AppStrings.areaTriangleHistory` (`'triangle_history'`). 
+
+Hosts can mount an `EmbeddingAreaSlot` inside an inspector panel or drawer to display palette history with automatic collapsing when empty:
+
+```dart
+EmbeddingAreaSlot(
+  areaName: AppStrings.areaTriangleHistory,
+  containerClass: 'app-inspector-panel', // In Jaspr Web
+)
+```
+
+When a user selects a palette in the history slot, the active generator restores it automatically.

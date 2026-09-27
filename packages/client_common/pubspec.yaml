@@ -24,6 +24,8 @@ dependencies:
     path: ../willshex_draw
   subtle_backgrounds:
     path: ../subtle_backgrounds
+  willshex_embedding:
+    path: ../../../willshex_embedding
 
 dev_dependencies:
   lints: ^2.0.0
