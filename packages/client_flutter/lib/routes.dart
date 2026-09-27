@@ -1,13 +1,13 @@
 import "package:go_router/go_router.dart";
-import "package:client_common/client_common.dart";
-import "package:client_flutter/pages/welcome_page.dart";
-import "package:client_flutter/pages/html_colour_page.dart";
-import "package:client_flutter/pages/random_palette_page.dart";
-import "package:client_flutter/pages/random_grayscale_palette_page.dart";
-import "package:client_flutter/pages/image_palette_page.dart";
-import "package:client_flutter/pages/image_sampler_palette_page.dart";
-import "package:client_flutter/pages/settings_page.dart";
-import "package:client_flutter/pages/palette_picker_page.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/pages/welcome_page.dart";
+import "package:triangles_flutter/pages/html_colour_page.dart";
+import "package:triangles_flutter/pages/random_palette_page.dart";
+import "package:triangles_flutter/pages/random_grayscale_palette_page.dart";
+import "package:triangles_flutter/pages/image_palette_page.dart";
+import "package:triangles_flutter/pages/image_sampler_palette_page.dart";
+import "package:triangles_flutter/pages/settings_page.dart";
+import "package:triangles_flutter/pages/palette_picker_page.dart";
 
 /// Route definitions and helpers for Triangles in Flutter.
 class TrianglesRoutes {

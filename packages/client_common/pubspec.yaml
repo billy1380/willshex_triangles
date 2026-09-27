@@ -1,4 +1,4 @@
-name: client_common
+name: triangles_common
 description: Shared models, triangle engine, and Blocs for willshex_triangles.
 publish_to: "none"
 version: 1.0.0

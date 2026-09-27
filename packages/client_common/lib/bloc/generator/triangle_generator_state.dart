@@ -4,10 +4,10 @@ import "package:equatable/equatable.dart";
 import "package:image/image.dart" as img;
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/models/generator_settings.dart";
-import "package:client_common/triangles/graphics/from_source.dart";
-import "package:client_common/triangles/graphics/palette_provider/palette_provider.dart";
-import "package:client_common/triangles/triangles_type.dart";
+import "package:triangles_common/models/generator_settings.dart";
+import "package:triangles_common/triangles/graphics/from_source.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/palette_provider.dart";
+import "package:triangles_common/triangles/triangles_type.dart";
 
 class TriangleGeneratorState extends Equatable {
   final String title;

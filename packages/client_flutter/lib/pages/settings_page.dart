@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
-import "package:client_common/client_common.dart";
-import "package:client_flutter/parts/app_drawer.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/parts/app_drawer.dart";
 
 /// Pure embeddable view for Settings, decoupled from Scaffold, AppBar, and AppDrawer.
 class SettingsView extends StatefulWidget {

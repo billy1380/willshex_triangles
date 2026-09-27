@@ -1,7 +1,7 @@
 import "package:image/image.dart" as img;
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/graphics/from_source.dart";
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/triangles/graphics/from_source.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 /// A palette that samples colors directly from an image's pixel data
 /// This palette pretends to have a reasonable count but samples from the image

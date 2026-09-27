@@ -1,7 +1,7 @@
 import "dart:async";
 import "dart:js_interop";
 import "dart:js_interop_unsafe";
-import "package:client_common/client_common.dart";
+import "package:triangles_common/client_common.dart";
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:web/web.dart" as web;

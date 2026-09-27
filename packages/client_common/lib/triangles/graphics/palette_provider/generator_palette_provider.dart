@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/graphics/palette_provider/palette_provider.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/palette_provider.dart";
 
 typedef GeneratorPalette = FutureOr<Palette?> Function();
 

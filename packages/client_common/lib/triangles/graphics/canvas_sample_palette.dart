@@ -1,6 +1,6 @@
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/graphics/from_source.dart";
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/triangles/graphics/from_source.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 import "color_cut_quantizer.dart";
 import "color_utils.dart";

@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:url_launcher/url_launcher_string.dart";
-import "package:client_common/client_common.dart";
-import "package:client_flutter/parts/app_drawer.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/parts/app_drawer.dart";
 
 /// Pure content view for Welcome, decoupled from Scaffold, AppBar, and AppDrawer.
 /// Seamlessly combines introductory cards, sample gallery, and project/legal information.

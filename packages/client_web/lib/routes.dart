@@ -1,8 +1,8 @@
 import "package:jaspr_router/jaspr_router.dart";
-import "package:client_common/client_common.dart";
-import "package:client_web/ui/screens/settings_screen.dart";
-import "package:client_web/ui/screens/triangle_generator_screen.dart";
-import "package:client_web/ui/screens/welcome_screen.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_web/ui/screens/settings_screen.dart";
+import "package:triangles_web/ui/screens/triangle_generator_screen.dart";
+import "package:triangles_web/ui/screens/welcome_screen.dart";
 
 /// Route generator and helpers for Triangles web client.
 class TrianglesWebRoutes {

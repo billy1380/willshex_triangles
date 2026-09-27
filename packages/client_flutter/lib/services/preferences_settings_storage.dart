@@ -1,5 +1,5 @@
 import "package:shared_preferences/shared_preferences.dart";
-import "package:client_common/client_common.dart";
+import "package:triangles_common/client_common.dart";
 
 class PreferencesSettingsStorage implements SettingsStorage {
   final SharedPreferences? _prefs;

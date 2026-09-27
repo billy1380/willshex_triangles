@@ -1,5 +1,5 @@
-import "package:client_common/client_common.dart";
-import "package:client_flutter/extensions/color_ex.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/extensions/color_ex.dart";
 import "package:flutter/material.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 

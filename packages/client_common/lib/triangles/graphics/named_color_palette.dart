@@ -1,7 +1,7 @@
 import "dart:math";
 
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 /// A palette that generates 3-6 random named colors
 class NamedColorPalette extends Palette {

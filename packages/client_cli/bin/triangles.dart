@@ -5,8 +5,8 @@ import "package:fs_shim/fs_io.dart";
 import "package:logging/logging.dart";
 import "package:willshex/willshex.dart";
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/client_common.dart";
-import "package:client_cli/client_cli.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_cli/client_cli.dart";
 
 /// Main desktop CLI application for triangle generation
 class Triangles {

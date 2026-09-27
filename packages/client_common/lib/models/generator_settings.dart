@@ -1,5 +1,5 @@
 import "package:equatable/equatable.dart";
-import "package:client_common/triangles/image_generator_config.dart";
+import "package:triangles_common/triangles/image_generator_config.dart";
 
 class GeneratorSettings extends Equatable {
   static const String keyWidth = "image_width";

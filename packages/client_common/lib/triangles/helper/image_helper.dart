@@ -2,7 +2,7 @@ import "dart:typed_data";
 
 import "package:http/http.dart" as http;
 import "package:image/image.dart" as img;
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 /// Helper functions for fetching and decoding images
 class ImageHelper {

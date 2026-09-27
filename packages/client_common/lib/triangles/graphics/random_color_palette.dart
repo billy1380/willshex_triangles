@@ -1,6 +1,6 @@
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 class RandomColorPalette extends Palette {
   static final Logger _log = Logger("RandomColorPalette");

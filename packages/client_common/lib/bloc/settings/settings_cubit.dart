@@ -1,6 +1,6 @@
 import "package:bloc/bloc.dart";
-import "package:client_common/bloc/settings/settings_state.dart";
-import "package:client_common/models/generator_settings.dart";
+import "package:triangles_common/bloc/settings/settings_state.dart";
+import "package:triangles_common/models/generator_settings.dart";
 
 abstract class SettingsStorage {
   Future<GeneratorSettings> loadSettings();

@@ -1,5 +1,5 @@
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/triangle_tiles.dart";
+import "package:triangles_common/triangles/triangle_tiles.dart";
 
 import "triangle_diamond_tiles.dart";
 import "triangle_h_tiles.dart";

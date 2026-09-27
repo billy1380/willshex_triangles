@@ -1,6 +1,6 @@
 import "package:jaspr/jaspr.dart";
 import "package:logging/logging.dart";
-import "package:client_web/app.dart";
+import "package:triangles_web/app.dart";
 
 void main() {
   Logger.root.level = Level.ALL;

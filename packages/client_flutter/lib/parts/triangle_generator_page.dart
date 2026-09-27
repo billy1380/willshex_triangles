@@ -9,10 +9,10 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:image/image.dart" as img;
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/client_common.dart";
-import "package:client_flutter/parts/app_drawer.dart";
-import "package:client_flutter/parts/palette_history.dart";
-import "package:client_flutter/parts/palette_picker_dialog.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/parts/app_drawer.dart";
+import "package:triangles_flutter/parts/palette_history.dart";
+import "package:triangles_flutter/parts/palette_picker_dialog.dart";
 
 /// Pure embeddable view for triangle generation.
 /// Decoupled from Scaffold, AppBar, and Drawer.

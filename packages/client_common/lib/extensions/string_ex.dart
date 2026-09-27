@@ -1,10 +1,10 @@
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/graphics/palette_provider/comma_separated_palette_provider.dart";
-import "package:client_common/triangles/graphics/palette_provider/palette_provider.dart";
-import "package:client_common/triangles/graphics/palette_provider/random_grayscale_palette_provider.dart";
-import "package:client_common/triangles/graphics/palette_provider/random_named_palette_provider.dart";
-import "package:client_common/triangles/graphics/palette_provider/random_color_palette_provider.dart";
-import "package:client_common/triangles/image_generator_config.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/comma_separated_palette_provider.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/palette_provider.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/random_grayscale_palette_provider.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/random_named_palette_provider.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/random_color_palette_provider.dart";
+import "package:triangles_common/triangles/image_generator_config.dart";
 
 extension StringEx on String? {
   List<Color> toColors(List<String>? colors) {

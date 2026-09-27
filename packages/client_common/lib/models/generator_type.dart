@@ -1,7 +1,7 @@
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/constants/app_strings.dart";
-import "package:client_common/models/generator_settings.dart";
-import "package:client_common/triangles/triangles.dart";
+import "package:triangles_common/constants/app_strings.dart";
+import "package:triangles_common/models/generator_settings.dart";
+import "package:triangles_common/triangles/triangles.dart";
 
 enum GeneratorType {
   palettePicker(

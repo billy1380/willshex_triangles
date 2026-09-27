@@ -4,14 +4,14 @@ import "package:bloc/bloc.dart";
 import "package:logging/logging.dart";
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/bloc/generator/triangle_generator_state.dart";
-import "package:client_common/models/generator_settings.dart";
-import "package:client_common/triangles/graphics/palette_provider/generator_palette_provider.dart";
-import "package:client_common/triangles/graphics/palette_provider/palette_provider.dart";
-import "package:client_common/triangles/image_generator.dart";
-import "package:client_common/triangles/image_generator_config.dart";
-import "package:client_common/triangles/triangles_type.dart";
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/bloc/generator/triangle_generator_state.dart";
+import "package:triangles_common/models/generator_settings.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/generator_palette_provider.dart";
+import "package:triangles_common/triangles/graphics/palette_provider/palette_provider.dart";
+import "package:triangles_common/triangles/image_generator.dart";
+import "package:triangles_common/triangles/image_generator_config.dart";
+import "package:triangles_common/triangles/triangles_type.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 typedef AssetLoader = Future<Uint8List?> Function(String path);
 

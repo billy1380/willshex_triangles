@@ -1,6 +1,6 @@
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/graphics/image_pixel_palette.dart";
-import "package:client_common/triangles/image_renderer.dart";
+import "package:triangles_common/triangles/graphics/image_pixel_palette.dart";
+import "package:triangles_common/triangles/image_renderer.dart";
 
 import "triangle_tiles.dart";
 

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:willshex/willshex.dart";
-import "package:client_flutter/app.dart";
+import "package:triangles_flutter/app.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

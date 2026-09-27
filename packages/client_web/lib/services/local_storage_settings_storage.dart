@@ -1,4 +1,4 @@
-import "package:client_common/client_common.dart";
+import "package:triangles_common/client_common.dart";
 import "package:web/web.dart" as web;
 
 class LocalStorageSettingsStorage implements SettingsStorage {

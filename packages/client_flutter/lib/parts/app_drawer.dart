@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
-import "package:client_common/client_common.dart";
+import "package:triangles_common/client_common.dart";
 
 extension GoRouterLocation on GoRouter {
   String get location => (routerDelegate.currentConfiguration.last
@@ -99,6 +99,16 @@ class AppDrawer extends StatelessWidget {
           selectedIcon: Icon(Icons.settings),
           label: Text(AppStrings.navSettings),
         ),
+        if (paths.welcome != TrianglesRoutePaths.defaultWelcome) ...[
+          const Padding(
+            padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
+            child: Divider(),
+          ),
+          const NavigationDrawerDestination(
+            icon: Icon(Icons.arrow_back),
+            label: Text("Back to Willshex"),
+          ),
+        ],
       ],
     );
   }
@@ -159,6 +169,8 @@ class AppDrawer extends StatelessWidget {
         return paths.imageSampler;
       case 7:
         return paths.settings;
+      case 8:
+        return "/";
       default:
         return paths.welcome;
     }

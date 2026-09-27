@@ -1,4 +1,4 @@
-name: client_flutter
+name: triangles_flutter
 description: Flutter client for willshex_triangles.
 publish_to: "none"
 version: 1.0.0+1
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  client_common:
+  triangles_common:
     path: ../client_common
   willshex_embedding:
     path: ../../../willshex_embedding
@@ -29,13 +29,13 @@ dependencies:
   bloc: ^9.2.1
   flutter_bloc: ^9.1.1
   equatable: ^2.1.0
-  go_router: ^11.1.4
+  go_router: ">=11.1.4 <18.0.0"
   shared_preferences: ^2.2.2
   logging: ^1.2.0
   http: ^1.2.0
   image: ^4.1.3
   url_launcher: ^6.3.2
-  google_fonts: ^6.3.3
+  google_fonts: ">=6.3.3 <9.0.0"
   fs_shim: ^2.4.0+1
   file_saver: ^0.4.0
 

@@ -10,14 +10,14 @@ import "package:jaspr/jaspr.dart";
 import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:web/web.dart" as web;
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/client_common.dart";
-import "package:client_web/ui/bloc_provider.dart";
-import "package:client_web/ui/layout.dart";
-import "package:client_web/ui/parts/interactive_viewer.dart";
-import "package:client_web/ui/parts/palette_history_component.dart";
-import "package:client_web/ui/parts/palette_picker_modal.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_web/ui/bloc_provider.dart";
+import "package:triangles_web/ui/layout.dart";
+import "package:triangles_web/ui/parts/interactive_viewer.dart";
+import "package:triangles_web/ui/parts/palette_history_component.dart";
+import "package:triangles_web/ui/parts/palette_picker_modal.dart";
 
-import "package:client_web/services/local_storage_settings_storage.dart";
+import "package:triangles_web/services/local_storage_settings_storage.dart";
 
 /// Pure embeddable view for triangle generator in web.
 class TriangleGeneratorView extends StatelessComponent {

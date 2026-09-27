@@ -2,7 +2,7 @@ import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:jaspr_router/jaspr_router.dart";
 import "package:web/web.dart" as web;
-import "package:client_common/client_common.dart";
+import "package:triangles_common/client_common.dart";
 
 class AppLayout extends StatefulComponent {
   final String title;

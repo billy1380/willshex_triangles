@@ -1,5 +1,5 @@
-import "package:client_common/client_common.dart";
-import "package:client_flutter/parts/triangle_generator_page.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/parts/triangle_generator_page.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 

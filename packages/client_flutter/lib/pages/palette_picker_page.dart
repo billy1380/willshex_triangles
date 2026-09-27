@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/client_common.dart";
-import "package:client_flutter/parts/palette_picker_dialog.dart";
-import "package:client_flutter/parts/triangle_generator_page.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/parts/palette_picker_dialog.dart";
+import "package:triangles_flutter/parts/triangle_generator_page.dart";
 
 class PalettePickerPage extends StatelessWidget {
   static const String routePath = "/palettepicker";

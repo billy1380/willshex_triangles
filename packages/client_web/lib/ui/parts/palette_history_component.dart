@@ -1,8 +1,8 @@
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
-import "package:client_common/client_common.dart";
-import "package:client_web/ui/helpers/color_css_ex.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_web/ui/helpers/color_css_ex.dart";
 
 class PaletteHistoryComponent extends StatelessComponent {
   final List<ws.Palette> palettes;

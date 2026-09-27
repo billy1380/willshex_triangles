@@ -8,8 +8,8 @@ import "package:image/image.dart" as img;
 import "package:image_blend_composites/blend_composite.dart";
 import "package:logging/logging.dart";
 import "package:willshex_draw/willshex_draw.dart";
-import "package:client_common/triangles/triangles.dart";
-import "package:client_common/constants/app_strings.dart";
+import "package:triangles_common/triangles/triangles.dart";
+import "package:triangles_common/constants/app_strings.dart";
 
 /// Image generator for creating triangle-based images
 class ImageGenerator {

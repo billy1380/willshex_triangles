@@ -1,5 +1,5 @@
 import "package:equatable/equatable.dart";
-import "package:client_common/models/generator_settings.dart";
+import "package:triangles_common/models/generator_settings.dart";
 
 class SettingsState extends Equatable {
   final GeneratorSettings settings;

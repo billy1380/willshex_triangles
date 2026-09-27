@@ -1,4 +1,4 @@
-name: client_cli
+name: triangles_cli
 description: Command-line interface for willshex_triangles.
 version: 1.0.0
 publish_to: "none"
@@ -8,7 +8,7 @@ environment:
   sdk: ">=3.5.0 <4.0.0"
 
 dependencies:
-  client_common:
+  triangles_common:
     path: ../client_common
   willshex_draw:
     path: ../willshex_draw

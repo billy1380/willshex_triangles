@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:client_common/client_common.dart";
-import "package:client_flutter/routes.dart";
-import "package:client_flutter/services/preferences_settings_storage.dart";
+import "package:triangles_common/client_common.dart";
+import "package:triangles_flutter/routes.dart";
+import "package:triangles_flutter/services/preferences_settings_storage.dart";
 
 import "package:shared_preferences/shared_preferences.dart";
 
