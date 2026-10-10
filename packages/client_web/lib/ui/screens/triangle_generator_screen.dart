@@ -440,11 +440,14 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                   "style": _historyDrawerOpen ? "visibility: visible;" : "",
                 },
                 [
-                  div(classes: "offcanvas-header border-bottom", [
-                    const h5(classes: "offcanvas-title fw-bold m-0", [
-                      Component.text(AppStrings.history),
-                    ]),
-                    div(classes: "d-flex align-items-center gap-2", [
+                  div(
+                      classes:
+                          "offcanvas-header border-bottom d-flex justify-content-between align-items-center",
+                      [
+                        const h5(classes: "offcanvas-title fw-bold m-0", [
+                          Component.text(AppStrings.history),
+                        ]),
+                        div(classes: "d-flex align-items-center gap-2 ms-auto", [
                       button(
                         classes: "btn btn-sm btn-outline-primary",
                         attributes: const {
