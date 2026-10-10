@@ -1,7 +1,6 @@
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:jaspr_router/jaspr_router.dart";
-import "package:web/web.dart" as web;
 import "package:triangles_common/client_common.dart";
 
 class AppLayout extends StatefulComponent {
@@ -27,17 +26,7 @@ class AppLayout extends StatefulComponent {
 }
 
 class _AppLayoutState extends State<AppLayout> {
-  late bool _isDark =
-      web.document.documentElement?.getAttribute("data-bs-theme") != "light";
   bool _sidebarOpen = false;
-
-  void _toggleTheme() {
-    setState(() {
-      _isDark = !_isDark;
-      web.document.documentElement
-          ?.setAttribute("data-bs-theme", _isDark ? "dark" : "light");
-    });
-  }
 
   void _toggleSidebar() {
     setState(() {
@@ -157,25 +146,6 @@ class _AppLayoutState extends State<AppLayout> {
               route: component.paths.settings,
               icon: "bi-gear",
               currentPath: currentPath,
-            ),
-          ]),
-          div(classes: "sidebar-footer", [
-            button(
-              classes: "btn btn-outline-secondary btn-sm w-100",
-              attributes: const {
-                "title": AppStrings.toggleTheme,
-                "aria-label": AppStrings.toggleTheme,
-              },
-              events: {"click": (e) => _toggleTheme()},
-              [
-                i(
-                  classes:
-                      "bi ${_isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-2",
-                  const [],
-                ),
-                Component.text(
-                    _isDark ? AppStrings.lightMode : AppStrings.darkMode),
-              ],
             ),
           ]),
         ],

@@ -124,7 +124,6 @@ class AppStrings {
   static const String paletteImageSample = "Image Sample Palette";
 
   // Settings Page & Screen
-  static const String imageConfiguration = "Image Configuration";
   static const String imageWidth = "Width";
   static const String imageHeight = "Height";
   static const String scaleFactor = "Scale Factor";
@@ -132,7 +131,6 @@ class AppStrings {
   static const String annotateWithDimensions = "Annotate with dimensions";
 
   // About Section & Info
-  static const String aboutTitle = "About";
   static const String aboutProjectTitle = "Project";
   static const String aboutProjectDescription =
       "Triangles is written and maintained by WillShex Limited for fun "
@@ -162,7 +160,8 @@ class AppStrings {
       "and for what projects. If you feel like giving us a mention we would really appreciate that too.";
 
   // Theme
-  static const String toggleTheme = "Toggle Theme";
-  static const String lightMode = "Light Mode";
-  static const String darkMode = "Dark Mode";
+  static const String theme = "Theme";
+  static const String themeSystem = "System";
+  static const String themeLight = "Light";
+  static const String themeDark = "Dark";
 }

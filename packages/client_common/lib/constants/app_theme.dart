@@ -21,20 +21,34 @@ class AppTheme {
     return '#${(color & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
   }
 
+  static String toRgb(int color) {
+    final r = (color >> 16) & 0xFF;
+    final g = (color >> 8) & 0xFF;
+    final b = color & 0xFF;
+    return "$r, $g, $b";
+  }
+
   static String get cssVars => '''
-:root {
+:root, [data-bs-theme="light"], [data-bs-theme="dark"] {
   --app-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --heading-font: 'Outfit', sans-serif;
   --bs-primary: ${toHex(primaryColor)};
+  --bs-primary-rgb: ${toRgb(primaryColor)};
   --bs-primary-hover: ${toHex(primaryHoverColor)};
   --primary-color: var(--bs-primary);
   --primary-hover: var(--bs-primary-hover);
-  
-  --bs-body-bg: ${toHex(darkBackgroundColor)};
-  --bs-card-bg: ${toHex(darkSurfaceColor)};
-  --bs-border-color: ${toHex(darkBorderColor)};
-  --bs-body-color: ${toHex(darkTextColor)};
-  --bs-secondary-color: ${toHex(darkTextMutedColor)};
+  --bs-link-color: var(--bs-primary);
+  --bs-link-color-rgb: ${toRgb(primaryColor)};
+  --bs-link-hover-color: var(--bs-primary-hover);
+  --bs-focus-ring-color: rgba(${toRgb(primaryColor)}, 0.25);
+}
+
+:root, [data-bs-theme="light"] {
+  --bs-body-bg: ${toHex(lightBackgroundColor)};
+  --bs-card-bg: ${toHex(lightSurfaceColor)};
+  --bs-border-color: ${toHex(lightBorderColor)};
+  --bs-body-color: ${toHex(lightTextColor)};
+  --bs-secondary-color: ${toHex(lightTextMutedColor)};
 
   --bg-color: var(--bs-body-bg);
   --card-bg: var(--bs-card-bg);
@@ -44,12 +58,12 @@ class AppTheme {
   --text-muted: var(--bs-secondary-color);
 }
 
-[data-bs-theme="light"] {
-  --bs-body-bg: ${toHex(lightBackgroundColor)};
-  --bs-card-bg: ${toHex(lightSurfaceColor)};
-  --bs-border-color: ${toHex(lightBorderColor)};
-  --bs-body-color: ${toHex(lightTextColor)};
-  --bs-secondary-color: ${toHex(lightTextMutedColor)};
+[data-bs-theme="dark"] {
+  --bs-body-bg: ${toHex(darkBackgroundColor)};
+  --bs-card-bg: ${toHex(darkSurfaceColor)};
+  --bs-border-color: ${toHex(darkBorderColor)};
+  --bs-body-color: ${toHex(darkTextColor)};
+  --bs-secondary-color: ${toHex(darkTextMutedColor)};
 }
 ''';
 }

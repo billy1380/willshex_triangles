@@ -3,9 +3,12 @@ library client_common;
 export "models/generator_settings.dart";
 export "models/generator_type.dart";
 export "models/triangles_route_paths.dart";
+export "models/app_theme_mode.dart";
 
 export "bloc/settings/settings_state.dart";
 export "bloc/settings/settings_cubit.dart";
+
+export "bloc/theme/theme_cubit.dart";
 
 export "bloc/generator/triangle_generator_state.dart";
 export "bloc/generator/triangle_generator_cubit.dart";

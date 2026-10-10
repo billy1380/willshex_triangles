@@ -59,6 +59,7 @@ class SettingsView extends StatefulComponent {
 
 class _SettingsViewState extends State<SettingsView> {
   late final SettingsCubit _cubit;
+  ThemeCubit? _themeCubit;
 
   @override
   void initState() {
@@ -73,6 +74,37 @@ class _SettingsViewState extends State<SettingsView> {
         _cubit = TrianglesWebSettings.cubit;
       }
     }
+    _themeCubit = BlocProvider.maybeOf<ThemeCubit>(context);
+  }
+
+  Component _themeSelect(ThemeCubit cubit) {
+    return BlocBuilder<ThemeCubit, AppThemeMode>(
+      bloc: cubit,
+      builder: (context, current) => div(classes: "mt-3", [
+        const label(
+          classes: "form-label text-secondary small fw-bold d-block",
+          [Component.text(AppStrings.theme)],
+        ),
+        select(
+          classes: "form-select",
+          events: {
+            "change": (e) {
+              final val = (e.target as dynamic).value as String;
+              final mode = AppThemeMode.fromName(val);
+              cubit.setMode(mode);
+            },
+          },
+          [
+            for (final mode in AppThemeMode.values)
+              option(
+                value: mode.name,
+                selected: mode == current,
+                [Component.text(mode.label)],
+              ),
+          ],
+        ),
+      ]),
+    );
   }
 
   @override
@@ -92,10 +124,6 @@ class _SettingsViewState extends State<SettingsView> {
           attributes: const {"style": "max-width: 680px; margin: 0 auto;"},
           [
             div(classes: "card p-4 shadow-sm border-0 bg-opacity-50", [
-              const h4(classes: "mb-4 fw-bold text-primary", [
-                i(classes: "bi bi-sliders me-2", []),
-                Component.text(AppStrings.imageConfiguration),
-              ]),
               div(classes: "row g-3 mb-3", [
                 div(classes: "col-sm-6", [
                   const label(
@@ -207,6 +235,10 @@ class _SettingsViewState extends State<SettingsView> {
                   [Component.text(AppStrings.annotateWithDimensions)],
                 ),
               ]),
+              if (_themeCubit != null) ...[
+                const hr(),
+                _themeSelect(_themeCubit!),
+              ],
             ]),
           ],
         );

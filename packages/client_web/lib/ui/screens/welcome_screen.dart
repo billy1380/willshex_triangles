@@ -74,14 +74,13 @@ class WelcomeView extends StatelessComponent {
           _sampleCard("34.jpeg"),
         ]),
         const div(
-            classes:
-                "card border-0 bg-opacity-10 bg-primary p-4 my-4 rounded-3",
+            classes: "card border-0 bg-primary bg-opacity-10 p-4 my-4 rounded-3",
             [
-              div(classes: "d-flex gap-3 align-items-center", [
-                i(classes: "bi bi-stars text-primary fs-2", []),
+              div(classes: "d-flex gap-3 align-items-start", [
+                i(classes: "bi bi-stars text-primary fs-3", []),
                 div([
                   h5(
-                      classes: "mb-1 fw-bold",
+                      classes: "mb-1 fw-bold fs-6 text-body",
                       [Component.text(AppStrings.welcomeGetGeneratingTitle)]),
                   p(classes: "mb-0 text-secondary", [
                     Component.text(AppStrings.welcomeInstructions),
@@ -127,7 +126,7 @@ class AboutView extends StatelessComponent {
       classes: "mt-5",
       [
         const section(classes: "mb-4", [
-          h4(classes: "fw-bold text-primary mb-2", [
+          h5(classes: "fw-bold text-primary mb-2 fs-6", [
             Component.text(AppStrings.aboutProjectTitle),
           ]),
           p(classes: "text-secondary", [
@@ -136,7 +135,7 @@ class AboutView extends StatelessComponent {
         ]),
         const hr(),
         section(classes: "my-4", [
-          const h4(classes: "fw-bold text-primary mb-2", [
+          const h5(classes: "fw-bold text-primary mb-2 fs-6", [
             Component.text(AppStrings.aboutSoftwareTitle),
           ]),
           const p(classes: "text-secondary mb-3", [
@@ -152,7 +151,7 @@ class AboutView extends StatelessComponent {
         ]),
         const hr(),
         section(classes: "my-4", [
-          const h4(classes: "fw-bold text-primary mb-2", [
+          const h5(classes: "fw-bold text-primary mb-2 fs-6", [
             Component.text(AppStrings.aboutImagesTitle),
           ]),
           const p(classes: "text-secondary mb-3", [
@@ -167,7 +166,7 @@ class AboutView extends StatelessComponent {
         ]),
         const hr(),
         const section(classes: "mt-4", [
-          h4(classes: "fw-bold text-primary mb-2", [
+          h5(classes: "fw-bold text-primary mb-2 fs-6", [
             Component.text(AppStrings.aboutLegalTitle),
           ]),
           p(classes: "text-secondary mb-0", [
