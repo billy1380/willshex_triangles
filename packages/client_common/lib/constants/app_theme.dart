@@ -41,6 +41,8 @@ class AppTheme {
   --bs-link-color-rgb: ${toRgb(primaryColor)};
   --bs-link-hover-color: var(--bs-primary-hover);
   --bs-focus-ring-color: rgba(${toRgb(primaryColor)}, 0.25);
+  --bs-primary-bg-subtle: rgba(${toRgb(primaryColor)}, 0.15);
+  --bs-primary-border-subtle: rgba(${toRgb(primaryColor)}, 0.35);
 }
 
 :root, [data-bs-theme="light"] {
@@ -49,10 +51,11 @@ class AppTheme {
   --bs-border-color: ${toHex(lightBorderColor)};
   --bs-body-color: ${toHex(lightTextColor)};
   --bs-secondary-color: ${toHex(lightTextMutedColor)};
+  --bs-tertiary-bg: #f1f5f9;
 
   --bg-color: var(--bs-body-bg);
   --card-bg: var(--bs-card-bg);
-  --sidebar-bg: var(--bs-body-bg);
+  --sidebar-bg: var(--bs-card-bg);
   --border-color: var(--bs-border-color);
   --text-main: var(--bs-body-color);
   --text-muted: var(--bs-secondary-color);
@@ -64,6 +67,16 @@ class AppTheme {
   --bs-border-color: ${toHex(darkBorderColor)};
   --bs-body-color: ${toHex(darkTextColor)};
   --bs-secondary-color: ${toHex(darkTextMutedColor)};
+  --bs-tertiary-bg: ${toHex(darkSurfaceColor)};
+
+  --bg-color: var(--bs-body-bg);
+  --card-bg: var(--bs-card-bg);
+  --sidebar-bg: var(--bs-card-bg);
+  --border-color: var(--bs-border-color);
+  --text-main: var(--bs-body-color);
+  --text-muted: var(--bs-secondary-color);
+  --bs-primary-bg-subtle: rgba(${toRgb(primaryColor)}, 0.2);
+  --bs-primary-border-subtle: rgba(${toRgb(primaryColor)}, 0.45);
 }
 ''';
 }

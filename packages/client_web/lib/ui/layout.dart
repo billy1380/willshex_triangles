@@ -91,7 +91,7 @@ class _AppLayoutState extends State<AppLayout> {
             ],
           ),
           select(
-            classes: "form-select form-select-sm",
+            classes: "form-select form-select-sm sidebar-theme-select",
             events: {
               "change": (e) {
                 final val = (e.target as dynamic).value as String;

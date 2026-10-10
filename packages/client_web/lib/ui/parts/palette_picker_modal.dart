@@ -109,7 +109,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                         div(
                           attributes: {
                             "style":
-                                "width: 32px; height: 32px; border-radius: 6px; background-color: ${currentColor.toCssRgba()}; border: 1px solid rgba(0,0,0,0.2);",
+                                "width: 32px; height: 32px; border-radius: 6px; background-color: ${currentColor.toCssRgba()}; border: 1px solid var(--border-color);",
                           },
                           const [],
                         ),
@@ -145,7 +145,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                     ),
                     _buildSlider(
                       label: AppStrings.blue,
-                      color: "text-primary",
+                      color: "text-blue",
                       sliderClass: "form-range-blue",
                       value: (currentColor.blue * 255).round(),
                       onChanged: (val) => _cubit.updateSelectedColor(

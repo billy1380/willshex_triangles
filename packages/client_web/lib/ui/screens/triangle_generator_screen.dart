@@ -421,7 +421,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         state.currentPalette == null)
                       div(classes: "mt-3", [
                         button(
-                          classes: "btn btn-outline-primary",
+                          classes: "btn btn-primary",
                           events: {"click": (e) => _cubit.generatePalette()},
                           const [
                             i(classes: "bi bi-palette me-2", []),
