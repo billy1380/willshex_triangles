@@ -36,4 +36,18 @@ enum AppThemeMode {
         AppThemeMode.light => false,
         AppThemeMode.dark => true,
       };
+
+  /// Cycles to the next theme mode based on platform brightness.
+  ///
+  /// Matches the transition cycle in willshex_embedding:
+  /// - If platform is dark: `system` -> `light` -> `dark` -> `system`
+  /// - If platform is light: `system` -> `dark` -> `light` -> `system`
+  AppThemeMode next([bool isPlatformDark = false]) => switch (this) {
+        AppThemeMode.system =>
+          isPlatformDark ? AppThemeMode.light : AppThemeMode.dark,
+        AppThemeMode.light =>
+          isPlatformDark ? AppThemeMode.dark : AppThemeMode.system,
+        AppThemeMode.dark =>
+          isPlatformDark ? AppThemeMode.system : AppThemeMode.light,
+      };
 }

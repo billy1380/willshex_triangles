@@ -2,6 +2,7 @@ import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:jaspr_router/jaspr_router.dart";
 import "package:triangles_common/client_common.dart";
+import "package:triangles_web/services/web_theme_applier.dart";
 import "package:triangles_web/ui/bloc_provider.dart";
 
 class AppLayout extends StatefulComponent {
@@ -81,34 +82,21 @@ class _AppLayoutState extends State<AppLayout> {
     return BlocBuilder<ThemeCubit, AppThemeMode>(
       bloc: cubit,
       builder: (context, current) => div(classes: "sidebar-footer", [
-        div(classes: "w-100", [
-          label(
-            classes:
-                "form-label text-secondary small fw-bold d-flex align-items-center gap-2 mb-2",
-            [
-              i(classes: "bi ${_themeIcon(current)}", const []),
-              Component.text(AppStrings.theme),
-            ],
-          ),
-          select(
-            classes: "form-select form-select-sm sidebar-theme-select",
-            events: {
-              "change": (e) {
-                final val = (e.target as dynamic).value as String;
-                final mode = AppThemeMode.fromName(val);
-                cubit.setMode(mode);
-              },
-            },
-            [
-              for (final mode in AppThemeMode.values)
-                option(
-                  value: mode.name,
-                  selected: mode == current,
-                  [Component.text(mode.label)],
-                ),
-            ],
-          ),
-        ]),
+        button(
+          classes: "sidebar-theme-toggle",
+          attributes: {
+            "type": "button",
+            "title": "${AppStrings.theme}: ${current.label}",
+            "aria-label": "${AppStrings.theme}: ${current.label}",
+          },
+          events: {
+            "click": (e) => cubit.toggle(WebThemeApplier.isPlatformDark),
+          },
+          [
+            i(classes: "bi ${_themeIcon(current)}", const []),
+            span([Component.text("${AppStrings.theme}: ${current.label}")]),
+          ],
+        ),
       ]),
     );
   }

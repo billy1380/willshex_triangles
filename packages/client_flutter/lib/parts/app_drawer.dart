@@ -140,7 +140,7 @@ class AppDrawer extends StatelessWidget {
               child: Container(
                 color: backgroundColor,
                 padding: const EdgeInsets.fromLTRB(28, 8, 28, 16),
-                child: DrawerThemeDropdown(cubit: cubit),
+                child: DrawerThemeToggle(cubit: cubit),
               ),
             ),
           ),
@@ -213,10 +213,10 @@ class AppDrawer extends StatelessWidget {
   }
 }
 
-class DrawerThemeDropdown extends StatelessWidget {
+class DrawerThemeToggle extends StatelessWidget {
   final ThemeCubit cubit;
 
-  const DrawerThemeDropdown({required this.cubit, super.key});
+  const DrawerThemeToggle({required this.cubit, super.key});
 
   static IconData _icon(AppThemeMode mode) => switch (mode) {
         AppThemeMode.system => Icons.brightness_auto,
@@ -224,40 +224,32 @@ class DrawerThemeDropdown extends StatelessWidget {
         AppThemeMode.dark => Icons.dark_mode,
       };
 
+  void _onToggleTheme(BuildContext context) {
+    final isPlatformDark =
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    cubit.toggle(isPlatformDark);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, AppThemeMode>(
       bloc: cubit,
-      builder: (context, current) => DropdownButtonFormField<AppThemeMode>(
-        key: ValueKey(current),
-        initialValue: current,
-        isDense: true,
-        isExpanded: true,
-        decoration: const InputDecoration(
-          labelText: AppStrings.theme,
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-        ),
-        items: [
-          for (final mode in AppThemeMode.values)
-            DropdownMenuItem<AppThemeMode>(
-              value: mode,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(_icon(mode), size: 18),
-                  const SizedBox(width: 8),
-                  Text(mode.label),
-                ],
-              ),
+      builder: (context, current) => SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: () => _onToggleTheme(context),
+          icon: Icon(_icon(current), size: 18),
+          label: Text("${AppStrings.theme}: ${current.label}"),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-        ],
-        onChanged: (mode) {
-          if (mode != null) cubit.setMode(mode);
-        },
+          ),
+        ),
       ),
     );
   }
 }
+
+typedef DrawerThemeDropdown = DrawerThemeToggle;

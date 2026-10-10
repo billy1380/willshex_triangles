@@ -37,6 +37,17 @@ class WebThemeApplier {
     return query.matches;
   }
 
+  /// Checks if the browser/OS prefers dark mode.
+  static bool get isPlatformDark {
+    try {
+      final query = web.window.matchMedia(_darkQuery);
+      if (query.media == "not all") return false;
+      return query.matches;
+    } catch (_) {
+      return false;
+    }
+  }
+
   bool get isDark => _cubit.state.resolveIsDark(systemIsDark);
 
   void apply() {

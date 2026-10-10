@@ -34,4 +34,9 @@ class ThemeCubit extends Cubit<AppThemeMode> {
     emit(mode);
     await _storage.save(mode);
   }
+
+  /// Toggles to the next [AppThemeMode] given the current [isPlatformDark] platform brightness.
+  Future<void> toggle([bool isPlatformDark = false]) async {
+    await setMode(state.next(isPlatformDark));
+  }
 }
