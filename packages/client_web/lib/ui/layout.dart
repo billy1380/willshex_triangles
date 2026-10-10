@@ -2,12 +2,14 @@ import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:jaspr_router/jaspr_router.dart";
 import "package:triangles_common/client_common.dart";
+import "package:triangles_web/ui/bloc_provider.dart";
 
 class AppLayout extends StatefulComponent {
   final String title;
   final List<Component> actions;
   final Component child;
   final TrianglesRoutePaths paths;
+  final ThemeCubit? themeCubit;
 
   AppLayout({
     required this.title,
@@ -15,6 +17,7 @@ class AppLayout extends StatefulComponent {
     required this.child,
     TrianglesRoutePaths? paths,
     String? basePath,
+    this.themeCubit,
     super.key,
   }) : paths = paths ??
             (basePath != null && basePath.isNotEmpty
@@ -63,9 +66,57 @@ class _AppLayoutState extends State<AppLayout> {
     );
   }
 
+  ThemeCubit? _resolveThemeCubit() {
+    if (component.themeCubit != null) return component.themeCubit;
+    return BlocProvider.maybeOf<ThemeCubit>(context);
+  }
+
+  static String _themeIcon(AppThemeMode mode) => switch (mode) {
+        AppThemeMode.system => "bi-circle-half",
+        AppThemeMode.light => "bi-sun",
+        AppThemeMode.dark => "bi-moon-stars",
+      };
+
+  Component _sidebarThemeSelection(ThemeCubit cubit) {
+    return BlocBuilder<ThemeCubit, AppThemeMode>(
+      bloc: cubit,
+      builder: (context, current) => div(classes: "sidebar-footer", [
+        div(classes: "w-100", [
+          label(
+            classes:
+                "form-label text-secondary small fw-bold d-flex align-items-center gap-2 mb-2",
+            [
+              i(classes: "bi ${_themeIcon(current)}", const []),
+              Component.text(AppStrings.theme),
+            ],
+          ),
+          select(
+            classes: "form-select form-select-sm",
+            events: {
+              "change": (e) {
+                final val = (e.target as dynamic).value as String;
+                final mode = AppThemeMode.fromName(val);
+                cubit.setMode(mode);
+              },
+            },
+            [
+              for (final mode in AppThemeMode.values)
+                option(
+                  value: mode.name,
+                  selected: mode == current,
+                  [Component.text(mode.label)],
+                ),
+            ],
+          ),
+        ]),
+      ]),
+    );
+  }
+
   @override
   Component build(BuildContext context) {
     final currentPath = Router.of(context).matchList.uri.path;
+    final themeCubit = _resolveThemeCubit();
 
     return div(classes: "app-container has-sidebar", [
       if (_sidebarOpen)
@@ -148,6 +199,7 @@ class _AppLayoutState extends State<AppLayout> {
               currentPath: currentPath,
             ),
           ]),
+          if (themeCubit != null) _sidebarThemeSelection(themeCubit),
         ],
       ),
       main_(classes: "app-main", [

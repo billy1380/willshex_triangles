@@ -21,11 +21,9 @@ class TrianglesFlutterSettings {
 
 class SettingsView extends StatefulWidget {
   final SettingsCubit? settingsCubit;
-  final ThemeCubit? themeCubit;
 
   const SettingsView({
     this.settingsCubit,
-    this.themeCubit,
     super.key,
   });
 
@@ -35,7 +33,6 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   late final SettingsCubit _cubit;
-  ThemeCubit? _themeCubit;
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _sizeRatioController = TextEditingController();
@@ -49,20 +46,10 @@ class _SettingsViewState extends State<SettingsView> {
     }
   }
 
-  ThemeCubit? _resolveThemeCubit() {
-    if (widget.themeCubit != null) return widget.themeCubit!;
-    try {
-      return BlocProvider.of<ThemeCubit>(context, listen: false);
-    } catch (_) {
-      return null;
-    }
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _cubit = _resolveSettingsCubit();
-    _themeCubit = _resolveThemeCubit();
     _syncControllers(_cubit.state.settings);
   }
 
@@ -159,12 +146,6 @@ class _SettingsViewState extends State<SettingsView> {
                   _cubit.updateAnnotateWithDimensions(value);
                 },
               ),
-              if (_themeCubit != null) ...[
-                const SizedBox(height: 16),
-                const Divider(),
-                const SizedBox(height: 16),
-                _ThemeDropdown(cubit: _themeCubit!),
-              ],
             ],
           ),
         );
@@ -203,7 +184,6 @@ class SettingsPage extends StatelessWidget {
   final bool showAppBar;
   final TrianglesRoutePaths paths;
   final SettingsCubit? settingsCubit;
-  final ThemeCubit? themeCubit;
 
   SettingsPage({
     this.showDrawer = true,
@@ -211,7 +191,6 @@ class SettingsPage extends StatelessWidget {
     TrianglesRoutePaths? paths,
     String? basePath,
     this.settingsCubit,
-    this.themeCubit,
     super.key,
   }) : paths = paths ??
             (basePath != null && basePath.isNotEmpty
@@ -228,7 +207,6 @@ class SettingsPage extends StatelessWidget {
         color: Colors.transparent,
         child: SettingsView(
           settingsCubit: settingsCubit,
-          themeCubit: themeCubit,
         ));
     if (!showAppBar && !showDrawer) {
       return body;
@@ -242,49 +220,6 @@ class SettingsPage extends StatelessWidget {
             )
           : null,
       body: body,
-    );
-  }
-}
-
-class _ThemeDropdown extends StatelessWidget {
-  final ThemeCubit cubit;
-
-  const _ThemeDropdown({required this.cubit});
-
-  static IconData _icon(AppThemeMode mode) => switch (mode) {
-        AppThemeMode.system => Icons.brightness_auto,
-        AppThemeMode.light => Icons.light_mode,
-        AppThemeMode.dark => Icons.dark_mode,
-      };
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, AppThemeMode>(
-      bloc: cubit,
-      builder: (context, current) => DropdownButtonFormField<AppThemeMode>(
-        key: ValueKey(current),
-        initialValue: current,
-        decoration: const InputDecoration(
-          label: Text(AppStrings.theme),
-        ),
-        items: [
-          for (final mode in AppThemeMode.values)
-            DropdownMenuItem<AppThemeMode>(
-              value: mode,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(_icon(mode), size: 18),
-                  const SizedBox(width: 8),
-                  Text(mode.label),
-                ],
-              ),
-            ),
-        ],
-        onChanged: (mode) {
-          if (mode != null) cubit.setMode(mode);
-        },
-      ),
     );
   }
 }

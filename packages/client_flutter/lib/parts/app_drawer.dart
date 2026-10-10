@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:triangles_common/client_common.dart";
 
@@ -14,10 +15,12 @@ extension GoRouterLocation on GoRouter {
 
 class AppDrawer extends StatelessWidget {
   final TrianglesRoutePaths paths;
+  final ThemeCubit? themeCubit;
 
   AppDrawer({
     TrianglesRoutePaths? paths,
     String? basePath,
+    this.themeCubit,
     super.key,
   }) : paths = paths ??
             (basePath != null && basePath.isNotEmpty
@@ -27,7 +30,15 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String location = GoRouter.of(context).location;
-    return NavigationDrawer(
+    ThemeCubit? cubit = themeCubit;
+    if (cubit == null) {
+      try {
+        cubit = BlocProvider.of<ThemeCubit>(context, listen: false);
+      } catch (_) {
+        cubit = null;
+      }
+    }
+    final Widget navDrawer = NavigationDrawer(
       selectedIndex: _getSelectedIndex(location),
       onDestinationSelected: (int index) {
         final String destination = _getRouteByIndex(index);
@@ -49,12 +60,9 @@ class AppDrawer extends StatelessWidget {
           selectedIcon: Icon(Icons.home),
           label: Text(AppStrings.navWelcome),
         ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
-          child: Divider(),
-        ),
+        const SizedBox(height: 12),
         Padding(
-          padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+          padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
           child: Text(
             AppStrings.navTypes,
             style: Theme.of(context).textTheme.titleSmall,
@@ -90,25 +98,53 @@ class AppDrawer extends StatelessWidget {
           selectedIcon: Icon(Icons.palette),
           label: Text(AppStrings.imageSamplerPalette),
         ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
-          child: Divider(),
-        ),
+        const SizedBox(height: 12),
         const NavigationDrawerDestination(
           icon: Icon(Icons.settings_outlined),
           selectedIcon: Icon(Icons.settings),
           label: Text(AppStrings.navSettings),
         ),
         if (paths.welcome != TrianglesRoutePaths.defaultWelcome) ...[
-          const Padding(
-            padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
-            child: Divider(),
-          ),
+          const SizedBox(height: 12),
           const NavigationDrawerDestination(
             icon: Icon(Icons.arrow_back),
             label: Text("Back to Willshex"),
           ),
         ],
+        if (cubit != null) const SizedBox(height: 96),
+      ],
+    );
+
+    if (cubit == null) {
+      return navDrawer;
+    }
+
+    final theme = Theme.of(context);
+    final backgroundColor = theme.navigationDrawerTheme.backgroundColor ??
+        theme.drawerTheme.backgroundColor ??
+        theme.colorScheme.surface;
+
+    return Stack(
+      children: [
+        navDrawer,
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(28),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Container(
+                color: backgroundColor,
+                padding: const EdgeInsets.fromLTRB(28, 8, 28, 16),
+                child: DrawerThemeDropdown(cubit: cubit),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -174,5 +210,54 @@ class AppDrawer extends StatelessWidget {
       default:
         return paths.welcome;
     }
+  }
+}
+
+class DrawerThemeDropdown extends StatelessWidget {
+  final ThemeCubit cubit;
+
+  const DrawerThemeDropdown({required this.cubit, super.key});
+
+  static IconData _icon(AppThemeMode mode) => switch (mode) {
+        AppThemeMode.system => Icons.brightness_auto,
+        AppThemeMode.light => Icons.light_mode,
+        AppThemeMode.dark => Icons.dark_mode,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeCubit, AppThemeMode>(
+      bloc: cubit,
+      builder: (context, current) => DropdownButtonFormField<AppThemeMode>(
+        key: ValueKey(current),
+        initialValue: current,
+        isDense: true,
+        isExpanded: true,
+        decoration: const InputDecoration(
+          labelText: AppStrings.theme,
+          contentPadding: EdgeInsets.zero,
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+        ),
+        items: [
+          for (final mode in AppThemeMode.values)
+            DropdownMenuItem<AppThemeMode>(
+              value: mode,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(_icon(mode), size: 18),
+                  const SizedBox(width: 8),
+                  Text(mode.label),
+                ],
+              ),
+            ),
+        ],
+        onChanged: (mode) {
+          if (mode != null) cubit.setMode(mode);
+        },
+      ),
+    );
   }
 }

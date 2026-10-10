@@ -59,7 +59,6 @@ class SettingsView extends StatefulComponent {
 
 class _SettingsViewState extends State<SettingsView> {
   late final SettingsCubit _cubit;
-  ThemeCubit? _themeCubit;
 
   @override
   void initState() {
@@ -74,37 +73,6 @@ class _SettingsViewState extends State<SettingsView> {
         _cubit = TrianglesWebSettings.cubit;
       }
     }
-    _themeCubit = BlocProvider.maybeOf<ThemeCubit>(context);
-  }
-
-  Component _themeSelect(ThemeCubit cubit) {
-    return BlocBuilder<ThemeCubit, AppThemeMode>(
-      bloc: cubit,
-      builder: (context, current) => div(classes: "mt-3", [
-        const label(
-          classes: "form-label text-secondary small fw-bold d-block",
-          [Component.text(AppStrings.theme)],
-        ),
-        select(
-          classes: "form-select",
-          events: {
-            "change": (e) {
-              final val = (e.target as dynamic).value as String;
-              final mode = AppThemeMode.fromName(val);
-              cubit.setMode(mode);
-            },
-          },
-          [
-            for (final mode in AppThemeMode.values)
-              option(
-                value: mode.name,
-                selected: mode == current,
-                [Component.text(mode.label)],
-              ),
-          ],
-        ),
-      ]),
-    );
   }
 
   @override
@@ -235,10 +203,6 @@ class _SettingsViewState extends State<SettingsView> {
                   [Component.text(AppStrings.annotateWithDimensions)],
                 ),
               ]),
-              if (_themeCubit != null) ...[
-                const hr(),
-                _themeSelect(_themeCubit!),
-              ],
             ]),
           ],
         );
