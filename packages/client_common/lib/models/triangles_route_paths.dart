@@ -41,9 +41,8 @@ class TrianglesRoutePaths {
 
   static String _joinPath(String prefix, String path) {
     if (prefix.isEmpty) return path;
-    final cleanPrefix = prefix.endsWith("/")
-        ? prefix.substring(0, prefix.length - 1)
-        : prefix;
+    final cleanPrefix =
+        prefix.endsWith("/") ? prefix.substring(0, prefix.length - 1) : prefix;
     final cleanPath = path.startsWith("/") ? path : "/$path";
     return "$cleanPrefix$cleanPath";
   }

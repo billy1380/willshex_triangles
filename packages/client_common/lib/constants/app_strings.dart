@@ -105,15 +105,18 @@ class AppStrings {
   static const String errorGeneratingPalette = "Error generating palette";
   static const String errorGeneratingImage = "Error generating image";
   static const String errorCreatingImage = "Error creating image";
-  static const String errorPaletteProviderNull = "Palette provider returned null palette";
-  static const String errorImageNotGenerated = "Looks like image was not generated";
+  static const String errorPaletteProviderNull =
+      "Palette provider returned null palette";
+  static const String errorImageNotGenerated =
+      "Looks like image was not generated";
   static const String errorFailedToDecodeImage = "Failed to decode image";
 
   // Palette Names & Providers
   static const String paletteRandomColors = "Random Colors";
   static const String paletteRandomWarmColors = "Random Warm Colors";
   static const String paletteRandomCoolColors = "Random Cool Colors";
-  static const String paletteRandomComplementaryColors = "Random Complementary Colors";
+  static const String paletteRandomComplementaryColors =
+      "Random Complementary Colors";
   static const String paletteRandomAnalogousColors = "Random Analogous Colors";
   static const String paletteNamedColors = "Named Colors";
   static const String paletteFixed = "Fixed";

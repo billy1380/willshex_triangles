@@ -1,3 +1,5 @@
+import "package:willshex_embedding/willshex_embedding.dart";
+import "package:web/web.dart" as web;
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:triangles_common/client_common.dart";
@@ -5,6 +7,18 @@ import "package:triangles_web/ui/bloc_provider.dart";
 import "package:triangles_web/ui/layout.dart";
 
 import "package:triangles_web/services/local_storage_settings_storage.dart";
+
+/// Shared settings provider for Web.
+class TrianglesWebSettings {
+  TrianglesWebSettings._();
+  static SettingsCubit? _cubit;
+  static SettingsCubit get cubit =>
+      _cubit ??= SettingsCubit(LocalStorageSettingsStorage());
+
+  static void useStorage(SettingsStore storage) {
+    _cubit = SettingsCubit(EmbeddingSettingsAdapter(storage));
+  }
+}
 
 class SettingsScreen extends StatelessComponent {
   final bool useLayout;
@@ -44,7 +58,6 @@ class SettingsView extends StatefulComponent {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  SettingsCubit? _localSettingsCubit;
   late final SettingsCubit _cubit;
 
   @override
@@ -57,15 +70,13 @@ class _SettingsViewState extends State<SettingsView> {
       if (fromContext != null) {
         _cubit = fromContext;
       } else {
-        _localSettingsCubit = SettingsCubit(LocalStorageSettingsStorage());
-        _cubit = _localSettingsCubit!;
+        _cubit = TrianglesWebSettings.cubit;
       }
     }
   }
 
   @override
   void dispose() {
-    _localSettingsCubit?.close();
     super.dispose();
   }
 
@@ -97,8 +108,13 @@ class _SettingsViewState extends State<SettingsView> {
                     value: "${s.width}",
                     events: {
                       "input": (e) {
-                        final val =
-                            int.tryParse((e.target as dynamic).value as String);
+                        final target = e.target as web.HTMLInputElement;
+                        final val = int.tryParse(target.value);
+                        if (val != null) _cubit.updateWidth(val);
+                      },
+                      "change": (e) {
+                        final target = e.target as web.HTMLInputElement;
+                        final val = int.tryParse(target.value);
                         if (val != null) _cubit.updateWidth(val);
                       },
                     },
@@ -115,8 +131,13 @@ class _SettingsViewState extends State<SettingsView> {
                     value: "${s.height}",
                     events: {
                       "input": (e) {
-                        final val =
-                            int.tryParse((e.target as dynamic).value as String);
+                        final target = e.target as web.HTMLInputElement;
+                        final val = int.tryParse(target.value);
+                        if (val != null) _cubit.updateHeight(val);
+                      },
+                      "change": (e) {
+                        final target = e.target as web.HTMLInputElement;
+                        final val = int.tryParse(target.value);
                         if (val != null) _cubit.updateHeight(val);
                       },
                     },
@@ -135,8 +156,13 @@ class _SettingsViewState extends State<SettingsView> {
                   attributes: const {"step": "0.01"},
                   events: {
                     "input": (e) {
-                      final val = double.tryParse(
-                          (e.target as dynamic).value as String);
+                      final target = e.target as web.HTMLInputElement;
+                      final val = double.tryParse(target.value);
+                      if (val != null) _cubit.updateScaleFactor(val);
+                    },
+                    "change": (e) {
+                      final target = e.target as web.HTMLInputElement;
+                      final val = double.tryParse(target.value);
                       if (val != null) _cubit.updateScaleFactor(val);
                     },
                   },
@@ -151,8 +177,8 @@ class _SettingsViewState extends State<SettingsView> {
                   checked: s.addTriangleGradients,
                   events: {
                     "change": (e) {
-                      final val = (e.target as dynamic).checked == true;
-                      _cubit.updateAddTriangleGradients(val);
+                      final target = e.target as web.HTMLInputElement;
+                      _cubit.updateAddTriangleGradients(target.checked);
                     },
                   },
                 ),
@@ -170,8 +196,8 @@ class _SettingsViewState extends State<SettingsView> {
                   checked: s.annotateWithDimensions,
                   events: {
                     "change": (e) {
-                      final val = (e.target as dynamic).checked == true;
-                      _cubit.updateAnnotateWithDimensions(val);
+                      final target = e.target as web.HTMLInputElement;
+                      _cubit.updateAnnotateWithDimensions(target.checked);
                     },
                   },
                 ),

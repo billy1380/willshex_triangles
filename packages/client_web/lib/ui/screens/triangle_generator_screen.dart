@@ -1,3 +1,4 @@
+import "package:triangles_web/ui/screens/settings_screen.dart";
 import "package:willshex_embedding/willshex_embedding.dart";
 import "dart:convert";
 import "dart:typed_data";
@@ -16,8 +17,6 @@ import "package:triangles_web/ui/layout.dart";
 import "package:triangles_web/ui/parts/interactive_viewer.dart";
 import "package:triangles_web/ui/parts/palette_history_component.dart";
 import "package:triangles_web/ui/parts/palette_picker_modal.dart";
-
-import "package:triangles_web/services/local_storage_settings_storage.dart";
 
 /// Pure embeddable view for triangle generator in web.
 class TriangleGeneratorView extends StatelessComponent {
@@ -65,7 +64,6 @@ class TriangleGeneratorScreen extends StatefulComponent {
 
 class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   late final TriangleGeneratorCubit _cubit;
-  SettingsCubit? _localSettingsCubit;
   late final SettingsCubit _settingsCubit;
   bool _historyDrawerOpen = false;
   ws.Palette? _editingPalette;
@@ -76,8 +74,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
     super.initState();
     final cubitFromContext = BlocProvider.maybeOf<SettingsCubit>(context);
     if (cubitFromContext == null) {
-      _localSettingsCubit = SettingsCubit(LocalStorageSettingsStorage());
-      _settingsCubit = _localSettingsCubit!;
+      _settingsCubit = TrianglesWebSettings.cubit;
     } else {
       _settingsCubit = cubitFromContext;
     }
@@ -118,7 +115,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   @override
   void dispose() {
     _cubit.close();
-    _localSettingsCubit?.close();
+    // Settings cubit is shared, do not close
     super.dispose();
   }
 

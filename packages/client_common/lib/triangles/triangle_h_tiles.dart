@@ -56,8 +56,7 @@ class TriangleHTiles extends TriangleTiles {
             bounds.height.toInt(),
           );
           if (useGradient && renderer is ImageRenderer) {
-            (renderer as ImageRenderer)
-                .renderTriangle(color, p1, p2, p3, true);
+            (renderer as ImageRenderer).renderTriangle(color, p1, p2, p3, true);
           } else {
             renderer.renderTriangle(color, p1, p2, p3);
           }

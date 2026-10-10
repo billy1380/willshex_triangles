@@ -16,5 +16,6 @@ export "bloc/palette/palette_picker_cubit.dart";
 export "triangles/triangles.dart";
 export "extensions/string_ex.dart";
 export "constants/app_strings.dart";
+export "constants/app_theme.dart";
 
 export "outline_setup.dart";

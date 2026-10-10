@@ -9,112 +9,115 @@ import "package:triangles_flutter/parts/app_drawer.dart";
 class WelcomeView extends StatelessWidget {
   final String? assetPackage;
 
-  const WelcomeView({this.assetPackage, super.key});
+  const WelcomeView({this.assetPackage = "triangles_flutter", super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(32.0),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppStrings.welcomeHeadline,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  AppStrings.welcomeSubtitle,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      _buildSample(context, "samples/19.jpeg"),
-                      _buildSample(context, "samples/33.jpeg"),
-                      _buildSample(context, "samples/29.jpeg"),
-                      _buildSample(context, "samples/32.jpeg"),
-                      _buildSample(context, "samples/14.jpeg"),
-                      _buildSample(context, "samples/34.jpeg"),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Card(
-                  elevation: 0,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryContainer
-                      .withValues(alpha: 0.3),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.auto_awesome,
-                          size: 28,
+    return Material(
+      color: Colors.transparent,
+      child: SelectionArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32.0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppStrings.welcomeHeadline,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppStrings.welcomeGetGeneratingTitle,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                AppStrings.welcomeInstructions,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                    ),
-                              ),
-                            ],
-                          ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    AppStrings.welcomeSubtitle,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
+                  ),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: Wrap(
+                      spacing: 16,
+                      runSpacing: 16,
+                      children: [
+                        _buildSample(context, "samples/19.jpeg"),
+                        _buildSample(context, "samples/33.jpeg"),
+                        _buildSample(context, "samples/29.jpeg"),
+                        _buildSample(context, "samples/32.jpeg"),
+                        _buildSample(context, "samples/14.jpeg"),
+                        _buildSample(context, "samples/34.jpeg"),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                const AboutView(),
-                const SizedBox(height: 24),
-                Text(
-                  AppStrings.welcomeEnjoy,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
+                  const SizedBox(height: 24),
+                  Card(
+                    elevation: 0,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withValues(alpha: 0.3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.auto_awesome,
+                            size: 28,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppStrings.welcomeGetGeneratingTitle,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  AppStrings.welcomeInstructions,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                ),
-              ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const AboutView(),
+                  const SizedBox(height: 24),
+                  Text(
+                    AppStrings.welcomeEnjoy,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -137,7 +140,7 @@ class WelcomeView extends StatelessWidget {
         errorBuilder: (context, error, stackTrace) {
           return Image.asset(
             "assets/$imagePath",
-            package: assetPackage == null ? "client_flutter" : null,
+            package: "triangles_flutter",
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 const SizedBox.shrink(),
@@ -306,7 +309,7 @@ class WelcomePage extends StatelessWidget {
   WelcomePage({
     this.showDrawer = true,
     this.showAppBar = true,
-    this.assetPackage,
+    this.assetPackage = "triangles_flutter",
     TrianglesRoutePaths? paths,
     String? basePath,
     super.key,

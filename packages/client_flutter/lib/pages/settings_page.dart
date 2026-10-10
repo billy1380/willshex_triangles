@@ -1,3 +1,5 @@
+import "package:willshex_embedding/willshex_embedding.dart";
+import "package:triangles_flutter/services/preferences_settings_storage.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
@@ -5,6 +7,18 @@ import "package:triangles_common/client_common.dart";
 import "package:triangles_flutter/parts/app_drawer.dart";
 
 /// Pure embeddable view for Settings, decoupled from Scaffold, AppBar, and AppDrawer.
+/// Shared settings provider for Flutter.
+class TrianglesFlutterSettings {
+  TrianglesFlutterSettings._();
+  static SettingsCubit? _cubit;
+  static SettingsCubit get cubit =>
+      _cubit ??= SettingsCubit(PreferencesSettingsStorage());
+
+  static void useStorage(SettingsStore storage) {
+    _cubit = SettingsCubit(EmbeddingSettingsAdapter(storage));
+  }
+}
+
 class SettingsView extends StatefulWidget {
   final SettingsCubit? settingsCubit;
 
@@ -15,7 +29,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  SettingsCubit? _localSettingsCubit;
   late final SettingsCubit _cubit;
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
@@ -26,8 +39,7 @@ class _SettingsViewState extends State<SettingsView> {
     try {
       return BlocProvider.of<SettingsCubit>(context, listen: false);
     } catch (_) {
-      _localSettingsCubit ??= SettingsCubit();
-      return _localSettingsCubit!;
+      return TrianglesFlutterSettings.cubit;
     }
   }
 
@@ -43,7 +55,7 @@ class _SettingsViewState extends State<SettingsView> {
     _widthController.dispose();
     _heightController.dispose();
     _sizeRatioController.dispose();
-    _localSettingsCubit?.close();
+    // Settings cubit is shared, do not close
     super.dispose();
   }
 
@@ -187,7 +199,9 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = SettingsView(settingsCubit: settingsCubit);
+    final body = Material(
+        color: Colors.transparent,
+        child: SettingsView(settingsCubit: settingsCubit));
     if (!showAppBar && !showDrawer) {
       return body;
     }

@@ -1,3 +1,4 @@
+import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:jaspr_router/jaspr_router.dart";
 import "package:triangles_common/client_common.dart";
@@ -31,9 +32,13 @@ class _AppState extends State<App> {
   Component build(BuildContext context) {
     return BlocProvider<SettingsCubit>(
       bloc: _settingsCubit,
-      child: Router(
-        routes: Routes.routes,
-      ),
+      child: div([
+        Component.element(
+            tag: "style", children: [Component.text(AppTheme.cssVars)]),
+        Router(
+          routes: Routes.routes,
+        ),
+      ]),
     );
   }
 }

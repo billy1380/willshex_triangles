@@ -55,8 +55,8 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                   TextField(
                     controller: _nameController,
                     onChanged: _cubit.setName,
-                    decoration:
-                        const InputDecoration(labelText: AppStrings.paletteName),
+                    decoration: const InputDecoration(
+                        labelText: AppStrings.paletteName),
                   ),
                   const SizedBox(height: 20),
                   Expanded(

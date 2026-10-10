@@ -38,5 +38,6 @@ dev_dependencies:
   lints: ^2.0.0
 
 jaspr:
+  port: 8082
   uses-ssr: false
   mode: client

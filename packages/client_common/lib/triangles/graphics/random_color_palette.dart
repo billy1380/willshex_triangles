@@ -5,7 +5,8 @@ import "package:triangles_common/constants/app_strings.dart";
 class RandomColorPalette extends Palette {
   static final Logger _log = Logger("RandomColorPalette");
 
-  RandomColorPalette([super.name = AppStrings.paletteRandomColors, super.externalId]);
+  RandomColorPalette(
+      [super.name = AppStrings.paletteRandomColors, super.externalId]);
 
   /// Generate random colors locally as fallback
   void generateRandomColors([int? count]) {

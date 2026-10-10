@@ -50,10 +50,11 @@ class PreferencesSettingsStorage implements SettingsStorage {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(GeneratorSettings.keyWidth, settings.width);
     await prefs.setInt(GeneratorSettings.keyHeight, settings.height);
-    await prefs.setDouble(GeneratorSettings.keyScaleFactor, settings.scaleFactor);
-    await prefs.setBool(
-        GeneratorSettings.keyAddTriangleGradients, settings.addTriangleGradients);
-    await prefs.setBool(
-        GeneratorSettings.keyAnnotateWithDimensions, settings.annotateWithDimensions);
+    await prefs.setDouble(
+        GeneratorSettings.keyScaleFactor, settings.scaleFactor);
+    await prefs.setBool(GeneratorSettings.keyAddTriangleGradients,
+        settings.addTriangleGradients);
+    await prefs.setBool(GeneratorSettings.keyAnnotateWithDimensions,
+        settings.annotateWithDimensions);
   }
 }

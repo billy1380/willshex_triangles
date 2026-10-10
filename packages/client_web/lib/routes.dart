@@ -219,7 +219,9 @@ class TrianglesWebRoutes {
     final rootPath = relative ? "" : (effectivePrefix ?? "/");
 
     return [
-      if (includeRootAlias && welcomeRoutePath != rootPath && welcomeRoutePath != "")
+      if (includeRootAlias &&
+          welcomeRoutePath != rootPath &&
+          welcomeRoutePath != "")
         Route(
           path: rootPath,
           builder: (context, state) => WelcomeScreen(
@@ -233,43 +235,51 @@ class TrianglesWebRoutes {
         useLayout: useLayout,
       ),
       palettePickerRoute(
-        path: formatRoutePath(effectivePaths.palettePicker, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.palettePicker,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       htmlColourRoute(
-        path: formatRoutePath(effectivePaths.htmlColour, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.htmlColour,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       randomPaletteRoute(
-        path: formatRoutePath(effectivePaths.randomPalette, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.randomPalette,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       randomGrayscaleRoute(
-        path: formatRoutePath(effectivePaths.randomGrayscale, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.randomGrayscale,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       imagePaletteRoute(
-        path: formatRoutePath(effectivePaths.imagePalette, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.imagePalette,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       imageSamplerRoute(
-        path: formatRoutePath(effectivePaths.imageSampler, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.imageSampler,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       settingsRoute(
-        path: formatRoutePath(effectivePaths.settings, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.settings,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         useLayout: useLayout,
       ),
       aboutRoute(
         // ignore: deprecated_member_use
-        path: formatRoutePath(effectivePaths.about, prefix: effectivePrefix, relative: relative),
+        path: formatRoutePath(effectivePaths.about,
+            prefix: effectivePrefix, relative: relative),
         paths: effectivePaths,
         prefix: effectivePrefix,
         relative: relative,

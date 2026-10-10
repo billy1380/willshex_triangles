@@ -5,7 +5,8 @@ export "ui/screens/welcome_screen.dart"
     show WelcomeView, WelcomeScreen, AboutView;
 export "ui/screens/triangle_generator_screen.dart"
     show TriangleGeneratorView, TriangleGeneratorScreen;
-export "ui/screens/settings_screen.dart" show SettingsView, SettingsScreen;
+export "ui/screens/settings_screen.dart"
+    show SettingsView, SettingsScreen, TrianglesWebSettings;
 
 // Layout
 export "ui/layout.dart" show AppLayout;

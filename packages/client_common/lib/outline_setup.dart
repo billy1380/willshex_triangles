@@ -8,34 +8,27 @@ import "models/triangles_route_paths.dart";
 /// If [parentIndex] is provided, nodes are mounted as children of that index.
 /// If [paths] is supplied, custom route paths/prefixes are respected.
 void configureTrianglesOutline(
-  EmbeddingHostController controller, {
+  EmbeddingController controller, {
   IndexKey? parentIndex,
   TrianglesRoutePaths paths = const TrianglesRoutePaths(),
+  bool includeWelcome = true,
 }) {
-  // Register Named Areas
-  controller.registerArea(
-    const NavigationArea(
-      name: AppStrings.areaTriangleHistory,
-      displayName: AppStrings.paletteHistory,
-      layoutHint: AreaLayoutHint.custom,
-    ),
-  );
-
   IndexKey makeKey(List<int> segments) {
     if (parentIndex == null) return IndexKey(segments);
     return IndexKey([...parentIndex.segments, ...segments]);
   }
 
   // Welcome (index [0])
-  controller.registerNavNode(
-    NavNode(
-      index: makeKey([0]),
-      title: AppStrings.navWelcome,
-      icon: const EmbeddingIcon.named("home"),
-      targetPageId: paths.welcome,
-    ),
-    parentIndex: parentIndex,
-  );
+  if (includeWelcome) {
+    controller.registerNavNode(
+      NavNode(
+        index: makeKey([0]),
+        title: AppStrings.navWelcome,
+        icon: const EmbeddingIcon.named("home"),
+        targetPageId: paths.welcome,
+      ),
+    );
+  }
 
   // Palette Types (index [1]) - Category
   final palettesKey = makeKey([1]);
@@ -45,7 +38,6 @@ void configureTrianglesOutline(
       title: AppStrings.navPaletteTypes,
       icon: const EmbeddingIcon.named("palette"),
     ),
-    parentIndex: parentIndex,
   );
 
   // Palette Picker (index [1, 1])
@@ -56,7 +48,6 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("colorize"),
       targetPageId: paths.palettePicker,
     ),
-    parentIndex: palettesKey,
   );
 
   // HTML Colours (index [1, 2])
@@ -67,7 +58,6 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("code"),
       targetPageId: paths.htmlColour,
     ),
-    parentIndex: palettesKey,
   );
 
   // Random Palette (index [1, 3])
@@ -78,7 +68,6 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("shuffle"),
       targetPageId: paths.randomPalette,
     ),
-    parentIndex: palettesKey,
   );
 
   // Random Grayscale (index [1, 4])
@@ -89,7 +78,6 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("contrast"),
       targetPageId: paths.randomGrayscale,
     ),
-    parentIndex: palettesKey,
   );
 
   // Image Palette (index [1, 5])
@@ -100,7 +88,6 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("image"),
       targetPageId: paths.imagePalette,
     ),
-    parentIndex: palettesKey,
   );
 
   // Image Sampler (index [1, 6])
@@ -111,7 +98,6 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("palette"),
       targetPageId: paths.imageSampler,
     ),
-    parentIndex: palettesKey,
   );
 
   // Settings (index [2])
@@ -122,6 +108,5 @@ void configureTrianglesOutline(
       icon: const EmbeddingIcon.named("settings"),
       targetPageId: paths.settings,
     ),
-    parentIndex: parentIndex,
   );
 }

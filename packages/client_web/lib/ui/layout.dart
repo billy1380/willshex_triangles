@@ -53,7 +53,9 @@ class _AppLayoutState extends State<AppLayout> {
   }) {
     final isActive = currentPath == route ||
         (route == component.paths.welcome &&
-            (currentPath == route || currentPath == "/" || currentPath.isEmpty));
+            (currentPath == route ||
+                currentPath == "/" ||
+                currentPath.isEmpty));
 
     return a(
       href: route,
@@ -171,7 +173,8 @@ class _AppLayoutState extends State<AppLayout> {
                       "bi ${_isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-2",
                   const [],
                 ),
-                Component.text(_isDark ? AppStrings.lightMode : AppStrings.darkMode),
+                Component.text(
+                    _isDark ? AppStrings.lightMode : AppStrings.darkMode),
               ],
             ),
           ]),

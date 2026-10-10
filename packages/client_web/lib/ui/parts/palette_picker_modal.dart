@@ -69,98 +69,99 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                   ),
                 ]),
                 div(classes: "modal-body", [
-              div(classes: "mb-3", [
-                const label(
-                  classes: "form-label text-secondary small fw-bold",
-                  [Component.text(AppStrings.paletteName)],
-                ),
-                input(
-                  type: InputType.text,
-                  classes: "form-control",
-                  value: state.name,
-                  events: {
-                    "input": (e) {
-                      final val = (e.target as dynamic).value as String?;
-                      if (val != null) _cubit.setName(val);
-                    },
-                  },
-                ),
-              ]),
-              div(classes: "swatches-grid", [
-                for (var i = 0; i < state.colors.length; i++)
-                  _buildSwatch(state.colors[i], i, i == state.selectedIndex),
-                div(
-                  classes: "swatch-add-card",
-                  attributes: const {"title": AppStrings.addColor},
-                  events: {"click": (e) => _cubit.addColor()},
-                  const [i(classes: "bi bi-plus-lg", [])],
-                ),
-              ]),
-              const hr(),
-              if (currentColor != null) ...[
-                div(
-                  classes:
-                      "d-flex align-items-center justify-content-between mb-3",
-                  [
-                    const span(classes: "fw-bold small", [
-                      Component.text(AppStrings.editColor),
-                    ]),
-                    div(
-                      attributes: {
-                        "style":
-                            "width: 32px; height: 32px; border-radius: 6px; background-color: ${currentColor.toCssRgba()}; border: 1px solid rgba(0,0,0,0.2);",
+                  div(classes: "mb-3", [
+                    const label(
+                      classes: "form-label text-secondary small fw-bold",
+                      [Component.text(AppStrings.paletteName)],
+                    ),
+                    input(
+                      type: InputType.text,
+                      classes: "form-control",
+                      value: state.name,
+                      events: {
+                        "input": (e) {
+                          final val = (e.target as dynamic).value as String?;
+                          if (val != null) _cubit.setName(val);
+                        },
                       },
-                      const [],
                     ),
-                  ],
-                ),
-                _buildSlider(
-                  label: AppStrings.red,
-                  color: "text-danger",
-                  sliderClass: "form-range-red",
-                  value: (currentColor.red * 255).round(),
-                  onChanged: (val) => _cubit.updateSelectedColor(
-                    ws.Color.rgbaColor(
-                      val / 255.0,
-                      currentColor.green,
-                      currentColor.blue,
-                      currentColor.alpha,
+                  ]),
+                  div(classes: "swatches-grid", [
+                    for (var i = 0; i < state.colors.length; i++)
+                      _buildSwatch(
+                          state.colors[i], i, i == state.selectedIndex),
+                    div(
+                      classes: "swatch-add-card",
+                      attributes: const {"title": AppStrings.addColor},
+                      events: {"click": (e) => _cubit.addColor()},
+                      const [i(classes: "bi bi-plus-lg", [])],
                     ),
-                  ),
-                ),
-                _buildSlider(
-                  label: AppStrings.green,
-                  color: "text-success",
-                  sliderClass: "form-range-green",
-                  value: (currentColor.green * 255).round(),
-                  onChanged: (val) => _cubit.updateSelectedColor(
-                    ws.Color.rgbaColor(
-                      currentColor.red,
-                      val / 255.0,
-                      currentColor.blue,
-                      currentColor.alpha,
+                  ]),
+                  const hr(),
+                  if (currentColor != null) ...[
+                    div(
+                      classes:
+                          "d-flex align-items-center justify-content-between mb-3",
+                      [
+                        const span(classes: "fw-bold small", [
+                          Component.text(AppStrings.editColor),
+                        ]),
+                        div(
+                          attributes: {
+                            "style":
+                                "width: 32px; height: 32px; border-radius: 6px; background-color: ${currentColor.toCssRgba()}; border: 1px solid rgba(0,0,0,0.2);",
+                          },
+                          const [],
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                _buildSlider(
-                  label: AppStrings.blue,
-                  color: "text-primary",
-                  sliderClass: "form-range-blue",
-                  value: (currentColor.blue * 255).round(),
-                  onChanged: (val) => _cubit.updateSelectedColor(
-                    ws.Color.rgbaColor(
-                      currentColor.red,
-                      currentColor.green,
-                      val / 255.0,
-                      currentColor.alpha,
+                    _buildSlider(
+                      label: AppStrings.red,
+                      color: "text-danger",
+                      sliderClass: "form-range-red",
+                      value: (currentColor.red * 255).round(),
+                      onChanged: (val) => _cubit.updateSelectedColor(
+                        ws.Color.rgbaColor(
+                          val / 255.0,
+                          currentColor.green,
+                          currentColor.blue,
+                          currentColor.alpha,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ] else
-                const div(classes: "text-center text-secondary py-3", [
-                  Component.text(AppStrings.selectColorPrompt),
+                    _buildSlider(
+                      label: AppStrings.green,
+                      color: "text-success",
+                      sliderClass: "form-range-green",
+                      value: (currentColor.green * 255).round(),
+                      onChanged: (val) => _cubit.updateSelectedColor(
+                        ws.Color.rgbaColor(
+                          currentColor.red,
+                          val / 255.0,
+                          currentColor.blue,
+                          currentColor.alpha,
+                        ),
+                      ),
+                    ),
+                    _buildSlider(
+                      label: AppStrings.blue,
+                      color: "text-primary",
+                      sliderClass: "form-range-blue",
+                      value: (currentColor.blue * 255).round(),
+                      onChanged: (val) => _cubit.updateSelectedColor(
+                        ws.Color.rgbaColor(
+                          currentColor.red,
+                          currentColor.green,
+                          val / 255.0,
+                          currentColor.alpha,
+                        ),
+                      ),
+                    ),
+                  ] else
+                    const div(classes: "text-center text-secondary py-3", [
+                      Component.text(AppStrings.selectColorPrompt),
+                    ]),
                 ]),
-            ]),
                 div(classes: "modal-footer", [
                   button(
                     classes: "btn btn-outline-secondary",

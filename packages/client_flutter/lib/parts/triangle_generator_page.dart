@@ -1,3 +1,4 @@
+import "package:triangles_flutter/pages/settings_page.dart";
 import "package:willshex_embedding/willshex_embedding.dart";
 import "dart:async";
 
@@ -48,7 +49,6 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
   late final TriangleGeneratorCubit _cubit;
   late final TransformationController _transformationController;
   double _currentScale = 1.0;
-  SettingsCubit? _localSettingsCubit;
   StreamSubscription<SettingsState>? _settingsSub;
   StreamSubscription<TriangleGeneratorState>? _cubitSub;
   bool _isPickerOpen = false;
@@ -62,8 +62,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
     try {
       return BlocProvider.of<SettingsCubit>(context, listen: false);
     } catch (_) {
-      _localSettingsCubit ??= SettingsCubit();
-      return _localSettingsCubit!;
+      return TrianglesFlutterSettings.cubit;
     }
   }
 
@@ -323,7 +322,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
     _settingsSub?.cancel();
     _cubitSub?.cancel();
     _cubit.close();
-    _localSettingsCubit?.close();
+    // Settings cubit is shared, do not close
     super.dispose();
   }
 
@@ -702,17 +701,20 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
   @override
   Widget build(BuildContext context) {
     if (!widget.showAppBar && !widget.showDrawer) {
-      return TriangleGeneratorView(
-        key: _viewKey,
-        title: widget.title,
-        paletteProvider: widget.paletteProvider,
-        generatorType: widget.generatorType,
-        customPalettePicker: widget.customPalettePicker,
-        settingsCubit: widget.settingsCubit,
-        showDownloadFab: true,
-        showHistoryInControls: true,
-        showOverlayInControls: true,
-        session: widget.session,
+      return Material(
+        color: Colors.transparent,
+        child: TriangleGeneratorView(
+          key: _viewKey,
+          title: widget.title,
+          paletteProvider: widget.paletteProvider,
+          generatorType: widget.generatorType,
+          customPalettePicker: widget.customPalettePicker,
+          settingsCubit: widget.settingsCubit,
+          showDownloadFab: true,
+          showHistoryInControls: true,
+          showOverlayInControls: true,
+          session: widget.session,
+        ),
       );
     }
 

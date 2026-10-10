@@ -38,9 +38,16 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         title: AppStrings.appName,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+          colorScheme: const ColorScheme.dark(
+            primary: Color(AppTheme.primaryColor),
+            surface: Color(AppTheme.darkSurfaceColor),
+            onSurface: Color(AppTheme.darkTextColor),
+          ),
           useMaterial3: true,
-          textTheme: GoogleFonts.outfitTextTheme(),
+          textTheme: GoogleFonts.outfitTextTheme().apply(
+            bodyColor: const Color(AppTheme.darkTextMutedColor),
+            displayColor: const Color(AppTheme.darkTextMutedColor),
+          ),
           appBarTheme: const AppBarTheme(
             centerTitle: true,
           ),

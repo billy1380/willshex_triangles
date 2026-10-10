@@ -6,7 +6,8 @@ class FixedPaletteProvider implements PaletteProvider {
   late final Palette _palette;
 
   FixedPaletteProvider([List<Color>? colors, String? name])
-      : _palette = Palette(name ?? AppStrings.paletteFixed)..addColors(colors ?? []);
+      : _palette = Palette(name ?? AppStrings.paletteFixed)
+          ..addColors(colors ?? []);
 
   @override
   Palette call() => _palette;
