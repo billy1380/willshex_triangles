@@ -3,6 +3,7 @@ import "package:go_router/go_router.dart";
 import "package:url_launcher/url_launcher_string.dart";
 import "package:triangles_common/client_common.dart";
 import "package:triangles_flutter/parts/app_drawer.dart";
+import "package:triangles_flutter/utils/ui_helper.dart";
 
 /// Pure content view for Welcome, decoupled from Scaffold, AppBar, and AppDrawer.
 /// Seamlessly combines introductory cards, sample gallery, and project/legal information.
@@ -324,19 +325,14 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = WelcomeView(assetPackage: assetPackage);
-    if (!showAppBar && !showDrawer) {
-      return body;
-    }
-
-    return Scaffold(
-      drawer: showDrawer ? AppDrawer(paths: paths) : null,
-      appBar: showAppBar
-          ? AppBar(
-              title: const Text(AppStrings.navWelcome),
-            )
-          : null,
-      body: body,
+    return TrianglesUiHelper.pageScaffold(
+      showDrawer: showDrawer,
+      showAppBar: showAppBar,
+      drawer: AppDrawer(paths: paths),
+      appBar: AppBar(
+        title: const Text(AppStrings.navWelcome),
+      ),
+      body: WelcomeView(assetPackage: assetPackage),
     );
   }
 }

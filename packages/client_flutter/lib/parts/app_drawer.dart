@@ -16,20 +16,33 @@ extension GoRouterLocation on GoRouter {
 class AppDrawer extends StatelessWidget {
   final TrianglesRoutePaths paths;
   final ThemeCubit? themeCubit;
+  final String? currentLocation;
 
   AppDrawer({
     TrianglesRoutePaths? paths,
     String? basePath,
     this.themeCubit,
+    this.currentLocation,
     super.key,
   }) : paths = paths ??
             (basePath != null && basePath.isNotEmpty
                 ? TrianglesRoutePaths.withPrefix(basePath)
                 : const TrianglesRoutePaths());
 
+  static Widget _destLabel(String text) => ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 180),
+        child: Text(
+          text,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    final String location = GoRouter.of(context).location;
+    final router = GoRouter.maybeOf(context);
+    final String location =
+        currentLocation ?? (router != null ? router.location : "");
     ThemeCubit? cubit = themeCubit;
     if (cubit == null) {
       try {
@@ -38,11 +51,21 @@ class AppDrawer extends StatelessWidget {
         cubit = null;
       }
     }
+    final theme = Theme.of(context);
+    final backgroundColor = theme.navigationDrawerTheme.backgroundColor ??
+        theme.drawerTheme.backgroundColor ??
+        theme.colorScheme.surface;
+
     final Widget navDrawer = NavigationDrawer(
+      backgroundColor: backgroundColor,
+      elevation: 0,
       selectedIndex: _getSelectedIndex(location),
       onDestinationSelected: (int index) {
         final String destination = _getRouteByIndex(index);
-        Navigator.pop(context);
+        final scaffold = Scaffold.maybeOf(context);
+        if (scaffold != null && scaffold.isDrawerOpen) {
+          scaffold.closeDrawer();
+        }
         if (location != destination) {
           context.go(destination);
         }
@@ -55,10 +78,10 @@ class AppDrawer extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: Text(AppStrings.navWelcome),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.home_outlined),
+          selectedIcon: const Icon(Icons.home),
+          label: _destLabel(AppStrings.navWelcome),
         ),
         const SizedBox(height: 12),
         Padding(
@@ -68,47 +91,47 @@ class AppDrawer extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.colorize_outlined),
-          selectedIcon: Icon(Icons.colorize),
-          label: Text(AppStrings.navPalettePicker),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.colorize_outlined),
+          selectedIcon: const Icon(Icons.colorize),
+          label: _destLabel(AppStrings.navPalettePicker),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.code_outlined),
-          selectedIcon: Icon(Icons.code),
-          label: Text(AppStrings.navHtmlColour),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.code_outlined),
+          selectedIcon: const Icon(Icons.code),
+          label: _destLabel(AppStrings.navHtmlColour),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.shuffle_outlined),
-          selectedIcon: Icon(Icons.shuffle),
-          label: Text(AppStrings.navRandomPalette),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.shuffle_outlined),
+          selectedIcon: const Icon(Icons.shuffle),
+          label: _destLabel(AppStrings.navRandomPalette),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.contrast_outlined),
-          selectedIcon: Icon(Icons.contrast),
-          label: Text(AppStrings.navRandomGrayscale),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.contrast_outlined),
+          selectedIcon: const Icon(Icons.contrast),
+          label: _destLabel(AppStrings.navRandomGrayscale),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.image_outlined),
-          selectedIcon: Icon(Icons.image),
-          label: Text(AppStrings.imagePalette),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.image_outlined),
+          selectedIcon: const Icon(Icons.image),
+          label: _destLabel(AppStrings.imagePalette),
         ),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.palette_outlined),
-          selectedIcon: Icon(Icons.palette),
-          label: Text(AppStrings.imageSamplerPalette),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.palette_outlined),
+          selectedIcon: const Icon(Icons.palette),
+          label: _destLabel(AppStrings.imageSamplerPalette),
         ),
         const SizedBox(height: 12),
-        const NavigationDrawerDestination(
-          icon: Icon(Icons.settings_outlined),
-          selectedIcon: Icon(Icons.settings),
-          label: Text(AppStrings.navSettings),
+        NavigationDrawerDestination(
+          icon: const Icon(Icons.settings_outlined),
+          selectedIcon: const Icon(Icons.settings),
+          label: _destLabel(AppStrings.navSettings),
         ),
         if (paths.welcome != TrianglesRoutePaths.defaultWelcome) ...[
           const SizedBox(height: 12),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.arrow_back),
-            label: Text("Back to Willshex"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.arrow_back),
+            label: _destLabel("Back to Willshex"),
           ),
         ],
         if (cubit != null) const SizedBox(height: 96),
@@ -119,11 +142,6 @@ class AppDrawer extends StatelessWidget {
       return navDrawer;
     }
 
-    final theme = Theme.of(context);
-    final backgroundColor = theme.navigationDrawerTheme.backgroundColor ??
-        theme.drawerTheme.backgroundColor ??
-        theme.colorScheme.surface;
-
     return Stack(
       children: [
         navDrawer,
@@ -131,17 +149,12 @@ class AppDrawer extends StatelessWidget {
           left: 0,
           right: 0,
           bottom: 0,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomRight: Radius.circular(28),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Container(
-                color: backgroundColor,
-                padding: const EdgeInsets.fromLTRB(28, 8, 28, 16),
-                child: DrawerThemeToggle(cubit: cubit),
-              ),
+          child: SafeArea(
+            top: false,
+            child: Container(
+              color: backgroundColor,
+              padding: const EdgeInsets.fromLTRB(28, 8, 28, 16),
+              child: DrawerThemeToggle(cubit: cubit),
             ),
           ),
         ),

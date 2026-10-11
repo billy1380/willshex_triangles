@@ -5,6 +5,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:triangles_common/client_common.dart";
 import "package:triangles_flutter/parts/app_drawer.dart";
+import "package:triangles_flutter/utils/ui_helper.dart";
 
 /// Pure embeddable view for Settings, decoupled from Scaffold, AppBar, and AppDrawer.
 /// Shared settings provider for Flutter.
@@ -203,23 +204,19 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = Material(
+    return TrianglesUiHelper.pageScaffold(
+      showDrawer: showDrawer,
+      showAppBar: showAppBar,
+      drawer: AppDrawer(paths: paths),
+      appBar: AppBar(
+        title: const Text(AppStrings.navSettings),
+      ),
+      body: Material(
         color: Colors.transparent,
         child: SettingsView(
           settingsCubit: settingsCubit,
-        ));
-    if (!showAppBar && !showDrawer) {
-      return body;
-    }
-
-    return Scaffold(
-      drawer: showDrawer ? AppDrawer(paths: paths) : null,
-      appBar: showAppBar
-          ? AppBar(
-              title: const Text(AppStrings.navSettings),
-            )
-          : null,
-      body: body,
+        ),
+      ),
     );
   }
 }

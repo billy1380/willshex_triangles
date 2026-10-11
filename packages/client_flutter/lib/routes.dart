@@ -8,6 +8,8 @@ import "package:triangles_flutter/pages/image_palette_page.dart";
 import "package:triangles_flutter/pages/image_sampler_palette_page.dart";
 import "package:triangles_flutter/pages/settings_page.dart";
 import "package:triangles_flutter/pages/palette_picker_page.dart";
+import "package:triangles_flutter/parts/app_drawer.dart";
+import "package:triangles_flutter/utils/ui_helper.dart";
 
 /// Route definitions and helpers for Triangles in Flutter.
 class TrianglesRoutes {
@@ -238,7 +240,7 @@ class TrianglesRoutes {
       effectivePaths = effectivePaths.prefixed(effectivePrefix);
     }
 
-    return [
+    final childRoutes = <RouteBase>[
       welcomeRoute(
         path: formatRoutePath(effectivePaths.welcome,
             prefix: effectivePrefix, relative: relative),
@@ -303,6 +305,28 @@ class TrianglesRoutes {
         paths: effectivePaths,
         prefix: effectivePrefix,
         relative: relative,
+      ),
+      if (!relative && effectivePaths.welcome != "/")
+        GoRoute(
+          path: "/",
+          redirect: (context, state) => effectivePaths.welcome,
+        ),
+    ];
+
+    if (!showDrawer) {
+      return childRoutes;
+    }
+
+    return [
+      ShellRoute(
+        builder: (context, state, child) => TrianglesUiHelper.shell(
+          drawer: AppDrawer(
+            paths: effectivePaths,
+            currentLocation: state.uri.toString(),
+          ),
+          child: child,
+        ),
+        routes: childRoutes,
       ),
     ];
   }

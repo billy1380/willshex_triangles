@@ -12,6 +12,7 @@ import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
 import "package:triangles_flutter/parts/app_drawer.dart";
+import "package:triangles_flutter/utils/ui_helper.dart";
 import "package:triangles_flutter/parts/palette_history.dart";
 import "package:triangles_flutter/parts/palette_picker_dialog.dart";
 
@@ -342,6 +343,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                     children: [
                       Expanded(
                         child: DropdownButtonFormField<TrianglesType>(
+                          isExpanded: true,
                           initialValue: state.selectedType,
                           decoration: const InputDecoration(
                             labelText: AppStrings.type,
@@ -408,6 +410,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: DropdownButtonFormField<BlendingMode>(
+                          isExpanded: true,
                           initialValue: state.selectedBlendMode,
                           decoration: const InputDecoration(
                             labelText: AppStrings.blendMode,
@@ -700,68 +703,50 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.showAppBar && !widget.showDrawer) {
-      return Material(
-        color: Colors.transparent,
-        child: TriangleGeneratorView(
-          key: _viewKey,
-          title: widget.title,
-          paletteProvider: widget.paletteProvider,
-          generatorType: widget.generatorType,
-          customPalettePicker: widget.customPalettePicker,
-          settingsCubit: widget.settingsCubit,
-          showDownloadFab: true,
-          showHistoryInControls: true,
-          showOverlayInControls: true,
-          session: widget.session,
-        ),
-      );
-    }
+    return TrianglesUiHelper.pageScaffold(
+      showDrawer: widget.showDrawer,
+      showAppBar: widget.showAppBar,
+      drawer: AppDrawer(paths: widget.paths),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          Builder(
+            builder: (context) {
+              final viewState = _viewKey.currentState;
+              final cubit = viewState?.cubit;
+              if (cubit == null) return const SizedBox.shrink();
 
-    return Scaffold(
-      drawer: widget.showDrawer ? AppDrawer(paths: widget.paths) : null,
-      appBar: widget.showAppBar
-          ? AppBar(
-              title: Text(widget.title),
-              actions: [
-                Builder(
-                  builder: (context) {
-                    final viewState = _viewKey.currentState;
-                    final cubit = viewState?.cubit;
-                    if (cubit == null) return const SizedBox.shrink();
-
-                    return BlocBuilder<TriangleGeneratorCubit,
-                        TriangleGeneratorState>(
-                      bloc: cubit,
-                      builder: (context, state) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (state.paletteSource != null)
-                              IconButton(
-                                icon: Icon(state.showImageOverlay
-                                    ? Icons.image
-                                    : Icons.image_outlined),
-                                onPressed: cubit.toggleImageOverlay,
-                                tooltip: state.showImageOverlay
-                                    ? AppStrings.hideReference
-                                    : AppStrings.showReference,
-                              ),
-                            IconButton(
-                              icon: const Icon(Icons.history),
-                              onPressed: () =>
-                                  Scaffold.of(context).openEndDrawer(),
-                              tooltip: AppStrings.showHistory,
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            )
-          : null,
+              return BlocBuilder<TriangleGeneratorCubit,
+                  TriangleGeneratorState>(
+                bloc: cubit,
+                builder: (context, state) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (state.paletteSource != null)
+                        IconButton(
+                          icon: Icon(state.showImageOverlay
+                              ? Icons.image
+                              : Icons.image_outlined),
+                          onPressed: cubit.toggleImageOverlay,
+                          tooltip: state.showImageOverlay
+                              ? AppStrings.hideReference
+                              : AppStrings.showReference,
+                        ),
+                      IconButton(
+                        icon: const Icon(Icons.history),
+                        onPressed: () =>
+                            Scaffold.of(context).openEndDrawer(),
+                        tooltip: AppStrings.showHistory,
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
       endDrawer: Drawer(
         width: 300,
         child: Builder(
