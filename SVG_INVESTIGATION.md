@@ -1,5 +1,19 @@
 # SVG Mode Investigation
 
+> **Why this branch exists (note added 2026-10-15):** this is a parked idea, not
+> abandoned work — keep the branch until SVG output is built. The goal is to let
+> users export generated triangles as **SVG as well as PNG**. Possible UX:
+> - a render/output mode selector in Settings (stored in `GeneratorSettings`), or
+> - offering SVG or PNG when the download button is pressed.
+>
+> The branch is far behind `main` (forked 2025-12-26, before the package split),
+> so start fresh from `main` rather than merging this. Paths below are from the
+> old layout — the renderer now lives at
+> `packages/client_common/lib/triangles/image_renderer.dart` and still extends
+> `Renderer`, so the approach below still applies. Download is handled in
+> `client_flutter/lib/parts/triangle_generator_page.dart` (`FileSaver`) and
+> `client_web/lib/ui/screens/triangle_generator_screen.dart`.
+
 ## Findings
 `ImageRenderer` (in `lib/triangles/image_renderer.dart`) extends `Renderer` from the `willshex_draw` package.
 This means the architecture already supports swapping renderers.
