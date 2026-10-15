@@ -1,0 +1,72 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter Desktop (macOS)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/client_flutter",
+            "program": "${workspaceFolder}/packages/client_flutter/lib/main.dart",
+            "deviceId": "macos"
+        },
+        {
+            "name": "Flutter Desktop (macOS - Release)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "release",
+            "cwd": "${workspaceFolder}/packages/client_flutter",
+            "program": "${workspaceFolder}/packages/client_flutter/lib/main.dart",
+            "deviceId": "macos"
+        },
+        {
+            "name": "Flutter Desktop (Windows)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/client_flutter",
+            "program": "${workspaceFolder}/packages/client_flutter/lib/main.dart",
+            "deviceId": "windows"
+        },
+        {
+            "name": "Flutter Desktop (Linux)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/client_flutter",
+            "program": "${workspaceFolder}/packages/client_flutter/lib/main.dart",
+            "deviceId": "linux"
+        },
+        {
+            "name": "Desktop CLI (Triangles)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/client_cli",
+            "program": "${workspaceFolder}/packages/client_cli/bin/triangles.dart",
+            "console": "terminal"
+        },
+        {
+            "name": "Desktop CLI (Sample Args)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/client_cli",
+            "program": "${workspaceFolder}/packages/client_cli/bin/triangles.dart",
+            "args": [
+                "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1"
+            ],
+            "console": "terminal"
+        },
+        {
+            "name": "Flutter (Active Device)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/client_flutter",
+            "program": "${workspaceFolder}/packages/client_flutter/lib/main.dart"
+        },
+        {
+            "name": "Jaspr Web (Chrome)",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/packages/client_web",
+            "preLaunchTask": "jaspr serve"
+        }
+    ]
+}

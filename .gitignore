@@ -25,3 +25,8 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+output/
+
+!.vscode/
+!.vscode/launch.json
+!.vscode/tasks.json

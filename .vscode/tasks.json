@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "jaspr serve",
+            "type": "shell",
+            "command": "dart run jaspr_cli:jaspr serve",
+            "options": {
+                "cwd": "${workspaceFolder}/packages/client_web"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^.*Serving at http://.*$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*Building.*$",
+                    "endsPattern": "^.*Serving at http://.*$"
+                }
+            }
+        }
+    ]
+}

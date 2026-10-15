@@ -6,9 +6,9 @@
 > - a render/output mode selector in Settings (stored in `GeneratorSettings`), or
 > - offering SVG or PNG when the download button is pressed.
 >
-> The branch is far behind `main` (forked 2025-12-26, before the package split),
-> so start fresh from `main` rather than merging this. Paths below are from the
-> old layout — the renderer now lives at
+> `main` was merged into this branch on 2026-10-15 (after the package split), so
+> it is up to date as a starting point. Paths below are from the original
+> investigation's old layout — the renderer now lives at
 > `packages/client_common/lib/triangles/image_renderer.dart` and still extends
 > `Renderer`, so the approach below still applies. Download is handled in
 > `client_flutter/lib/parts/triangle_generator_page.dart` (`FileSaver`) and

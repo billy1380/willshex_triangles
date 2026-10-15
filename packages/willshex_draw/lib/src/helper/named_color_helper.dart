@@ -3,15 +3,13 @@
 //  willshex_draw
 //
 //  Created by William Shakour on 22 Jun 2013.
-//  Copyright © 2013 SPACEHOPPER STUDIOS LTD. All rights reserved.
+//  Copyright © 2013 WillShex Limited. All rights reserved.
 //
 
-import 'dart:math';
-
 import 'package:willshex_draw/src/color.dart';
+import 'package:willshex_draw/src/helper/random_helper.dart';
 
 abstract final class NamedColorHelper {
-  static final Random mRandom = Random();
   NamedColorHelper._();
 
   static List<String>? _names;
@@ -401,6 +399,6 @@ abstract final class NamedColorHelper {
       "YellowGreen",
     ];
 
-    return lookup(_names![mRandom.nextInt(_names!.length)]);
+    return lookup(_names![RandomHelper.random.nextInt(_names!.length)]);
   }
 }
