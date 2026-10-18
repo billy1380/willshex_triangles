@@ -1,3 +1,4 @@
+import "dart:async";
 import "package:triangles_web/ui/screens/settings_screen.dart";
 import "package:willshex_embedding/willshex_embedding.dart";
 import "dart:convert";
@@ -63,7 +64,8 @@ class TriangleGeneratorScreen extends StatefulComponent {
 }
 
 class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
-  late final TriangleGeneratorCubit _cubit;
+  late TriangleGeneratorCubit _cubit;
+  StreamSubscription<TriangleGeneratorState>? _cubitSubscription;
   late final SettingsCubit _settingsCubit;
   bool _historyDrawerOpen = false;
   ws.Palette? _editingPalette;
@@ -79,6 +81,24 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
       _settingsCubit = cubitFromContext;
     }
 
+    _createCubit();
+  }
+
+  @override
+  void didUpdateComponent(TriangleGeneratorScreen oldComponent) {
+    super.didUpdateComponent(oldComponent);
+
+    if (oldComponent.generatorType != component.generatorType) {
+      _cubitSubscription?.cancel();
+      _cubit.close();
+      _historyDrawerOpen = false;
+      _editingPalette = null;
+      _showCustomPaletteModal = false;
+      _createCubit();
+    }
+  }
+
+  void _createCubit() {
     final settingsState = _settingsCubit.state;
 
     _cubit = TriangleGeneratorCubit(
@@ -95,7 +115,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
       assetLoader: _loadWebAsset,
     );
     _syncSession();
-    _cubit.stream.listen((state) {
+    _cubitSubscription = _cubit.stream.listen((state) {
       _syncSession(state);
     });
   }
@@ -114,6 +134,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
 
   @override
   void dispose() {
+    _cubitSubscription?.cancel();
     _cubit.close();
     // Settings cubit is shared, do not close
     super.dispose();
@@ -447,37 +468,41 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                         const h5(classes: "offcanvas-title fw-bold m-0", [
                           Component.text(AppStrings.history),
                         ]),
-                        div(classes: "d-flex align-items-center gap-2 ms-auto", [
-                      button(
-                        classes: "btn btn-sm btn-outline-primary",
-                        attributes: const {
-                          "title": AppStrings.newPalette,
-                        },
-                        events: {
-                          "click": (e) => _cubit.generatePalette(),
-                        },
-                        const [i(classes: "bi bi-plus-lg", [])],
-                      ),
-                      button(
-                        classes: "btn btn-sm btn-outline-danger",
-                        attributes: const {"title": AppStrings.clearHistory},
-                        events: {"click": (e) => _cubit.clearHistory()},
-                        const [i(classes: "bi bi-trash", [])],
-                      ),
-                      button(
-                        classes: "btn-close",
-                        attributes: const {
-                          "title": AppStrings.close,
-                          "aria-label": AppStrings.close,
-                        },
-                        events: {
-                          "click": (e) =>
-                              setState(() => _historyDrawerOpen = false),
-                        },
-                        const [],
-                      ),
-                    ]),
-                  ]),
+                        div(
+                            classes: "d-flex align-items-center gap-2 ms-auto",
+                            [
+                              button(
+                                classes: "btn btn-sm btn-outline-primary",
+                                attributes: const {
+                                  "title": AppStrings.newPalette,
+                                },
+                                events: {
+                                  "click": (e) => _cubit.generatePalette(),
+                                },
+                                const [i(classes: "bi bi-plus-lg", [])],
+                              ),
+                              button(
+                                classes: "btn btn-sm btn-outline-danger",
+                                attributes: const {
+                                  "title": AppStrings.clearHistory
+                                },
+                                events: {"click": (e) => _cubit.clearHistory()},
+                                const [i(classes: "bi bi-trash", [])],
+                              ),
+                              button(
+                                classes: "btn-close",
+                                attributes: const {
+                                  "title": AppStrings.close,
+                                  "aria-label": AppStrings.close,
+                                },
+                                events: {
+                                  "click": (e) => setState(
+                                      () => _historyDrawerOpen = false),
+                                },
+                                const [],
+                              ),
+                            ]),
+                      ]),
                   div(classes: "offcanvas-body p-3", [
                     PaletteHistoryComponent(
                       palettes: state.history,
