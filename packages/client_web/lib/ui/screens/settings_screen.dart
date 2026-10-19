@@ -89,9 +89,9 @@ class _SettingsViewState extends State<SettingsView> {
 
         return div(
           classes: "p-4 p-md-5 overflow-auto",
-          attributes: const {"style": "max-width: 680px; margin: 0 auto;"},
+          attributes: const {"style": "max-width: 640px; margin: 0 auto;"},
           [
-            div(classes: "card p-4 shadow-sm border-0 bg-opacity-50", [
+            Component.fragment([
               div(classes: "row g-3 mb-3", [
                 div(classes: "col-sm-6", [
                   const label(
