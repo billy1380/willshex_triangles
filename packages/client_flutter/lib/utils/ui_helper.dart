@@ -21,6 +21,7 @@ class TrianglesShellScope extends InheritedWidget {
 abstract class TrianglesUiHelper {
   static const double drawerWidth = 280;
   static const double breakpointWidth = 500;
+  static const double minContentWidth = 600;
 
   static bool isSmall(BoxConstraints constraints,
           {double breakpoint = breakpointWidth}) =>
@@ -45,9 +46,12 @@ abstract class TrianglesUiHelper {
                       SizedBox(
                         width: drawerWidth,
                         child: Material(
-                          color: Theme.of(context).drawerTheme.backgroundColor ??
-                              Theme.of(context).navigationDrawerTheme.backgroundColor ??
-                              Theme.of(context).colorScheme.surface,
+                          color:
+                              Theme.of(context).drawerTheme.backgroundColor ??
+                                  Theme.of(context)
+                                      .navigationDrawerTheme
+                                      .backgroundColor ??
+                                  Theme.of(context).colorScheme.surface,
                           child: SafeArea(
                             bottom: false,
                             child: drawer,
@@ -60,11 +64,35 @@ abstract class TrianglesUiHelper {
                         color: Theme.of(context).dividerColor,
                       ),
                       Expanded(
-                        child: child,
+                        child: SafeArea(
+                          left: false,
+                          top: false,
+                          bottom: false,
+                          child: _horizontallyScrollable(child),
+                        ),
                       ),
                     ],
                   ),
                 ),
+        );
+      },
+    );
+  }
+
+  static Widget _horizontallyScrollable(Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= minContentWidth) {
+          return child;
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: minContentWidth,
+            height: constraints.maxHeight,
+            child: child,
+          ),
         );
       },
     );

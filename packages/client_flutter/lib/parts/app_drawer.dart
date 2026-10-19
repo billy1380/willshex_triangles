@@ -29,14 +29,26 @@ class AppDrawer extends StatelessWidget {
                 ? TrianglesRoutePaths.withPrefix(basePath)
                 : const TrianglesRoutePaths());
 
-  static Widget _destLabel(String text) => ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 180),
-        child: Text(
-          text,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
+  static const double _destinationChromeWidth = 100;
+
+  static Widget _destLabel(String text) => Text(
+        text,
+        softWrap: false,
+        maxLines: 1,
       );
+
+  static double _widestLabel(TextStyle style, Iterable<String> labels) {
+    double widest = 0;
+    for (final String label in labels) {
+      final TextPainter painter = TextPainter(
+        text: TextSpan(text: label, style: style),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      )..layout();
+      if (painter.width > widest) widest = painter.width;
+    }
+    return widest;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +63,31 @@ class AppDrawer extends StatelessWidget {
         cubit = null;
       }
     }
+    final bool pinToggle = MediaQuery.sizeOf(context).height >= 600;
     final theme = Theme.of(context);
     final backgroundColor = theme.navigationDrawerTheme.backgroundColor ??
         theme.drawerTheme.backgroundColor ??
         theme.colorScheme.surface;
 
-    final Widget navDrawer = NavigationDrawer(
+    final bool hasBackLink =
+        paths.welcome != TrianglesRoutePaths.defaultWelcome;
+    final double neededWidth = _widestLabel(
+          theme.textTheme.labelLarge ?? const TextStyle(),
+          [
+            AppStrings.navWelcome,
+            AppStrings.navPalettePicker,
+            AppStrings.navHtmlColour,
+            AppStrings.navRandomPalette,
+            AppStrings.navRandomGrayscale,
+            AppStrings.imagePalette,
+            AppStrings.imageSamplerPalette,
+            AppStrings.navSettings,
+            if (hasBackLink) "Back to Willshex",
+          ],
+        ) +
+        _destinationChromeWidth;
+
+    final Widget navigation = NavigationDrawer(
       backgroundColor: backgroundColor,
       elevation: 0,
       selectedIndex: _getSelectedIndex(location),
@@ -127,18 +158,40 @@ class AppDrawer extends StatelessWidget {
           selectedIcon: const Icon(Icons.settings),
           label: _destLabel(AppStrings.navSettings),
         ),
-        if (paths.welcome != TrianglesRoutePaths.defaultWelcome) ...[
+        if (hasBackLink) ...[
           const SizedBox(height: 12),
           NavigationDrawerDestination(
             icon: const Icon(Icons.arrow_back),
             label: _destLabel("Back to Willshex"),
           ),
         ],
-        if (cubit != null) const SizedBox(height: 96),
+        if (cubit != null && pinToggle) const SizedBox(height: 96),
+        if (cubit != null && !pinToggle)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 16, 28, 16),
+            child: DrawerThemeToggle(cubit: cubit),
+          ),
       ],
     );
 
-    if (cubit == null) {
+    final Widget navDrawer = LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= neededWidth) {
+          return navigation;
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: neededWidth,
+            height: constraints.hasBoundedHeight ? constraints.maxHeight : null,
+            child: navigation,
+          ),
+        );
+      },
+    );
+
+    if (cubit == null || !pinToggle) {
       return navDrawer;
     }
 

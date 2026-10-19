@@ -51,156 +51,170 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                         : AppStrings.createCustomPalette,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _nameController,
-                    onChanged: _cubit.setName,
-                    decoration: const InputDecoration(
-                        labelText: AppStrings.paletteName),
-                  ),
-                  const SizedBox(height: 20),
                   Expanded(
                     child: Scrollbar(
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 60,
-                          childAspectRatio: 1,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
-                        itemCount: state.colors.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == state.colors.length) {
-                            return Tooltip(
-                              message: AppStrings.addColor,
-                              child: InkWell(
-                                onTap: () => _cubit.addColor(),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(Icons.add),
-                                ),
-                              ),
-                            );
-                          }
-
-                          final color = state.colors[index];
-                          final isSelected = index == state.selectedIndex;
-
-                          return InkWell(
-                            onTap: () => _cubit.selectColor(index),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: color.toColor(),
-                                borderRadius: BorderRadius.circular(8),
-                                border: isSelected
-                                    ? Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        width: 3,
-                                      )
-                                    : Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outlineVariant),
-                              ),
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  tooltip: AppStrings.removeColor,
-                                  icon: const Icon(Icons.close,
-                                      size: 16, color: Colors.white),
-                                  onPressed: () => _cubit.removeColor(index),
-                                ),
-                              ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 16),
+                            TextField(
+                              controller: _nameController,
+                              onChanged: _cubit.setName,
+                              decoration: const InputDecoration(
+                                  labelText: AppStrings.paletteName),
                             ),
-                          );
-                        },
+                            const SizedBox(height: 20),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 60,
+                                childAspectRatio: 1,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              itemCount: state.colors.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == state.colors.length) {
+                                  return Tooltip(
+                                    message: AppStrings.addColor,
+                                    child: InkWell(
+                                      onTap: () => _cubit.addColor(),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: const Icon(Icons.add),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                final color = state.colors[index];
+                                final isSelected = index == state.selectedIndex;
+
+                                return InkWell(
+                                  onTap: () => _cubit.selectColor(index),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: color.toColor(),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: isSelected
+                                          ? Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              width: 3,
+                                            )
+                                          : Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outlineVariant),
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        tooltip: AppStrings.removeColor,
+                                        icon: const Icon(Icons.close,
+                                            size: 16, color: Colors.white),
+                                        onPressed: () =>
+                                            _cubit.removeColor(index),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(height: 32),
+                            if (currentColor != null) ...[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppStrings.editColor,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: currentColor.toColor(),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .outlineVariant),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Slider(
+                                value: currentColor.red * 255,
+                                min: 0,
+                                max: 255,
+                                label: AppStrings.labelR,
+                                activeColor: Colors.red,
+                                onChanged: (v) => _cubit.updateSelectedColor(
+                                  ws.Color.rgbaColor(
+                                    v / 255.0,
+                                    currentColor.green,
+                                    currentColor.blue,
+                                    currentColor.alpha,
+                                  ),
+                                ),
+                              ),
+                              Slider(
+                                value: currentColor.green * 255,
+                                min: 0,
+                                max: 255,
+                                label: AppStrings.labelG,
+                                activeColor: Colors.green,
+                                onChanged: (v) => _cubit.updateSelectedColor(
+                                  ws.Color.rgbaColor(
+                                    currentColor.red,
+                                    v / 255.0,
+                                    currentColor.blue,
+                                    currentColor.alpha,
+                                  ),
+                                ),
+                              ),
+                              Slider(
+                                value: currentColor.blue * 255,
+                                min: 0,
+                                max: 255,
+                                label: AppStrings.labelB,
+                                activeColor: Colors.blue,
+                                onChanged: (v) => _cubit.updateSelectedColor(
+                                  ws.Color.rgbaColor(
+                                    currentColor.red,
+                                    currentColor.green,
+                                    v / 255.0,
+                                    currentColor.alpha,
+                                  ),
+                                ),
+                              ),
+                            ] else
+                              const SizedBox(
+                                height: 150,
+                                child: Center(
+                                    child: Text(AppStrings.selectColorPrompt)),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  const Divider(height: 32),
-                  if (currentColor != null) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppStrings.editColor,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: currentColor.toColor(),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outlineVariant),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: currentColor.red * 255,
-                      min: 0,
-                      max: 255,
-                      label: AppStrings.labelR,
-                      activeColor: Colors.red,
-                      onChanged: (v) => _cubit.updateSelectedColor(
-                        ws.Color.rgbaColor(
-                          v / 255.0,
-                          currentColor.green,
-                          currentColor.blue,
-                          currentColor.alpha,
-                        ),
-                      ),
-                    ),
-                    Slider(
-                      value: currentColor.green * 255,
-                      min: 0,
-                      max: 255,
-                      label: AppStrings.labelG,
-                      activeColor: Colors.green,
-                      onChanged: (v) => _cubit.updateSelectedColor(
-                        ws.Color.rgbaColor(
-                          currentColor.red,
-                          v / 255.0,
-                          currentColor.blue,
-                          currentColor.alpha,
-                        ),
-                      ),
-                    ),
-                    Slider(
-                      value: currentColor.blue * 255,
-                      min: 0,
-                      max: 255,
-                      label: AppStrings.labelB,
-                      activeColor: Colors.blue,
-                      onChanged: (v) => _cubit.updateSelectedColor(
-                        ws.Color.rgbaColor(
-                          currentColor.red,
-                          currentColor.green,
-                          v / 255.0,
-                          currentColor.alpha,
-                        ),
-                      ),
-                    ),
-                  ] else
-                    const SizedBox(
-                      height: 150,
-                      child: Center(child: Text(AppStrings.selectColorPrompt)),
-                    ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

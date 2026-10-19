@@ -254,7 +254,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
     required TriangleGeneratorState state,
     required VoidCallback onClose,
   }) {
-    return Column(
+    return SafeArea(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
@@ -313,7 +314,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
           ),
         ),
       ],
-    );
+    ));
   }
 
   @override
@@ -482,8 +483,11 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                     if (state.showImageOverlay &&
                                         state.paletteSource != null)
                                       Positioned(
-                                        bottom: 20,
-                                        right: 20,
+                                        bottom: 20 +
+                                            MediaQuery.paddingOf(context)
+                                                .bottom,
+                                        right: 20 +
+                                            MediaQuery.paddingOf(context).right,
                                         child: Container(
                                           width: 100,
                                           height: 100,
@@ -507,7 +511,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                                       ),
                                     Positioned(
                                       top: 16,
-                                      right: 16,
+                                      right: 16 +
+                                          MediaQuery.paddingOf(context).right,
                                       child: Material(
                                         color: Theme.of(context).cardColor,
                                         elevation: 1,
@@ -635,7 +640,7 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
             if (widget.showDownloadFab && state.generatedImage != null)
               Positioned(
                 left: 16,
-                bottom: 16,
+                bottom: 16 + MediaQuery.paddingOf(context).bottom,
                 child: FloatingActionButton(
                   onPressed: () async {
                     await FileSaver.instance.saveFile(
@@ -735,8 +740,7 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
                         ),
                       IconButton(
                         icon: const Icon(Icons.history),
-                        onPressed: () =>
-                            Scaffold.of(context).openEndDrawer(),
+                        onPressed: () => Scaffold.of(context).openEndDrawer(),
                         tooltip: AppStrings.showHistory,
                       ),
                     ],
