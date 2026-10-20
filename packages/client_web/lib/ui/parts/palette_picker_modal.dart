@@ -207,7 +207,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
               _cubit.removeColor(index);
             },
           },
-          const [Component.text("×")],
+          [i(classes: "bi bi-x", [])],
         ),
       ],
     );
