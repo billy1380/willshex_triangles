@@ -258,7 +258,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                           classes: "form-select form-select-sm",
                           events: {
                             "change": (e) {
-                              final val = (e.target as dynamic).value as String;
+                              final val = (e.target as web.HTMLSelectElement).value;
                               final type = TrianglesType.values.firstWhere(
                                 (t) => t.name == val,
                                 orElse: () => TrianglesType.ribbons,
@@ -290,7 +290,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                           classes: "form-select form-select-sm",
                           events: {
                             "change": (e) {
-                              final val = (e.target as dynamic).value as String;
+                              final val = (e.target as web.HTMLSelectElement).value;
                               if (val == "none") {
                                 _cubit.selectTexture(null);
                               } else {
@@ -331,7 +331,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                           disabled: state.selectedImage == null,
                           events: {
                             "change": (e) {
-                              final val = (e.target as dynamic).value as String;
+                              final val = (e.target as web.HTMLSelectElement).value;
                               final mode = BlendingMode.values.firstWhere(
                                 (m) => m.name == val,
                                 orElse: () => BlendingMode.colorBurn,

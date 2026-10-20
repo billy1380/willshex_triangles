@@ -1,5 +1,6 @@
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
+import "package:web/web.dart" as web;
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
 import "package:triangles_web/ui/bloc_provider.dart";
@@ -80,8 +81,7 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                       value: state.name,
                       events: {
                         "input": (e) {
-                          final val = (e.target as dynamic).value as String?;
-                          if (val != null) _cubit.setName(val);
+                          _cubit.setName((e.target as web.HTMLInputElement).value);
                         },
                       },
                     ),
@@ -238,13 +238,11 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
         },
         events: {
           "input": (e) {
-            final target = e.target as dynamic;
-            final val = int.tryParse(target.value as String);
-            if (val != null) {
-              final newPct = (val / 255.0 * 100).toStringAsFixed(1);
-              target.style.setProperty("--slider-pct", "$newPct%");
-              onChanged(val);
-            }
+            final target = e.target as web.HTMLInputElement;
+            final val = int.parse(target.value);
+            final newPct = (val / 255.0 * 100).toStringAsFixed(1);
+            target.style.setProperty("--slider-pct", "$newPct%");
+            onChanged(val);
           },
         },
       ),
