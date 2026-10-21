@@ -123,6 +123,10 @@ class _PalettePickerDialogState extends State<PalettePickerDialog> {
                                       child: IconButton(
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
+                                        style: IconButton.styleFrom(
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
                                         tooltip: AppStrings.removeColor,
                                         icon: const Icon(Icons.close,
                                             size: 16, color: Colors.white),
