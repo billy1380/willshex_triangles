@@ -124,7 +124,7 @@ The embedded views automatically publish:
 - **Flutter (`go_router`)**: Mount routes with `TrianglesRoutes.routes(prefix: '/triangles', showDrawer: false)`.
 - **Jaspr (`jaspr_router`)**: Mount routes with `TrianglesRoutes.routes(prefix: '/triangles')`.
 
-For detailed embedding examples, router mounting options, and custom theming, see [docs/EMBEDDING_GUIDE.md](docs/EMBEDDING_GUIDE.md).
+For detailed embedding examples, router mounting options, and custom theming, see [docs/embedding_guide.md](docs/embedding_guide.md).
 
 ---
 
