@@ -46,6 +46,7 @@ class AppStrings {
   static const String type = "Type";
   static const String texture = "Texture";
   static const String textureNone = "None";
+  static const String chooseTexture = "Choose texture";
   static const String blendMode = "Blend Mode";
   static const String downloadImage = "Download Image";
   static const String buildingTriangles = "Building Triangles...";

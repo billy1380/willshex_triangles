@@ -9,7 +9,6 @@ import "package:http/http.dart" as http;
 import "package:image/image.dart" as image_lib;
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
-import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:web/web.dart" as web;
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
@@ -18,15 +17,18 @@ import "package:triangles_web/ui/layout.dart";
 import "package:triangles_web/ui/parts/interactive_viewer.dart";
 import "package:triangles_web/ui/parts/palette_history_component.dart";
 import "package:triangles_web/ui/parts/palette_picker_modal.dart";
+import "package:triangles_web/ui/parts/texture_picker_modal.dart";
 
 /// Pure embeddable view for triangle generator in web.
 class TriangleGeneratorView extends StatelessComponent {
   final GeneratorType generatorType;
   final PageSession? session;
+  final String assetsBase;
 
   const TriangleGeneratorView({
     required this.generatorType,
     this.session,
+    this.assetsBase = "/",
     super.key,
   });
 
@@ -35,6 +37,7 @@ class TriangleGeneratorView extends StatelessComponent {
     return TriangleGeneratorScreen(
       generatorType: generatorType,
       session: session,
+      assetsBase: assetsBase,
       useLayout: false,
     );
   }
@@ -46,10 +49,14 @@ class TriangleGeneratorScreen extends StatefulComponent {
   final TrianglesRoutePaths paths;
   final PageSession? session;
 
+  /// Where the package assets (the textures) are served from.
+  final String assetsBase;
+
   TriangleGeneratorScreen({
     required this.generatorType,
     this.useLayout = true,
     this.session,
+    this.assetsBase = "/",
     TrianglesRoutePaths? paths,
     String? basePath,
     super.key,
@@ -70,6 +77,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   bool _historyDrawerOpen = false;
   ws.Palette? _editingPalette;
   bool _showCustomPaletteModal = false;
+  bool _showTexturePicker = false;
 
   @override
   void initState() {
@@ -94,6 +102,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
       _historyDrawerOpen = false;
       _editingPalette = null;
       _showCustomPaletteModal = false;
+      _showTexturePicker = false;
       _createCubit();
     }
   }
@@ -120,10 +129,9 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
     });
   }
 
-  static Future<Uint8List?> _loadWebAsset(String path) async {
+  Future<Uint8List?> _loadWebAsset(String path) async {
     try {
-      final cleanPath = path.startsWith("/") ? path : "/$path";
-      final uri = Uri.base.resolve(cleanPath);
+      final uri = Uri.base.resolve("${component.assetsBase}$path");
       final response = await http.get(uri);
       if (response.statusCode == 200) {
         return response.bodyBytes;
@@ -258,7 +266,8 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                           classes: "form-select form-select-sm",
                           events: {
                             "change": (e) {
-                              final val = (e.target as web.HTMLSelectElement).value;
+                              final val =
+                                  (e.target as web.HTMLSelectElement).value;
                               final type = TrianglesType.values.firstWhere(
                                 (t) => t.name == val,
                                 orElse: () => TrianglesType.ribbons,
@@ -286,33 +295,30 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                               "form-label small fw-semibold text-secondary mb-1",
                           [Component.text(AppStrings.texture)],
                         ),
-                        select(
-                          classes: "form-select form-select-sm",
+                        button(
+                          classes:
+                              "form-select form-select-sm text-start d-flex align-items-center gap-2",
+                          attributes: const {"type": "button"},
                           events: {
-                            "change": (e) {
-                              final val = (e.target as web.HTMLSelectElement).value;
-                              if (val == "none") {
-                                _cubit.selectTexture(null);
-                              } else {
-                                final match = TilableImage.values.firstWhere(
-                                  (imgItem) => imgItem.name == val,
-                                );
-                                _cubit.selectTexture(match);
-                              }
-                            },
+                            "click": (e) =>
+                                setState(() => _showTexturePicker = true),
                           },
                           [
-                            option(
-                              value: "none",
-                              selected: state.selectedImage == null,
-                              const [Component.text(AppStrings.textureNone)],
-                            ),
-                            for (final imgItem in TilableImage.values)
-                              option(
-                                value: imgItem.name,
-                                selected: state.selectedImage == imgItem,
-                                [Component.text(imgItem.name)],
+                            if (state.selectedImage != null)
+                              img(
+                                src:
+                                    "${component.assetsBase}${state.selectedImage!.path}",
+                                alt: state.selectedImage!.label,
+                                classes: "rounded",
+                                attributes: const {
+                                  "style":
+                                      "width: 20px; height: 20px; object-fit: cover;",
+                                },
                               ),
+                            span(classes: "text-truncate", [
+                              Component.text(state.selectedImage?.label ??
+                                  AppStrings.textureNone),
+                            ]),
                           ],
                         ),
                       ],
@@ -331,7 +337,8 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                           disabled: state.selectedImage == null,
                           events: {
                             "change": (e) {
-                              final val = (e.target as web.HTMLSelectElement).value;
+                              final val =
+                                  (e.target as web.HTMLSelectElement).value;
                               final mode = BlendingMode.values.firstWhere(
                                 (m) => m.name == val,
                                 orElse: () => BlendingMode.colorBurn,
@@ -535,6 +542,17 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                     setState(() => _editingPalette = null);
                   },
                   onCancel: () => setState(() => _editingPalette = null),
+                ),
+
+              if (_showTexturePicker)
+                TexturePickerModal(
+                  selected: state.selectedImage,
+                  assetsBase: component.assetsBase,
+                  onSelect: (texture) {
+                    _cubit.selectTexture(texture);
+                    setState(() => _showTexturePicker = false);
+                  },
+                  onCancel: () => setState(() => _showTexturePicker = false),
                 ),
 
               if (_showCustomPaletteModal)

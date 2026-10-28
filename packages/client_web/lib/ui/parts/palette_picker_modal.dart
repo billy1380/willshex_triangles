@@ -81,7 +81,8 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
                       value: state.name,
                       events: {
                         "input": (e) {
-                          _cubit.setName((e.target as web.HTMLInputElement).value);
+                          _cubit.setName(
+                              (e.target as web.HTMLInputElement).value);
                         },
                       },
                     ),

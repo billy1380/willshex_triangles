@@ -74,7 +74,8 @@ class WelcomeView extends StatelessComponent {
           _sampleCard("34.jpeg"),
         ]),
         const div(
-            classes: "card border-0 bg-primary bg-opacity-10 p-4 my-4 rounded-3",
+            classes:
+                "card border-0 bg-primary bg-opacity-10 p-4 my-4 rounded-3",
             [
               div(classes: "d-flex gap-3 align-items-start", [
                 i(classes: "bi bi-stars text-primary fs-3", []),

@@ -8,13 +8,13 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:image/image.dart" as img;
-import "package:subtle_backgrounds/subtle_backgrounds.dart";
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
 import "package:triangles_flutter/parts/app_drawer.dart";
 import "package:triangles_flutter/utils/ui_helper.dart";
 import "package:triangles_flutter/parts/palette_history.dart";
 import "package:triangles_flutter/parts/palette_picker_dialog.dart";
+import "package:triangles_flutter/parts/texture_picker.dart";
 
 /// Pure embeddable view for triangle generation.
 /// Decoupled from Scaffold, AppBar, and Drawer.
@@ -366,46 +366,9 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: DropdownButtonFormField<TilableImage?>(
-                          isExpanded: true,
-                          initialValue: state.selectedImage,
-                          decoration: const InputDecoration(
-                            labelText: AppStrings.texture,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 0),
-                          ),
-                          items: [
-                            const DropdownMenuItem(
-                              value: null,
-                              child: Text(AppStrings.textureNone),
-                            ),
-                            ...TilableImage.values.map((imgItem) {
-                              return DropdownMenuItem(
-                                value: imgItem,
-                                child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Image.asset(
-                                        imgItem.path,
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        imgItem.name,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
-                          ],
-                          onChanged: (value) => _cubit.selectTexture(value),
+                        child: TexturePicker(
+                          value: state.selectedImage,
+                          onChanged: _cubit.selectTexture,
                         ),
                       ),
                       const SizedBox(width: 8),
