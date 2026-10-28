@@ -41,6 +41,9 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
   Future<void> generatePalette() async {
     try {
       final palette = await state.paletteProvider();
+      // The page was left while the palette was being made.
+      if (isClosed) return;
+
       if (palette != null) {
         final newHistory = [palette, ...state.history];
         emit(state.copyWith(
@@ -58,6 +61,8 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
       }
     } catch (e, stack) {
       _log.severe(AppStrings.errorGeneratingPalette, e, stack);
+      if (isClosed) return;
+
       emit(state.copyWith(errorMessage: () => e.toString()));
     }
   }
@@ -95,6 +100,9 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
         assetLoader: assetLoader,
       );
 
+      // The page was left while the image was being made.
+      if (isClosed) return;
+
       if (storeImage?.content != null) {
         emit(state.copyWith(
           generatedImage: () => Uint8List.fromList(storeImage!.content!),
@@ -106,6 +114,8 @@ class TriangleGeneratorCubit extends Cubit<TriangleGeneratorState> {
       }
     } catch (e, stack) {
       _log.severe(AppStrings.errorGeneratingImage, e, stack);
+      if (isClosed) return;
+
       emit(state.copyWith(
         isGenerating: false,
         errorMessage: () => e.toString(),
