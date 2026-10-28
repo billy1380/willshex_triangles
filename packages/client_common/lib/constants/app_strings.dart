@@ -76,10 +76,10 @@ class AppStrings {
   // Palette Picker Dialog & Modal
   static const String createCustomPalette = "Create Custom Palette";
   static const String paletteName = "Palette Name";
-  static const String addColor = "Add Color";
-  static const String removeColor = "Remove Color";
-  static const String editColor = "Edit Color";
-  static const String selectColorPrompt = "Select a color to edit";
+  static const String addColor = "Add Colour";
+  static const String removeColor = "Remove Colour";
+  static const String editColor = "Edit Colour";
+  static const String selectColorPrompt = "Select a colour to edit";
   static const String red = "Red";
   static const String green = "Green";
   static const String blue = "Blue";
@@ -113,13 +113,13 @@ class AppStrings {
   static const String errorFailedToDecodeImage = "Failed to decode image";
 
   // Palette Names & Providers
-  static const String paletteRandomColors = "Random Colors";
-  static const String paletteRandomWarmColors = "Random Warm Colors";
-  static const String paletteRandomCoolColors = "Random Cool Colors";
+  static const String paletteRandomColors = "Random Colours";
+  static const String paletteRandomWarmColors = "Random Warm Colours";
+  static const String paletteRandomCoolColors = "Random Cool Colours";
   static const String paletteRandomComplementaryColors =
-      "Random Complementary Colors";
-  static const String paletteRandomAnalogousColors = "Random Analogous Colors";
-  static const String paletteNamedColors = "Named Colors";
+      "Random Complementary Colours";
+  static const String paletteRandomAnalogousColors = "Random Analogous Colours";
+  static const String paletteNamedColors = "Named Colours";
   static const String paletteFixed = "Fixed";
   static const String paletteCommaSeparated = "Comma Separated";
   static const String paletteImageSample = "Image Sample Palette";
