@@ -170,6 +170,9 @@ class _PalettePickerModalState extends State<PalettePickerModal> {
           attributes: const {"title": AppStrings.removeColor},
           events: {
             "click": (e) {
+              // The rebuild reuses the removed swatch's element as the add card,
+              // so a bubbling click would reach its new addColor handler.
+              e.stopPropagation();
               _cubit.removeColor(index);
             },
           },
