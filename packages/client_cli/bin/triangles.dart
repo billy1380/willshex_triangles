@@ -126,6 +126,6 @@ Future<void> main(List<String> args) async {
   await Triangles.main(args.isNotEmpty
       ? args
       : [
-          "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=Random&a=1"
+          "w=1300&h=400&u=N45DegreeFabric&t=RandomJiggle&rd=69&rn=11&p=RandomColour&a=1"
         ]);
 }

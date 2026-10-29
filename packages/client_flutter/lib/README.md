@@ -138,7 +138,6 @@ This port requires the following dependencies:
 
 - The image generation is currently a placeholder implementation
 - Font loading in `StringDrawer` needs to be implemented based on your specific font format
-- The COLOURlovers API integration may need updates based on current API changes
 - Some advanced features like texture mapping and blending modes need full implementation
 
 ## Port Status
