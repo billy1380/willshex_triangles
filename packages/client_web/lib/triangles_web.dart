@@ -19,7 +19,6 @@ export "routes.dart" show TrianglesWebRoutes, Routes;
 export "ui/bloc_provider.dart";
 export "ui/parts/interactive_viewer.dart";
 export "ui/parts/palette_history_component.dart";
-export "ui/parts/palette_picker_modal.dart";
 
 // Storage
 export "services/local_storage_settings_storage.dart";

@@ -1,8 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
-import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
-import "package:triangles_flutter/parts/palette_picker_dialog.dart";
 import "package:triangles_flutter/parts/triangle_generator_page.dart";
 
 class PalettePickerPage extends StatelessWidget {
@@ -35,11 +33,7 @@ class PalettePickerPage extends StatelessWidget {
       showDrawer: showDrawer,
       showAppBar: showAppBar,
       paths: paths,
-      customPalettePicker: (context) => showDialog<ws.Palette>(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => const PalettePickerDialog(),
-      ),
+      customPalettePicker: (context) => PaletteForm.ask(),
     );
   }
 }

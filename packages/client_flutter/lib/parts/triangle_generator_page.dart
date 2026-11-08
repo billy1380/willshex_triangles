@@ -10,10 +10,10 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:image/image.dart" as img;
 import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
+import "package:willshex_embedding_flutter/willshex_embedding_flutter.dart";
 import "package:triangles_flutter/parts/app_drawer.dart";
 import "package:triangles_flutter/utils/ui_helper.dart";
 import "package:triangles_flutter/parts/palette_history.dart";
-import "package:triangles_flutter/parts/palette_picker_dialog.dart";
 import "package:triangles_flutter/parts/texture_picker.dart";
 
 /// Pure embeddable view for triangle generation.
@@ -70,6 +70,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
   @override
   void initState() {
     super.initState();
+    // the palette dialog is asked of the host this page is shown in, if any
+    TrianglesDialogs.hostSession = widget.session;
     final settingsCubit = _resolveSettingsCubit();
     final settings = settingsCubit.state.settings;
 
@@ -297,11 +299,8 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
               onClose();
             },
             onEdit: (palette) async {
-              final editedPalette = await showDialog<ws.Palette>(
-                context: context,
-                barrierDismissible: true,
-                builder: (context) =>
-                    PalettePickerDialog(initialPalette: palette),
+              final editedPalette = await PaletteForm.ask(
+                initialPalette: palette,
               );
 
               if (editedPalette != null && mounted) {
@@ -319,6 +318,9 @@ class TriangleGeneratorViewState extends State<TriangleGeneratorView> {
 
   @override
   void dispose() {
+    if (TrianglesDialogs.hostSession == widget.session) {
+      TrianglesDialogs.hostSession = null;
+    }
     _transformationController.removeListener(_onTransformationChanged);
     _transformationController.dispose();
     _settingsSub?.cancel();
@@ -671,6 +673,15 @@ class _TriangleGeneratorPageState extends State<TriangleGeneratorPage> {
 
   @override
   Widget build(BuildContext context) {
+    // The palette dialog is a dialog request: the host draws it if it can, and
+    // this page does when it cannot (a host that draws none, or no host).
+    return EmbeddingDialogHost(
+      controller: TrianglesDialogs.local,
+      child: _scaffold(context),
+    );
+  }
+
+  Widget _scaffold(BuildContext context) {
     return TrianglesUiHelper.pageScaffold(
       showDrawer: widget.showDrawer,
       showAppBar: widget.showAppBar,

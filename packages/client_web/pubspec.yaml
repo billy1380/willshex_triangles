@@ -12,6 +12,8 @@ dependencies:
     path: ../client_common
   willshex_embedding:
     path: ../../../willshex_embedding
+  willshex_embedding_jaspr:
+    path: ../../../willshex_embedding/jaspr
   willshex_draw:
     path: ../willshex_draw
   subtle_backgrounds:

@@ -1,6 +1,7 @@
 import "dart:async";
 import "package:triangles_web/ui/screens/settings_screen.dart";
 import "package:willshex_embedding/willshex_embedding.dart";
+import "package:willshex_embedding_jaspr/willshex_embedding_jaspr.dart";
 import "dart:convert";
 import "dart:typed_data";
 
@@ -10,13 +11,11 @@ import "package:image/image.dart" as image_lib;
 import "package:jaspr/dom.dart";
 import "package:jaspr/jaspr.dart";
 import "package:web/web.dart" as web;
-import "package:willshex_draw/willshex_draw.dart" as ws;
 import "package:triangles_common/client_common.dart";
 import "package:triangles_web/ui/bloc_provider.dart";
 import "package:triangles_web/ui/layout.dart";
 import "package:triangles_web/ui/parts/interactive_viewer.dart";
 import "package:triangles_web/ui/parts/palette_history_component.dart";
-import "package:triangles_web/ui/parts/palette_picker_modal.dart";
 import "package:triangles_web/ui/parts/texture_picker_modal.dart";
 
 /// Pure embeddable view for triangle generator in web.
@@ -75,13 +74,13 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
   StreamSubscription<TriangleGeneratorState>? _cubitSubscription;
   late final SettingsCubit _settingsCubit;
   bool _historyDrawerOpen = false;
-  ws.Palette? _editingPalette;
-  bool _showCustomPaletteModal = false;
   bool _showTexturePicker = false;
 
   @override
   void initState() {
     super.initState();
+    // the palette dialog is asked of the host this screen is shown in, if any
+    TrianglesDialogs.hostSession = component.session;
     final cubitFromContext = BlocProvider.maybeOf<SettingsCubit>(context);
     if (cubitFromContext == null) {
       _settingsCubit = TrianglesWebSettings.cubit;
@@ -100,8 +99,6 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
       _cubitSubscription?.cancel();
       _cubit.close();
       _historyDrawerOpen = false;
-      _editingPalette = null;
-      _showCustomPaletteModal = false;
       _showTexturePicker = false;
       _createCubit();
     }
@@ -114,10 +111,7 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
       title: component.generatorType.title,
       settings: settingsState.settings,
       paletteProvider: component.generatorType.createProvider(
-        pickerCallback: () async {
-          setState(() => _showCustomPaletteModal = true);
-          return null;
-        },
+        pickerCallback: () => PaletteForm.ask(),
         settings: settingsState.settings,
         getSettings: () => _settingsCubit.state.settings,
       ),
@@ -142,6 +136,9 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
 
   @override
   void dispose() {
+    if (TrianglesDialogs.hostSession == component.session) {
+      TrianglesDialogs.hostSession = null;
+    }
     _cubitSubscription?.cancel();
     _cubit.close();
     // Settings cubit is shared, do not close
@@ -515,8 +512,15 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                       palettes: state.history,
                       selectedPalette: state.currentPalette,
                       onSelected: (palette) => _cubit.selectPalette(palette),
-                      onEdit: (palette) =>
-                          setState(() => _editingPalette = palette),
+                      onEdit: (palette) async {
+                        final edited = await PaletteForm.ask(
+                          initialPalette: palette,
+                        );
+
+                        if (edited != null) {
+                          _cubit.updatePalette(palette, edited);
+                        }
+                      },
                       onDelete: state.history.length <= 1
                           ? null
                           : (palette) => _cubit.deletePalette(palette),
@@ -533,17 +537,6 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                   const [],
                 ),
 
-              // Palette picker modal (edit or new custom palette)
-              if (_editingPalette != null)
-                PalettePickerModal(
-                  initialPalette: _editingPalette,
-                  onSelect: (newPalette) {
-                    _cubit.updatePalette(_editingPalette!, newPalette);
-                    setState(() => _editingPalette = null);
-                  },
-                  onCancel: () => setState(() => _editingPalette = null),
-                ),
-
               if (_showTexturePicker)
                 TexturePickerModal(
                   selected: state.selectedImage,
@@ -555,15 +548,8 @@ class _TriangleGeneratorScreenState extends State<TriangleGeneratorScreen> {
                   onCancel: () => setState(() => _showTexturePicker = false),
                 ),
 
-              if (_showCustomPaletteModal)
-                PalettePickerModal(
-                  onSelect: (newPalette) {
-                    _cubit.selectPalette(newPalette);
-                    setState(() => _showCustomPaletteModal = false);
-                  },
-                  onCancel: () =>
-                      setState(() => _showCustomPaletteModal = false),
-                ),
+              // the dialog for a palette, when no host draws it
+              EmbeddingDialogSlot(controller: TrianglesDialogs.local),
             ],
           );
 

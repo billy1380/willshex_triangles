@@ -15,6 +15,8 @@ dependencies:
     path: ../client_common
   willshex_embedding:
     path: ../../../willshex_embedding
+  willshex_embedding_flutter:
+    path: ../../../willshex_embedding/flutter
   willshex_draw:
     path: ../willshex_draw
   subtle_backgrounds:

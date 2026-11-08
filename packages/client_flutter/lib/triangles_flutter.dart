@@ -21,7 +21,6 @@ export "routes.dart" show TrianglesRoutes, router;
 // Components
 export "parts/app_drawer.dart";
 export "parts/palette_history.dart";
-export "parts/palette_picker_dialog.dart";
 
 // Storage services
 export "services/preferences_settings_storage.dart";

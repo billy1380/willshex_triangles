@@ -16,6 +16,9 @@ export "bloc/generator/triangle_generator_cubit.dart";
 export "bloc/palette/palette_picker_state.dart";
 export "bloc/palette/palette_picker_cubit.dart";
 
+export "dialogs/palette_form.dart";
+export "dialogs/triangles_dialogs.dart";
+
 export "triangles/triangles.dart";
 export "extensions/string_ex.dart";
 export "extensions/tilable_image_ex.dart";
